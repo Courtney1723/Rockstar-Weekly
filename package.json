@@ -1,0 +1,20 @@
+{
+  "name": "rockstarweeklybonusesbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord-buttons": "^4.0.0-deprecated",
+    "discord.js": "^12.5.3",
+    "moment-timezone": "^0.5.34",
+    "node": "^16.6.1",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^2.6.6"
+  }
+}
