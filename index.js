@@ -25,7 +25,7 @@ client.login(process.env.DISCORD_TOKEN).catch(err => console.log(err))
 client.on("ready", () => {
     client.user.setPresence({
         activity: { 
-            name: 'Bonuses',
+            name: 'Weekly Bonuses',
             type: 'WATCHING'
         },
         status: 'idle'
