@@ -1,7 +1,6 @@
 {
   "name": "rockstarweeklybonusesbot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,11 +9,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord-buttons": "^4.0.0-deprecated",
     "discord.js": "^12.5.3",
+    "express": "^4.18.1",
     "moment-timezone": "^0.5.34",
     "node": "^16.6.1",
     "node-cron": "^3.0.0",
-    "node-fetch": "^2.6.6"
-  }
+    "node-fetch": "^2.6.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Courtney1723/Rockstar-Weekly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Courtney1723/Rockstar-Weekly/issues"
+  },
+  "homepage": "https://github.com/Courtney1723/Rockstar-Weekly#readme",
+  "description": ""
 }

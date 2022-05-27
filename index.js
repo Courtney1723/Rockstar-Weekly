@@ -1,5 +1,6 @@
 const Discord = require("discord.js"); //Discord package
-const keep_alive = require('./keep_alive.js'); //Keep Alive File in sidebar
+const keepAlive = require('./keep_alive.js');
+//const keep_alive = require('./keep_alive.js'); //Keep Alive File in sidebar
 const fs = require("fs")
 const fetch = require("node-fetch") //Required for .fetch() 
 const prefix = "?"; //Creates a prefix ?
@@ -9,9 +10,6 @@ const timezone = require("moment-timezone")
 
 
 const client = new Discord.Client();
-
-
-require('discord-buttons')(client) // required for buttons (trivia)
 
 
 
