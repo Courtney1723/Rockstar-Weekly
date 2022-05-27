@@ -19,13 +19,34 @@ module.exports = {
 
     let rdoBody = args[3].split("\\u003c\/li\\u003e\\u003c\/")
 
-    let rdoBody1 = rdoBody[0].split("\"html\":\"\\u003cul\\u003e\\u003cli\\u003e \\u003cb\\u003e")
+      let rdoBody1 = rdoBody[0].split("\"html\":\"\\u003cul\\u003e\\u003cli\\u003e \\u003cb\\u003e") //gets the latest update
+
+    
 
     let rdoMonthBody = args[4].split("\\u003c\/li\\u003e\\u003c\/")
 
-    let rdoMonthBody1 = rdoMonthBody[0].split("{\"html\":\"\\u003cul\\u003e\\u003cli\\u003e \\u003cb\\u003e")
+      let rdoMonthBody1 = rdoMonthBody[0].split("{\"html\":\"\\u003cul\\u003e\\u003cli\\u003e \\u003cb\\u003e") //gets the latest Monthly update 
 
-  let rdoDate = args[3].split("\\u003c\/span\\") //Gets the Date
+
+
+    
+    let rdoLaterBody = args[6].split("u003cb\\u003e")  
+
+        let rdoLaterBodyDate = rdoLaterBody[0].split("\\u003c\/li\\u003e") 
+
+        let rdoLaterBodyDate1 = rdoLaterBodyDate[0].split(", 2022") //gets the later update dates
+
+        let rdoLaterBody1 = args[6].split("\\u003cul\\u003e\\u003cli\\u003e \\u003cb\\u003e") 
+
+        let rdoLaterBody2 = rdoLaterBody1[1].split("\\u003c\/li\\u003e\\u003c\/ul\\u003e\"") // gets the later update body post
+    
+
+
+
+
+    
+
+  let rdoDate = args[3].split(", 2022") //Gets the Date
 
 
 
@@ -34,8 +55,8 @@ module.exports = {
   
     message.channel.send({embed: {
             color: 0xB75AFF, //Purple
-            title: `Red Dead Online ${rdoDate[0]}`,
-            description: `${rdoBody1[1]}\n\n**Monthly Bonuses:**\n${rdoMonthBody1[1]} \n[Click Here for more info](https://www.ign.com/wikis/red-dead-redemption-2/Red_Dead_Online_Updates_Archive)`
+            title: `Red Dead Redemption II Online Weekly Bonuses & Discounts:`,
+            description: `**Last updated: ${rdoDate[0]}**\n\n${rdoBody1[1]}\n\n**Monthly Bonuses:**\n${rdoMonthBody1[1]} \n\n **Later Bonuses:**\n ${rdoLaterBodyDate1[0]}\n\n${rdoLaterBody2[0]}\n\n[Click Here](https://www.ign.com/wikis/red-dead-redemption-2/Red_Dead_Online_Updates_Archive) to view more bonuses and discounts`
             .replace(/\\u0026#x2019;/g , "'")
             .replace(/\\u003c\/b\\u003e\\u003cbr\\u003e/g, "\n")
             .replace(/\\u003cbr\\u003e/g, "\n")
