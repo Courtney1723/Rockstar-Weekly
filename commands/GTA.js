@@ -1,4 +1,4 @@
-const fs = require("fs")
+
 
 const fetch = require("node-fetch") //Required for .fetch() 
 
@@ -30,18 +30,18 @@ module.exports = {
 
   const aDate = new Date();
 
-  let monthDate = aDate.toLocaleString('en-us', { month: 'long' });
+  //let monthDate = aDate.toLocaleString('en-us', { month: 'long' }); //Long Month 
 
-  let yearDate = aDate.getFullYear();
+  //let yearDate = aDate.getFullYear(); //Full Year
 
-  let dayDate = aDate.getDate();
+  //let dayDate = aDate.getDate(); //Two-digit date
 
   if (message.content.toLowerCase().startsWith(prefix + "gta")) {
     
         message.channel.send({embed: {
             color: 0xB75AFF, //Purple
-            title: `${monthDate} ${dayDate}, ${yearDate} - GTA Online Weekly Bonuses & Discounts:`,
-           description: `**Last Updated ${gtaTitle1[0]}** \n\n${gtaBodyMain1[0]} by [clicking here](https://Twitch.amazon.com/Prime/Loot/GTAonline)`
+            title: `GTA V Online Weekly Bonuses & Discounts:`,
+           description: `**Last Updated ${gtaTitle1[0]}** \n\n${gtaBodyMain1[0]} by [clicking here](https://Twitch.amazon.com/Prime/Loot/GTAonline)\n[Click Here](https://www.ign.com/wikis/gta-5/GTA_Online_Weekly_Updates) for more info.`
 
       .replace(/\\u0026amp;/g, "&") // &
       .replace(/\\u0026#x2019;/g, "'") // '
@@ -49,6 +49,7 @@ module.exports = {
 .replace(/\\u003c\/li\\u003e\\n\\u003cli\\u003e\\u003cb\\u003e/g, "\n\n")
       .replace(/\\u003cbr\\u003e/g, "\n")
       .replace(/\\u003c\/b\\u003e/g, "")
+      .replace(/\\u0026#xDC;/g, "Ü") // For the Übermacht
 
     }})
     
