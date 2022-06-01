@@ -41,7 +41,7 @@ module.exports = {
         message.channel.send({embed: {
             color: 0xB75AFF, //Purple
             title: `GTA V Online Weekly Bonuses & Discounts:`,
-           description: `**Last Updated ${gtaTitle1[0]}** \n\n${gtaBodyMain1[0]} by [clicking here](https://Twitch.amazon.com/Prime/Loot/GTAonline)\n[Click Here](https://www.ign.com/wikis/gta-5/GTA_Online_Weekly_Updates) for more info.`
+           description: `**Last Updated ${gtaTitle1[0]}** \n\n${gtaBodyMain1[0]} by [clicking here](https://Twitch.amazon.com/Prime/Loot/GTAonline)\n\n[Click here](https://www.ign.com/wikis/gta-5/GTA_Online_Weekly_Updates) to view more bonuses & discounts.`
 
       .replace(/\\u0026amp;/g, "&") // &
       .replace(/\\u0026#x2019;/g, "'") // '
