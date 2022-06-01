@@ -1,22 +1,19 @@
-const Discord = require("discord.js"); //Discord package
-const fs = require("fs")
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const client = new Discord.Client();
-
-const prefix = "?"; //Creates a prefix $
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
-	name: 'help',
-	description: 'Help!',
-	execute(message) {
+	data: new SlashCommandBuilder()
+		.setName('help')
+		.setDescription('Replies with all the TestBot interactions'),
+	async execute(interaction) {
 
-  if (!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
 
-  if (message.content.toLowerCase().startsWith(prefix + "help")) {
-    message.channel.send({embed: {
-            color: 0xB75AFF, //Purple
-            description: ("**__Rockstar Weekly Bot Commands__**\n\n**?help**\n> provides a list of commands \n**?ping**\n> Rockstar Weekly Bot responds with pong! when online \n**?rdo**\n> Provides the latest weekly RDO update\n**?gta**\n> Provides the latest GTA Online weekly update") 
-      }})}
-  }}
-
+      let helpEmbed = new MessageEmbed()
+      .setColor('#B75AFF') //Purple
+      .setTitle(`Rockstar Weekly Bot Commands`)
+      .setDescription(`**/help**\n> provides a list of commands \n**/ping**\n> The Rockstar Weekly bot responds with pong! when online \n**/rdo**\n> Provides the latest weekly RDO update\n**/gta**\n> Provides the latest GTA Online weekly update`)
     
+		return interaction.reply({ embeds: [helpEmbed] });
+	},
+};
