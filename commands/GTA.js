@@ -1,18 +1,18 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
+const { MessageEmbed } = require('discord.js');
 
-const fetch = require("node-fetch") //Required for .fetch() 
-
-const prefix = "?"; //Creates a prefix $
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 
 
 module.exports = {
-	name: 'gta',
-	description: 'gta command',
-	async execute(message, user) {
+	data: new SlashCommandBuilder()
+		.setName('gta')
+		.setDescription('Replies with GTA Online latest bonuses and discounts'),
+async execute(interaction, user) {
 
 
-    if (!message.content.toLowerCase().startsWith(prefix + 'gta')) return;
 
   const gta1 =   await fetch('https://www.ign.com/wikis/gta-5/GTA_Online_Weekly_Updates').then(res => res.text())
 
@@ -28,20 +28,18 @@ module.exports = {
 
   let gtaBodyMain1 = gtaBodyMain[1].split("Prime Gaming accounts by visiting")
 
-  const aDate = new Date();
+  // const aDate = new Date();
 
+  //let dayDate = aDate.getDate(); //Two-digit date
+  
   //let monthDate = aDate.toLocaleString('en-us', { month: 'long' }); //Long Month 
 
   //let yearDate = aDate.getFullYear(); //Full Year
 
-  //let dayDate = aDate.getDate(); //Two-digit date
-
-  if (message.content.toLowerCase().startsWith(prefix + "gta")) {
-    
-        message.channel.send({embed: {
-            color: 0xB75AFF, //Purple
-            title: `GTA V Online Weekly Bonuses & Discounts:`,
-           description: `**Last Updated ${gtaTitle1[0]}** \n\n${gtaBodyMain1[0]} by [clicking here](https://Twitch.amazon.com/Prime/Loot/GTAonline)\n\n[Click here](https://www.ign.com/wikis/gta-5/GTA_Online_Weekly_Updates) to view more bonuses & discounts.`
+  let gtaEmbed = new MessageEmbed()
+      .setColor('#B75AFF') //Purple
+      .setTitle(`GTA V Online Weekly Bonuses & Discounts:`)
+      .setDescription(`**Last Updated ${gtaTitle1[0]}** \n\n${gtaBodyMain1[0]} by [clicking here](https://Twitch.amazon.com/Prime/Loot/GTAonline)\n\n[Click here](https://www.ign.com/wikis/gta-5/GTA_Online_Weekly_Updates) to view more bonuses & discounts.`
 
       .replace(/\\u0026amp;/g, "&") // &
       .replace(/\\u0026#x2019;/g, "'") // '
@@ -50,14 +48,27 @@ module.exports = {
       .replace(/\\u003cbr\\u003e/g, "\n")
       .replace(/\\u003c\/b\\u003e/g, "")
       .replace(/\\u0026#xDC;/g, "Ü") // For the Übermacht
+                                         
+                     
+                     
+                     )
 
-    }})
     
-      
-            
+
+
+  
+    return interaction.reply({ embeds: [gtaEmbed] })
+
+                                    
+                        
+                        
+                        
+                        
+                        }}
     
-            
-            } else
-  if (message.content.toLowerCase().startsWith(prefix + "ksdjnaidll")) 
-    return 
-      }}     
+    
+
+
+
+          
+
