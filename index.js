@@ -1,42 +1,24 @@
-const Discord = require("discord.js"); //Discord package
-const keep_alive = require('./keep_alive.js'); //Keep Alive File in sidebar
-const fs = require("fs")
-const fetch = require("node-fetch") //Required for .fetch() 
-const prefix = "?"; //Creates a prefix ?
-const { MessageEmbed } = require('discord.js'); //required for embeds
-const cron = require("node-cron") //required for scheduled tasks
-const timezone = require("moment-timezone")
+const fs =  require('node:fs');
+const path = require('node:path');
+const { Client, Collection, Intents} = require('discord.js');
 
 
-const client = new Discord.Client();
+const keepAlive = require('./keep_alive.js');
+//const keep_alive = require('./keep_alive.js'); //Keep Alive File in sidebar
 
 
-require('discord-buttons')(client) // required for buttons (trivia)
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 
 
- 
-client.login(process.env.DISCORD_TOKEN).catch(err => console.log(err))
-
-
-
+// node deploy-commands.js
+//^^ type in shell to register a command
 
 //Bot rich presence
 client.on("ready", () => {
-    client.user.setPresence({
-        activity: { 
-            name: 'Bonuses',
-            type: 'WATCHING'
-        },
-        status: 'idle'
-    })
-})
+    client.user.setPresence({ activities: [{ name: 'Bonuses', type: 'WATCHING'  }], status: 'idle' });  
+});
 
-
-
-//client.on('debug', console.log); 
-  //**un-comment ^^^ if bot does not log-in**
-  // type "kill 1" in shell if bot does not log in due to 429 error
 
 
 //bot guild IDs
@@ -46,69 +28,62 @@ client.on("ready", () => {
 });
 
 
-//Event Files
 
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+//Access Command Files
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, 'commands');
 
-for (const file of eventFiles) {
-	const event = require(`./events/${file}`);
-	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args, client));
-	} else {
-		client.on(event.name, (...args) => event.execute(...args, client));
-	}
-}
-
-
-
-
-
-// Command files
-
-client.commands = new Discord.Collection();
-
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	client.commands.set(command.data.name, command);
 }
 
-client.on('message', message => {
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const command = args.shift().toLowerCase();
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
 
+	const command = client.commands.get(interaction.commandName);
 
-	if (!client.commands.has(command)) return;
+	if (!command) return;
 
 	try {
-		client.commands.get(command).execute(message, args);
+		await command.execute(interaction);
 	} catch (error) {
 		console.error(error);
-		message.reply('there was an error trying to execute that command!');
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 });
 
 
 
+//Access Event Files
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
+
+
+
+
+
+//login
+client.login(process.env['DISCORD_TOKEN']).catch(err => console.log(err));
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-"";
 
