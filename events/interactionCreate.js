@@ -3,6 +3,6 @@ const aDate = new Date();
 module.exports = {
 	name: 'interactionCreate',
 	async execute(interaction) {
-		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction on ${aDate}\n`);
+		console.log(`an interaction was successfully triggered`);
 	},
 };
