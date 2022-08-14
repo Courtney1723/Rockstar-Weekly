@@ -1,15 +1,6 @@
 const fs =  require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Intents} = require('discord.js');
-
-
-const keepAlive = require('./keep_alive.js');
-//const keep_alive = require('./keep_alive.js'); //Keep Alive File in sidebar
-
-
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
-
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES], partials: ["CHANNEL"] });
 
 // node deploy-commands.js
 //^^ type in shell to register a command
@@ -19,15 +10,11 @@ client.on("ready", () => {
     client.user.setPresence({ activities: [{ name: 'Bonuses', type: 'WATCHING'  }], status: 'idle' });  
 });
 
-
-
-//bot guild IDs
+//Guild Count
 client.on("ready", () => {
     const Guilds = client.guilds.cache.map(guild => guild.id);
-    console.log(Guilds);
+    console.log(`${Guilds.length} guilds`);
 });
-
-
 
 //Access Command Files
 client.commands = new Collection();
@@ -40,7 +27,6 @@ for (const file of commandFiles) {
 	const command = require(filePath);
 	client.commands.set(command.data.name, command);
 }
-
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
@@ -57,8 +43,6 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-
-
 //Access Event Files
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
@@ -74,16 +58,5 @@ for (const file of eventFiles) {
 	}
 }
 
-
-
-
-
 //login
 client.login(process.env['DISCORD_TOKEN']).catch(err => console.log(err));
-
-
-
-
-
-
-
