@@ -1,6 +1,9 @@
 const fs =  require('node:fs');
 const path = require('node:path');
+const keep_alive = require('./keep_alive.js')
+const { Client, Collection, Intents, MessageEmbed} = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES], partials: ["CHANNEL"] });
+const { exec } = require('node:child_process'); //for the kill 1 command when 429 error is caught.
 
 // node deploy-commands.js
 //^^ type in shell to register a command
@@ -57,6 +60,22 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+
+//sends a kill 1 command to the child node if there is a 429 error
+client.on("debug", function(info){
+		let check429error = info.split(" ");
+    	//console.log(`info -> ${check429error}`); //debugger
+		if (check429error[2] === `429`) {
+			console.log(`Caught a 429 error!`); 
+				exec('kill 1', (err, output) => {
+				    if (err) {
+				        console.error("could not execute command: ", err);
+				        return
+				    }
+				  console.log(`Kill 1 command succeeded`); //probably wont work
+				});			
+		}
+});
 
 //login
 client.login(process.env['DISCORD_TOKEN']).catch(err => console.log(err));
