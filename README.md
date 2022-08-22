@@ -6,8 +6,12 @@
 
 ### Join the Rockstar Weekly Support server by [clicking here](https://discord.com/invite/TkrFcwHWfj)
 
-### Get the weekly updates from Rockstar's Red Dead Redemption II Online and Grand Theft Auto V Online 
-### Type /help for more options
+#### Get the latest updates from Rockstar's
+### Grand Theft Auto V Online
+#### and 
+### Red Dead Redemption II Online
+
+#### Type /help for more options
 
 
 ![Image 1](https://imgur.com/d4xw0rQ.jpg)
