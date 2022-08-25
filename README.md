@@ -2,7 +2,7 @@
 #### Discord.js / Node.js Bot
 
 
-## [Add the Rockstar Weekly bot to your server](https://discord.com/oauth2/authorize?client_id=977396560864346142&permissions=414464724032&scope=bot%20applications.commands)
+## [Add the Rockstar Weekly bot to your server](https://discord.com/oauth2/authorize?client_id=977396560864346142&permissions=414464690240&scope=bot%20applications.commands)
 
 ### Join the Rockstar Weekly Support server by [clicking here](https://discord.com/invite/TkrFcwHWfj)
 
