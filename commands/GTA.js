@@ -1,8 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
-var request = require('request');
-const phantom = require('phantom');
+const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -10,7 +9,7 @@ module.exports = {
 		.setDescription('Latest GTA V online bonuses and discounts'),
 	async execute(interaction) {
 		await interaction.deferReply().catch(console.error);
-
+		
 		let gtaURL = process.env.SOCIAL_URL_GTA;
 		const instance = await phantom.create();
 		const page = await instance.createPage();
@@ -18,66 +17,127 @@ module.exports = {
 		await page.property('viewportSize', { width: 1024, height: 600 });
 		const status = await page.open(gtaURL);
 			//console.log(`Page opened with status [${status}].`);
-		if (status === `success`) { //checks if Rockstar Social Club website is down
-		const content = await page.property('content'); 
+	if (status === `success`) { //checks if Rockstar Social Club website is down
+		const content = await page.property('content'); // Gets the latest gta updates
 			//console.log(content); 
-		let gtaString = content.toString(); // Gets the latest gta updates
-			//console.log(`${gtaString}`);
-		let gtaDate01 = gtaString.split("class=\"date\">"); //gets the event date
+		let gtaString001 = content.toString(); //converts HTML to string (necessary? not sure.);
+			//console.log(`gtaString001: ${gtaString001}`);	
+		let gtaString01 = gtaString001.split("cm-content\">"); //splits the header from the body
+		let gtaHeader = gtaString01[0];
+			//console.log(`gtaHeader: ${gtaHeader}`);
+		let gtaDate01 = gtaHeader.split("class=\"date\">"); //gets the event date
 			//console.log(`${gtaDate01[1]}`);
 		let gtaDate = gtaDate01[1].split("<"); //cuts off the end of the date
-			//console.log(`Date: ${gtaDate[0]}\n`);
-		let gtaRemoveHTMLTitles = gtaString.replace(/<b>Sprunk/g, "Sprunk "); //removes bold items that confuse the bonus split
-		let gtaTitles01 = gtaRemoveHTMLTitles.split("<p><b>"); //gets the titles
-			//console.log(`Titles: ${gtaTitles01}\n`);			
-		let gtaRemoveHTML = gtaString.replace(/<\/b><\/p><\/ul>/g, "</p>"); //removes bold items that confuse the bonus split
-		let gtaBonuses01 = gtaRemoveHTML.split("</b></p>");	//gets the bonuses
-			//console.log(`gtaBonuses01: \n${gtaBonuses01}\n`);
-		let gtaImage01 = gtaString.split("og:image\" content=\"");
-			//console.log(`gtaImage01: ${gtaImage01[1]}`);
-		let gtaImage = gtaImage01[1].split("\" data-rh=");
-			//console.log(`gtaImage: ${gtaImage[0]}`);		
-		// Strings to be populated with the indexes of the two titles after the "Only on PlayStation..." title
-		let nextGenIndex1 = ""; // empty string to be populated
-		let nextGenIndex2 = ""; // empty string to be populated
-							
-//---------------BEGIN 1st for loop----------------//
-		let gtaFinalString = ""; //initial empty final string, will be populated in the i loop
-		for (i = 1; i <= gtaTitles01.length - 1; i++) { //iterates over every bonus
-				//console.log(`${gtaBonuses01.length}`);
-			//console.log(`Titles: \n${gtaTitles01[i]}\n\n`);
-			let gtaTitles001 = gtaTitles01[i].split("</b></p>"); //removes trailing string on titles
-				//console.log(`Titles at ${i}: \n${gtaTitles001[0]}\n`);
+			//console.log(`Date: ${gtaDate[0]}\n`);		
+		let gtaString002 = gtaString01[1]; //Splits the header from the body
+			//console.log(`gtaString: ${gtaString002}`)
+		let gtaString02 = gtaString002.split("</div>"); //splits the footer from the body
+			//console.log(`gtaString02: ${gtaString02[0]}`);
+		let gtaStringOG = `${gtaString02[0]}<p><b>`; //the entire string before any editing w/o footer or header
+			//console.log(`gtaStringOG: ${gtaStringOG}`);
 
-		//-----BEGIN get the index of "Only on PlayStation..." title-----//
-			function onlyOnIndex1() { //returns the index of the title: Only on Playstation...
-				if ( gtaTitles001[0].includes("ONLY ON PLAYSTATION") ) {
-					return i + 1;
-				} else {
-					return -1;
-					}
-			}
-				//console.log(`onlyOnIndex1() at ${i}: ${onlyOnIndex1()}`);
-			function onlyOnIndex2() { //returns the index of the title: Only on Playstation...
-				if ( gtaTitles001[0].includes("ONLY ON PLAYSTATION") ) {
-					return i + 2;
-				} else {
-					return -2;
-					}
-			}
-				//console.log(`onlyOnIndex2() at ${i}: ${onlyOnIndex2()}`);		
+		//Replaces or removes HTML formatting that can interfere with split functions or is constant
+		let gtaString = gtaStringOG.replace(/<li>/g, "• ")
+			.replace(/<\/li>/g, "")
+			.replace(/<\/ul>/g, "")
+			.replace(/&amp;/g, "&")
+			.replace(/&nbsp;/g, " ") //Non breaking space
+			.replace(/\n<ul style=\"line-height:1.5;\">/g, "")
+			.replace(/<ul style="line-height:1.5;">/g, "")
+			.replace(/\n<p>/g, "<p>") //Removes spaces after a bonus
+			//console.log(`gtaString: ${gtaString}`);
 
-			if (onlyOnIndex1() > 0) {
-				nextGenIndex1 += onlyOnIndex1(); //populates nextGenIndex1 with the index of the title after "Only on PS5..."
-			}
-				//console.log(`nextGenIndex1 at ${i}: ${nextGenIndex1}`);
+//--------------------BEGIN formatting for links--------------------//
+		let gtaLinks001 = gtaString.split("<a href=\"");
+		let gtaLinks = "";
+		let gtaLinkTitles = "";
+			for (j = 1; j <= gtaLinks001.length - 1; j++) {
+				let gtaLinks01 = gtaLinks001[j].split("\" target");
+					//console.log(`gtaLinks01 at ${j}: ${gtaLinks01[0]}`);
+				let gtaLinks02 = gtaLinks01[0].split("\">");
+					//console.log(`gtaLinks02 at ${j}: ${gtaLinks02[0]}`);
+					gtaLinks += `${gtaLinks02[0]},`;
 
-			if (onlyOnIndex2() > 0) {
-				nextGenIndex2 += onlyOnIndex2(); //populates nextGenIndex1 with the index of the second title after "Only on PS5..."
+					let gtaLinkTitles01 = gtaLinks001[j].split("\">");
+					let gtaLinkTitles02 = gtaLinkTitles01[1].split("</a>");
+				
+				gtaLinkTitles += `${gtaLinkTitles02[0]},`;
 			}
-				//console.log(`nextGenIndex2 at ${i}: ${nextGenIndex2}`);								
-		//-----END get the index of "Only on PlayStation..." title-----//							
+		//console.log(`gtaLinks: ${gtaLinks}`);
+		//console.log(`gtaLinkTitles: ${gtaLinkTitles}`);
 
+		let gtaLinks002 = gtaLinks.split(",");
+			//console.log(`gtaLinks002: ${gtaLinks002}`);
+		let gtaLinkTitles002 = gtaLinkTitles.split(",");
+			//console.log(`gtaLinkTitles002: ${gtaLinkTitles002}`);
+
+		let gtaLinkFormatted = gtaString;
+		for (m = 0; m <= gtaLinks002.length - 2; m++) { // keep - 2; the last element will always be blank
+			gtaLinkFormatted = gtaLinkFormatted.replace(/<a.*?a>/, `[${gtaLinkTitles002[m]}](${gtaLinks002[m]})`); //replaces each link with proper discord formatted link
+			//console.log(`gtaLinkFormatted at ${m}: ${gtaLinkFormatted}`);
+		}
+		//console.log(`gtaLinkFormatted: ${gtaLinkFormatted}`);
+//--------------------END formatting for links--------------------//
+
+//--------------------BEGIN checking for words that are bold at the beginning of a paragraph-------------------//
+
+	function notATitleIndex() {
+		let gtaTitles001 = gtaLinkFormatted.split("<p><b>");
+
+		let notATitleIndex001 = "";
+		for (i = 0; i <= gtaTitles001.length - 1; i++) {
+			if ( gtaTitles001[i].charAt(1) != gtaTitles001[i].charAt(1).toUpperCase() ) {
+				notATitleIndex001 += `${i}`;
+			} 
+		}
+		return `${notATitleIndex001}`;	
+	}		
+	//console.log(`notATitleIndex: ${notATitleIndex()}`);
+	let notATitleIndex01 = notATitleIndex();
+		//console.log(`notATitleIndex01: ${notATitleIndex01}`);
+
+	function notATitleBonus() {
+		let gtaTitles001 = gtaLinkFormatted.split("<p><b>");
+
+		let notATitleBonus = "";
+		for (i = 0; i <= gtaTitles001.length - 1; i++) {
+			if ( gtaTitles001[i].charAt(1) != gtaTitles001[i].charAt(1).toUpperCase() ) {
+				notATitleBonus += `${gtaTitles001[i]}`;
+			} 
+		}
+		return `${notATitleBonus}`;	
+	}		
+	//console.log(`notATitleBonus: ${notATitleBonus()}`);
+	let notATitleBonus01 = notATitleBonus();
+	let notATitleBonusFirstWord = notATitleBonus01.split(" ");
+			//console.log(`notATitleBonusFirstWord[0]: ${notATitleBonusFirstWord[0]}`);
+
+	function gtaBoldFormatted() {
+		if (notATitleIndex01 != "") {
+		return gtaLinkFormatted.replace(new RegExp(`<p><b>${notATitleBonusFirstWord[0]}`, "g"), `<p>${notATitleBonusFirstWord[0]}`); //replaces any words that are bold at the beginning of a paragraph with non-bold
+		}
+		else {
+			return gtaLinkFormatted;
+		}
+	}
+			//console.log(`gtaBoldFormatted(): ${gtaBoldFormatted()}`);
+
+//--------------------END checking for words that are bold at the beginning of a paragraph-------------------//
+
+	let GTABonuses01 = gtaBoldFormatted().split("<p><b>");
+		//console.log(`GTABonuses01: ${GTABonuses01}`)
+	let gtaFinalString01 = "";	//gtaFinalString before HTML formatting
+	let nextGenIndex1 = "";
+	let nextGenIndex2 = "";		
+
+//-----BEGIN for loop-----//		
+
+		//console.log(`GTABonuses01 length: ${GTABonuses01.length}`);
+for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be blank
+		//console.log(`GTABonuses01 at ${i}: ${GTABonuses01}`);
+	let GTABonuses = GTABonuses01[i].split("</b></p>");
+		//console.log(`GTATitles at ${i}: ${GTABonuses[0]}\nGTABonuses at ${i}: ${GTABonuses[1]}`);
+	
 //------------------BEGIN capitalization Function-----------------//
 		function titleCapitalization(titles) {
 				//console.log(`Titles1: ${titles[0]}\n`); // Full Title
@@ -116,214 +176,162 @@ module.exports = {
 			//return Titles2[0]; //Testbench if gtaTitleString has an error, this returns the first word of every title
 			return `${gtaTitleString}`;
 			}
-			
-			let gtaTitles = titleCapitalization(gtaTitles001);  //passes gtaTitles001 through the titleCapitalization function
-				//console.log(`final titles at ${i}: ${gtaTitles}\n`);							
-//--------------------END capitalization Function-----------------//							
-				//console.log(`Pre-Bonuses at ${i}: \n${gtaBonuses01[i]}\n\n`);
-			let gtaBonuses = gtaBonuses01[i].split("<p><b>"); //removes trailing string on bonuses
-				//console.log(`Bonuses at ${i}: \n${gtaBonuses[0]}\n`);		
-//---------------------------BEGIN populating gtaFinalString -------------------------//
-		//console.log(`I: ${i} - nextGenIndex1: ${nextGenIndex1} - nextGenIndex2: ${nextGenIndex2}`);
-		//console.log(`I: ${i} - 1-t/f: ${i.toString() === nextGenIndex1} - 2-t/f: ${i.toString() === nextGenIndex2}`);
-			
-//1: Handles the "Only on PS5..." list being all titles
-			if ( (i.toString() === nextGenIndex1) || (i.toString() === nextGenIndex2) )  { // if the index of the bonus is one or two after the "Only on PS5..." 
-				gtaFinalString += `• ${gtaTitles}\n\n\n\n\n`;
-					//console.log(`1: Titles at ${i}: \n${gtaTitles}\n`);
-			}
-				
-// 2-4: Adds only the title to gtaFinalString if no links, trailing <div>'s, or lists
-			else if ( (!gtaBonuses[0].includes("<a")) && (!gtaBonuses[0].includes("body>")) && (!gtaBonuses[0].includes("style=")) && (!gtaBonuses[0].includes("<li>")) && (gtaBonuses[0] != "</ul>") && (i != nextGenIndex1) && (i != nextGenIndex2) ) {
-				//console.log(`Titles at ${i}: \n${gtaTitles[0]}\n\n`);
+		let GTA_Title = titleCapitalization(GTABonuses);
+		//console.log(`GTA_Title at ${i}: ${GTA_Title}`);		
+//--------------------END capitalization Function-----------------//		
 
-				//-----BEGIN paragraph count-----// //Returns the second paragraph if more than one paragraph
-				let gtaParas = gtaBonuses[0].split("<p>");
-					//console.log(`gtaParas at ${i}: ${gtaParas}`);
-				let gtaParaCount = Object.keys(gtaParas).length; //counts the paragraphs in bonuses
-					//console.log(`gtaParas length at ${i}: ${gtaParas.length}`);
-				if (gtaParaCount >= 3) { // if more than one paragraph, returns the second paragraph
-						//console.log(`2: gtaParas at I - ${i}: ${gtaParas[1]}\n`);
-					if ( (gtaParas[1] != null) && (gtaParas[2] != null)) {
-						gtaFinalString += `**${gtaTitles}**\n • ${gtaParas[1]} • ${gtaParas[2]}`; 
-					} 	
-					if ( (gtaParas[1] != null) && (gtaParas[2] === null)) {
-						gtaFinalString += `**${gtaTitles}**\n • ${gtaParas[1]}`; 
-					} 					
-				} else if (gtaParaCount <= 2) { // if one or 0 paragraphs, returns only the title - unless "Luxury Autos Showroom...""
-					if (gtaParas[1].toLowerCase().includes("luxury autos showroom")) { 
-							//console.log(`3: gtaParas at I - ${i}: ${gtaParas[1]}\n`);
-						gtaFinalString += `**${gtaTitles}**\n • ${gtaParas[1]}`; 
-					} 
-					//-----END paragraph count-----//	
-					else { 					
-							//console.log(`4: Only Title at ${i}: ${gtaTitles} para: ${gtaParas[1]}`);
-						gtaFinalString += `**${gtaTitles}**\n\n\n\n\n\n`;
-					}
-				}
-			}
-				
-//5: replaces all links not in lists
-			else if ((gtaBonuses[0].includes("<a")) && (!gtaBonuses[0].includes("body>")) && (!gtaBonuses[0].includes("style="))) {
-				//console.log(`Bonuses at ${i}: \n${gtaBonuses[0]}\n\n`);
-				let gtaBonuses02 = gtaBonuses[0].replace(/<a.*?[^>]>/g, "");
-					//console.log(`5: Bonuses02 at ${i}: \n${gtaTitles}\n${gtaBonuses02}\n`);
-				gtaFinalString += `**${gtaTitles}** ${gtaBonuses02}`;
-			}
-//6: deletes the trailing code on the final bonus
-			else if (gtaBonuses[0].includes("body")) { //    /\(.*\)/g
-				//console.log(`Bonuses at ${i}: \n${gtaBonuses[0]}\n\n`);	
-				let gtaBonuses003 = gtaBonuses[0].replace(/<a.*?[^>]>/g, "");
-				let gtaBonuses03 = gtaBonuses003.split("</div>");
-					//console.log(`6: Bonuses03 at ${i}: \n${gtaTitles[0]}\n${gtaBonuses03[0]}\n`);
-				gtaFinalString += `**${gtaTitles}** ${gtaBonuses03[0]}`;
-			}
-
-//7: if gtaBonuses[0] contains links and lists
-			else if ((gtaBonuses[0].includes("style=")) && (gtaBonuses[0].includes("<a")) && (!gtaBonuses[0].includes("body>"))) {
-				let gtaBonuses004 = gtaBonuses[0].replace(/<a.*?[^>]>/g, ""); //   .replace(/start.*[end]end/g, "");
-				//console.log(`Bonuses004 at ${i}: \n${gtaBonuses004}\n\n`);
-				let gtaBonuses04 = gtaBonuses004.split("style=\"line-height:1.5;\">");
-					//console.log(`7: Bonuses04 at ${i}: \n${gtaTitles[0]}\n${gtaBonuses04[1]}\n\n`);
-				gtaFinalString += `**${gtaTitles}** ${gtaBonuses04[1]}`;
-			}
-
-//8: if gtaBonuses[0] contains lists but no links
-			else if ( ( (gtaBonuses[0].includes("style=")) || (gtaBonuses[0].includes("<li>")) ) && (!gtaBonuses[0].includes("<a")) && (!gtaBonuses[0].includes("body>"))) {
-				let gtaBonuses05 = gtaBonuses[0].split("style=\"line-height:1.5;\">");
-					//console.log(`8: Bonuses05 at ${i}: \n${gtaTitles}\n${gtaBonuses05[1]}\n\n`);
-				if (gtaBonuses05[0].toLowerCase().includes("luxury autos")) {
-					gtaFinalString += `**${gtaTitles}** ${gtaBonuses05[0]}`;
-				}
-				else if (gtaBonuses05[1] != null) {
-					gtaFinalString += `**${gtaTitles}** ${gtaBonuses05[1]}`;
+		//-----BEGIN get the index of "Only on PlayStation..." title-----//
+	
+			function onlyOnIndex1() { //returns the index of the title: Only on Playstation...
+				if ( GTA_Title.toLowerCase().includes("only on playstation") ) {
+					return i + 1;
 				} else {
-					gtaFinalString += `\n• ${gtaTitles} \n\n\n\n\n`; //not sure why it needs so many newlines...
-				}
+					return -1;
+					}
 			}
-//9: error
-			else {
-				console.log(`9: error: gtaTitles at ${i}:\n ${gtaTitles} \n gtaBonuses at ${i}:\n ${gtaBonuses[i]}`);
+				//console.log(`onlyOnIndex1() at ${i}: ${onlyOnIndex1()}`);
+	
+			function onlyOnIndex2() { //returns the index of the title: Only on Playstation...
+				if ( GTA_Title.toLowerCase().includes("only on playstation") ) {
+					return i + 2;
+				} else {
+					return -2;
+					}
 			}
+				//console.log(`onlyOnIndex2() at ${i}: ${onlyOnIndex2()}`);		
+
+			if (onlyOnIndex1() > 0) {
+				nextGenIndex1 += onlyOnIndex1(); //populates nextGenIndex1 with the index of the title after "Only on PS5..."
+			}
+				//console.log(`nextGenIndex1 at ${i}: ${nextGenIndex1}`);
+
+			if (onlyOnIndex2() > 0) {
+				nextGenIndex2 += onlyOnIndex2(); //populates nextGenIndex1 with the index of the second title after "Only on PS5..."
+			}
+				//console.log(`nextGenIndex2 at ${i}: ${nextGenIndex2}`);								
+		//-----END get the index of "Only on PlayStation..." title-----//			
+	
+	let GTA_Bonus = GTABonuses[1];
+		//console.log(`GTA_Bonus at ${i}: ${GTA_Bonus}`);
+
+	let gtaParas = GTA_Bonus.split("<p>");
+			//console.log(`gtaParas at ${i}: ${gtaParas}`);
+			//console.log(`gtaParas length at ${i}: ${gtaParas.length}`);
+//-----BEGIN populating gtaFinalString01 -----//
+	if ( (i.toString() === nextGenIndex1) || (i.toString() === nextGenIndex2) )  {
+		gtaFinalString01 += `• ${GTA_Title}\n\n`;
+	}
+	else if (GTA_Bonus.includes("• ")) { //if the bonus includes links
+		if ((gtaParas[1] != null) && (gtaParas[1] != `undefined`)) {
+			let gtaListBonus = gtaParas[1].split("\n\n•");
+			if (gtaParas[2] != null) { //if the bonus has a paragraph after the list
+				gtaFinalString01 += `**${GTA_Title}**\n• ${gtaListBonus[1]} ${gtaParas[2]}\n`;
+			} 
+			else { //if the bonus does not have a paragraph after the list
+				gtaFinalString01 += `**${GTA_Title}**\n• ${gtaListBonus[1]}\n`;
+			}
+		} 
+		else {
+			gtaFinalString01 += `**${GTA_Title}**\n\n`;
 		}
-		//console.log(`gtaFinalString: \n${gtaFinalString}\n\n`);
+	} 
+	else if (GTA_Bonus.toLowerCase().includes("luxury autos")) { 
+		gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n`;
+	} 
+	else if (i === GTABonuses01.length - 2) { //if the bonus is the last bonus
+		gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n• ${gtaParas[2]}\n• ${gtaParas[3]}`;
+	}
+	else if (gtaParas.length > 2) { // if the bonus has two or more paragraphs include only 1st and 2nd
+		gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n• ${gtaParas[2]}\n`;
+	} 
+	else { //if the bonus only has 1 paragraph only post the title
+		gtaFinalString01 += `**${GTA_Title}**\n\n`;
+	} 	
+	
+	}
 
-//---------------------------END populating gtaFinalString-------------------------//
+//-----------END for loop----------//		
+	//console.log(`gtaFinalString01: ${gtaFinalString01}`); //gtaFinalString before HTML formatting
+		let gtaFinalString = gtaFinalString01.replace(/<p>/g, "")
+											.replace(/<\/p>/g, "")
+										  .replace(/<\/b>/g, "")
+										  .replace(/<b>/g, "")
+											.replace(/\n\n• /g, "\n• ") //removes spaces before a list item
+											.replace(/\n\n\n/g, "\n\n")
+											.replace(/• undefined/g, "• ")
 
-
+			//console.log(`gtaFinalString: ${gtaFinalString}`);
     function gtaPost() {
-        return gtaFinalString.slice(0, 4097);
+        return gtaFinalString.slice(0, 3901); //FIXME: adjust this for the best break - up to 4000
     }
     //console.log(`1: ${gtaFinalString.length}\n`) 
     function gtaPost2() {
-      if (gtaFinalString.length > 4096) {
-        let post02 = gtaFinalString.substr(4097, 2300);
+      if (gtaFinalString.length > 4000) {
+        let post02 = gtaFinalString.substr(3901, 2099); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
         return post02;
       } else {
         return "";
       }
     }  
     function elipseFunction() {
-      if (gtaFinalString.length > 4096) {
+      if (gtaFinalString.length > 4000) {
         return "...";
         } else {
         return "";
         }
     }		
     function gtaFooterMax() {
-      if (gtaFinalString.length > 4096) {
+      if (gtaFinalString.length > 4000) {
         return `** [click here](${gtaURL}) for more details**`;
       } else {
         return "";
       }
     }
     function gtaFooterMin() { 
-      if (gtaFinalString.length <= 4096) {
+      if (gtaFinalString.length <= 4000) {
         return `** [click here](${gtaURL}) for more details**`;
       } else {
         return "";
       }
-    }  
-
+    } 		
 		
+
 		let gtaEmbed = new MessageEmbed()
 			.setColor('#00CD06') //Green
 			.setTitle('Grand Theft Auto V Online Weekly Bonuses & Discounts:')
-			.setDescription(`${gtaDate[0]}\n\n${gtaPost()}\n\n\n\n\n${gtaFooterMin()} ${elipseFunction()}`
-				.replace(/\s\s\s\s/g, '') //removes multiple spaces
-				.replace(/<li>/g, "• ")
-				.replace(/<p>/g, "• ")
-				.replace(/<b>/g, "")
-				.replace(/<\/li>/g, "")
-				.replace(/<\/p>/g, "")
-				.replace(/<\/b>/g, "")
-				.replace(/<ul /g, "")
-				.replace(/<\/ul>/g, "")
-				.replace(/<\/a>/g, "")
-				.replace(/&amp;/g, "&") //Ampersand						
-				.replace(/&nbsp;/g, " ") //Non breaking space
-	// Below this differs from RDO 	
-				.replace(/\n\n• /g, "\n• ") //removes double spaces before a list
-				.replace(/• •/g, "• ") //removes multiple bullet points
-				.replace(/GTA\+ website/g, "[GTA+ website](https://www.rockstargames.com/gta-plus)")
-				.replace(/GTA\+ Guide/g, "[GTA+ Guide](https://www.rockstargames.com/gta-online/guides/7539)")
-				.replace(/ Prime Gaming/g, " [Prime Gaming](https://gaming.amazon.com/loot/gtaonline)")
-				.replace(/Rockstar Games Social Club/g, "[Rockstar Games Social Club](https://socialclub.rockstargames.com)")
-				.replace(/Check Rockstar Support/g, "[Check Rockstar Support](https://support.rockstargames.com/articles/360053937434/Claiming-Rockstar-Games-Social-Club-x-span-class-highlight-Prime-Gaming-span-benefits)")
-			)
+			.setDescription(`*${gtaDate[0]}*\n\n${gtaPost()} \n${gtaFooterMin()} ${elipseFunction()}`)
 		let gtaEmbed2 = new MessageEmbed()
 			.setColor('#00CD06') //Green
-			.setDescription(`${elipseFunction()} ${gtaPost2()}\n\n\n\n\n${gtaFooterMax()}`
-				.replace(/\s\s\s\s/g, '') //removes multiple spaces
-				.replace(/<li>/g, "• ")
-				.replace(/<p>/g, "• ")
-				.replace(/<b>/g, "")
-				.replace(/<\/li>/g, "")
-				.replace(/<\/p>/g, "")
-				.replace(/<\/b>/g, "")
-				.replace(/<ul /g, "")
-				.replace(/<\/ul>/g, "")
-				.replace(/<\/a>/g, "")
-				.replace(/&amp;/g, "&") //Ampersand						
-				.replace(/&nbsp;/g, " ") //Non breaking space
-	// Below this differs from RDO 	
-				.replace(/\n\n• /g, "\n• ") //removes double spaces before a list
-				.replace(/• •/g, "• ") //removes multiple bullet points
-				.replace(/GTA\+ website/g, "[GTA+ website](https://www.rockstargames.com/gta-plus)")
-				.replace(/GTA\+ Guide/g, "[GTA+ Guide](https://www.rockstargames.com/gta-online/guides/7539)")
-				.replace(/ Prime Gaming/g, " [Prime Gaming](https://gaming.amazon.com/loot/gtaonline)")
-				.replace(/Rockstar Games Social Club/g, "[Rockstar Games Social Club](https://socialclub.rockstargames.com)")
-				.replace(/Check Rockstar Support/g, "[Check Rockstar Support](https://support.rockstargames.com/articles/360053937434/Claiming-Rockstar-Games-Social-Club-x-span-class-highlight-Prime-Gaming-span-benefits)")
-			)		
-		let gtaImageEmbed = new MessageEmbed()
-			.setColor('#00CD06') //Green
-			.setImage(`${gtaImage[0]}`)
-			//console.log(`${gtaImage[0]}`);
+			.setDescription(`${elipseFunction()} \n${gtaPost2()} ${gtaFooterMax()}`)	
+
+		 // console.log(`gtaEmbed length: ${gtaEmbed.length}`); //no more than 4096 (line 199)
+		 // console.log(`gtaEmbed2 length: ${gtaEmbed2.length}`); //no more than 6000 - gtaEmbed.length (line 204)
+
+		if (gtaFinalString.length <= 4000) {
+			interaction.editReply({embeds: [gtaEmbed]});
+		} else {
+			interaction.editReply({embeds: [gtaEmbed, gtaEmbed2]});
+		}
 
 		const aDate = new Date();
 		const aDay = aDate.getDay(); //Day of the Week
-			//console.log(`aDay: ${aDay}`);
+		    //console.log(`aDay: ${aDay}`);
 		const aHour = aDate.getHours(); //Time of Day UTC (+6 MST; +4 EST)
-			//console.log(`aHour: ${aHour}`);
+		    //console.log(`aHour: ${aHour}`);
 		
- 		let gtaExpiredEmbed = new MessageEmbed()
-			.setColor('#00CD06') //Green
-			.setDescription(`The above bonuses & discounts may be expired. \nRockstar releases the latest weekly bonuses & discounts every \nThursday after 12:30 PM EST`)
+		 let gtaExpiredEmbed = new MessageEmbed()
+		    .setColor('#00CD06') //Green
+		    .setDescription(`The above bonuses & discounts may be expired. \nRockstar releases the latest weekly bonuses & discounts every \nThursday after 12:30 PM EST`)
 
-		if (gtaFinalString.length <= 4096) {
-			await interaction.editReply({ embeds: [gtaEmbed] }).catch(console.error);
-		} else {
-			await interaction.editReply({ embeds: [gtaEmbed, gtaEmbed2] }).catch(console.error);
-		}
-		//if ( (aDay === 5) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
+    //if ( (aDay === 3) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
 		if ( (aDay === 4) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (17)
-			interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(console.error);
-		}		
+			interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true})
+		}			
 
-		//interaction.editReply(`Console logged! 👍`);
-		} else {
+			//interaction.editReply(`Console logged! 👍`);
+	} else {
 			interaction.editReply(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
-			console.log(`The Rockstar Social Club website is down.`)
-		}
+			console.log(`The Rockstar Social Club website is down.`)			
 	}
+}
 }
