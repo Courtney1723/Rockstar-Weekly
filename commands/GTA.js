@@ -2,6 +2,8 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
+		let errorText = `There was an error while executing this command!\nThe error has been sent to the developer and it will be fixed as soon as possible. \nIf the error persists you can try re-inviting the Rockstar Weekly bot by [clicking here](<${process.env.invite_link}>). \nReport the error by joining the Rockstar Weekly bot support server: [click here](<${process.env.support_link}>).`;
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -25,10 +27,17 @@ module.exports = {
 		let gtaString01 = gtaString001.split("cm-content\">"); //splits the header from the body
 		let gtaHeader = gtaString01[0];
 			//console.log(`gtaHeader: ${gtaHeader}`);
+		
+		let gtaImage01 = gtaHeader.split("og:image\" content=\"");
+			//console.log(`gtaImage01: ${gtaImage01[1]}`);
+		let gtaImage = gtaImage01[1].split("\" data-rh=");
+			//console.log(`gtaImage: ${gtaImage[0]}`);
+		
 		let gtaDate01 = gtaHeader.split("class=\"date\">"); //gets the event date
 			//console.log(`${gtaDate01[1]}`);
 		let gtaDate = gtaDate01[1].split("<"); //cuts off the end of the date
-			//console.log(`Date: ${gtaDate[0]}\n`);		
+			//console.log(`Date: ${gtaDate[0]}\n`);	
+		
 		let gtaString002 = gtaString01[1]; //Splits the header from the body
 			//console.log(`gtaString: ${gtaString002}`)
 		let gtaString02 = gtaString002.split("</div>"); //splits the footer from the body
@@ -154,11 +163,11 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 						//console.log(`Titles2 at J: ${j}: ${Titles2[j]}\n`); //checks for blank elements
 						//console.log(`${Titles2[j].charAt(0)}${Titles2[j].toLowerCase().slice(1)}`); //capital first letters check 
 	//returns first letter capitalized + rest of the word lowercase if the word is the first word in the title - unless GTA
-					if ( (Titles2[j] === Titles2[0]) && (!Titles2[j].includes("GTA")) && (Titles2[j] != "XP") && (Titles2[j] != "RP") && (Titles2[j] != "GT") && (Titles2[j] != "LD") && (Titles2[j] != "LSPD") ) { 
+					if ( (Titles2[j] === Titles2[0]) && (!Titles2[j].includes("GTA")) && (Titles2[j] != "XP") && (Titles2[j] != "RP") && (Titles2[j] != "GT") && (Titles2[j] != "LD") && (Titles2[j] != "LSPD") && (Titles2[j] != "HSW") ) { 
 						gtaTitleString += `${Titles2[j].charAt(0)}${Titles2[j].toLowerCase().slice(1)} `; 
 					}
 	//returns all caps if title is GTA, GTA$, or XP							
-					else if ( (Titles2[j].includes("GTA")) || (Titles2[j] === "XP") || (Titles2[j] === "RP") || (Titles2[j] === "GT")  || (Titles2[j] === "LD") || (Titles2[j] === "LSPD") ) { 
+					else if ( (Titles2[j].includes("GTA")) || (Titles2[j] === "XP") || (Titles2[j] === "RP") || (Titles2[j] === "GT")  || (Titles2[j] === "LD") || (Titles2[j] === "LSPD") || (Titles2[j] === "HSW") ) { 
 							gtaTitleString += `${Titles2[j]} `;
 					}
 	//returns all lowercase if not a title word					
@@ -299,18 +308,27 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		let gtaEmbed = new MessageEmbed()
 			.setColor('#00CD06') //Green
 			.setTitle('Grand Theft Auto V Online Weekly Bonuses & Discounts:')
-			.setDescription(`*${gtaDate[0]}*\n\n${gtaPost()} \n${gtaFooterMin()} ${elipseFunction()}`)
+			.setDescription(`${gtaDate[0]}\n\n${gtaPost()} \n${gtaFooterMin()} ${elipseFunction()}`)
 		let gtaEmbed2 = new MessageEmbed()
 			.setColor('#00CD06') //Green
 			.setDescription(`${elipseFunction()} \n${gtaPost2()} ${gtaFooterMax()}`)	
+		let gtaImageEmbed = new MessageEmbed()
+			.setColor('#00CD06') //Green
+			.setImage(`${gtaImage[0]}`);
 
 		 // console.log(`gtaEmbed length: ${gtaEmbed.length}`); //no more than 4096 (line 199)
 		 // console.log(`gtaEmbed2 length: ${gtaEmbed2.length}`); //no more than 6000 - gtaEmbed.length (line 204)
 
 		if (gtaFinalString.length <= 4000) {
-			interaction.editReply({embeds: [gtaEmbed]});
+			interaction.editReply({embeds: [gtaImageEmbed, gtaEmbed]}).catch(err => 
+				interaction.editReply({content: `${errorText}\nError Code: *${err.code}*`, ephemeral: true }).then( 
+				console.log(`There was an error! \nUser:${interaction.user.tag} - ${interaction} \nError: ${err.stack}`))
+				);
 		} else {
-			interaction.editReply({embeds: [gtaEmbed, gtaEmbed2]});
+			interaction.editReply({embeds: [gtaImageEmbed, gtaEmbed, gtaEmbed2]}).catch(err => 
+				interaction.editReply({content: `${errorText}\nError Code: *${err.code}*`, ephemeral: true }).then( 
+				console.log(`There was an error! \nUser:${interaction.user.tag} - ${interaction} \nError: ${err.stack}`) )
+				);
 		}
 
 		const aDate = new Date();
@@ -324,14 +342,17 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		    .setDescription(`The above bonuses & discounts may be expired. \nRockstar releases the latest weekly bonuses & discounts every \nThursday after 12:30 PM EST`)
 
     //if ( (aDay === 3) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
-		if ( (aDay === 4) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (17)
-			interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true})
-		}			
+		// if ( (aDay === 4) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (17)
+		// 	interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(err => console.log(`gtaExpiredEmbed Error: ${err.stack}`));
+		// }			
 
 			//interaction.editReply(`Console logged! 👍`);
 	} else {
-			interaction.editReply(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
-			console.log(`The Rockstar Social Club website is down.`)			
+			let RStarDownEmbed = new MessageEmbed()
+				.setColor('RED') 
+				.setDescription(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
+			interaction.editReply({embeds: [RStarDownEmbed], ephemeral: true});
+			console.log(`The Rockstar Social Club website is down.`);	
 	}
 }
 }
