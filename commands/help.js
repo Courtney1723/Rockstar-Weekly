@@ -1,18 +1,17 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('help')
-		.setDescription('Replies with all the Rockstar Weekly interactions'),
+		.setDescription('All the Rockstar Weekly interactions'),
 	async execute(interaction) {
+		await interaction.deferReply().catch(console.error);
 
-      let helpEmbed = new MessageEmbed()
-      .setColor('#00FFFF') //Teal
+      let helpEmbed = new EmbedBuilder()
+      .setColor('0x00FFFF') //Teal
       .setTitle(`Rockstar Weekly Bot Commands`)
-      .setDescription(`**/help**\n> Responds with a list of commands \n**/ping**\n> Responds with pong! when online\n**/code**\n> Responds with a link to the source code of this bot \n**/vote**\n> Responds with a link to vote for this bot on Top.gg\n**/rdo**\n> Provides the latest weekly RDO update\n**/gta**\n> Provides the latest GTA Online weekly update \n\nStill have questions? Join the support server: [Click Here](https://discord.com/invite/TkrFcwHWfj)`)
+      .setDescription(`**/help**\n> A list of commands \n**/ping**\n> Responds with pong! when online\n**/code**\n> A link to the source code of this bot \n**/rdo**\n> The latest Red Dead Redemption II Online bonuses & discounts\n**/gta**\n> The latest Grand Theft Auto V Online bonuses & discounts\n\nQuestions, comments, or concerns? Join the support server: [Click Here](${process.env.support_link}) \n\nWant to add the Rockstar Weekly Bot to another server? [Click Here](${process.env.invite_link})`)
 
-    await interaction.deferReply();
-		await interaction.editReply({ embeds: [helpEmbed] });
+		await interaction.editReply({ embeds: [helpEmbed] }).catch(console.error);
 	},
 };
