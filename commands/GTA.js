@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 		let errorText = `There was an error while executing this command!\nThe error has been sent to the developer and it will be fixed as soon as possible. \nIf the error persists you can try re-inviting the Rockstar Weekly bot by [clicking here](<${process.env.invite_link}>). \nReport the error by joining the Rockstar Weekly bot support server: [click here](<${process.env.support_link}>).`;
 
@@ -144,7 +143,7 @@ module.exports = {
 //-----BEGIN for loop-----//		
 
 		//console.log(`GTABonuses01 length: ${GTABonuses01.length}`);
-for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be blank
+for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be blank
 		//console.log(`GTABonuses01 at ${i}: ${GTABonuses01}`);
 	let GTABonuses = GTABonuses01[i].split("</b></p>");
 		//console.log(`GTATitles at ${i}: ${GTABonuses[0]}\nGTABonuses at ${i}: ${GTABonuses[1]}`);
@@ -172,7 +171,7 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 						gtaTitleString += `${Titles2[j].charAt(0)}${Titles2[j].toLowerCase().slice(1)} `; 
 					}
 	//returns all caps if title is GTA, GTA$, or XP							
-					else if ( (Titles2[j].includes("GTA")) || (Titles2[j] === "XP") || (Titles2[j] === "RP") || (Titles2[j] === "GT")  || (Titles2[j] === "LD") || (Titles2[j] === "LSPD") || (Titles2[j] === "HSW") ) { 
+					else if ( (Titles2[j].includes("GTA")) || (Titles2[j] === "XP") || (Titles2[j] === "RP") || (Titles2[j] === "GT")  || (Titles2[j] === "LD") || (Titles2[j] === "LSPD") || (Titles2[j] === "HSW") ||  (Titles2[j] === "LS") ) { 
 							gtaTitleString += `${Titles2[j]} `;
 					}
 	//returns all lowercase if not a title word					
@@ -233,6 +232,10 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		//gtaFinalString01 += `**Only on PlayStation 5 and Xbox Series X|S:**\n`;
 		gtaFinalString01 += `• ${GTA_Title}\n`;
 	}	
+	else if (i === 0) { //if the bonus is an intro paragraph.
+		let introParas = GTA_Title.split("<p>")
+		gtaFinalString01 += `• ${introParas[2]}\n`;
+	}		
 	else if (GTA_Bonus != null) {
 			let gtaParas = GTA_Bonus.split("<p>");
 			//console.log(`gtaParas at ${i}: ${gtaParas}`);
@@ -243,6 +246,15 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		else if (GTA_Title.toLowerCase().includes("motorsport showroom")) {
 			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n`;
 		}
+		else if (GTA_Title.toLowerCase().includes("simeon's showroom")) {
+			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n`;
+		}	
+		else if (GTA_Title.toLowerCase().includes("gta+")) {
+			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n${gtaParas[2]}\n`;
+		}	
+		else if (GTA_Title.toLowerCase().includes("discount")) {
+			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n`;
+		}				
 		else if (GTA_Bonus.includes("• ")) { //if the bonus includes lists
 		if (gtaParas[0] != null) {
 		if ((gtaParas[1] != null) && (gtaParas[1] != `undefined`)) {
@@ -290,12 +302,12 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 
 			//console.log(`gtaFinalString: ${gtaFinalString}`);
     function gtaPost() {
-        return gtaFinalString.slice(0, 3827); //FIXME: adjust this for the best break - up to 4000
+        return gtaFinalString.slice(0, 3745); //FIXME: adjust this for the best break - up to 4000
     }
     //console.log(`1: ${gtaFinalString.length}\n`) 
     function gtaPost2() {
       if (gtaFinalString.length > 4000) {
-        let post02 = gtaFinalString.substr(3827, 2099); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
+        let post02 = gtaFinalString.substr(3745, 2099); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
         return post02;
       } else {
         return "";
@@ -358,12 +370,12 @@ for (i = 1; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		
 		 let gtaExpiredEmbed = new EmbedBuilder()
 		    .setColor('0x00CD06') //Green
-		    .setDescription(`These bonuses & discounts may be expired. \nRockstar typically releases the latest weekly bonuses & discounts every \nThursday after 12:30 PM EST. \n\nRockstar has not updated the latest discounts & bonuses yet. \nYou can [click here](https://socialclub.rockstargames.com/events?gameId=GTAV) to see if they have been officially updated.`)
+		    .setDescription(`These bonuses & discounts may be expired. \nRockstar typically releases the latest weekly bonuses & discounts every \nThursday after 1:00 PM EST.`)
 
     //if ( (aDay === 3) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
-		if ( (aDay === 4) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (17)
-			await interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(err => console.log(`gtaExpiredEmbed Error: ${err.stack}`));
-		}			
+		// if ( (aDay === 4) && (aHour > 3) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (3>17)
+		// 	await interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(err => console.log(`gtaExpiredEmbed Error: ${err.stack}`));
+		// }			
 
 			//interaction.editReply(`Console logged! 👍`);
 	} else {
