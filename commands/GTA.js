@@ -171,7 +171,7 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 						gtaTitleString += `${Titles2[j].charAt(0)}${Titles2[j].toLowerCase().slice(1)} `; 
 					}
 	//returns all caps if title is GTA, GTA$, or XP							
-					else if ( (Titles2[j].includes("GTA")) || (Titles2[j] === "XP") || (Titles2[j] === "RP") || (Titles2[j] === "GT")  || (Titles2[j] === "LD") || (Titles2[j] === "LSPD") || (Titles2[j] === "HSW") ||  (Titles2[j] === "LS") ) { 
+					else if ( (Titles2[j].includes("GTA")) || (Titles2[j] === "XP") || (Titles2[j] === "RP") || (Titles2[j] === "GT")  || (Titles2[j] === "LD") || (Titles2[j] === "LSPD") || (Titles2[j] === "HSW") ||  (Titles2[j] === "LS") || (Titles2[j] === "X|S") ) { 
 							gtaTitleString += `${Titles2[j]} `;
 					}
 	//returns all lowercase if not a title word					
@@ -234,14 +234,14 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 	}	
 	else if (i === 0) { //if the bonus is an intro paragraph.
 		let introParas = GTA_Title.split("<p>")
-		gtaFinalString01 += `• ${introParas[2]}\n`;
-	}		
-	else if (GTA_Bonus != null) {
+		gtaFinalString01 += `• ${introParas[1]}\n`;
+	}
+	else if (GTA_Bonus != null) { //if the bonus is not an intro paraghraph
 			let gtaParas = GTA_Bonus.split("<p>");
 			//console.log(`gtaParas at ${i}: ${gtaParas}`);
 			//console.log(`gtaParas length at ${i}: ${gtaParas.length}`);		
-		if (GTA_Title.toLowerCase().includes("announcing the winner")) {
-			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[3]}\n`;
+		if (GTA_Title.toLowerCase().includes("series updates")) {
+			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n• ${gtaParas[2]}\n`;
 		}	
 		else if (GTA_Title.toLowerCase().includes("motorsport showroom")) {
 			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n`;
@@ -251,7 +251,7 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		}	
 		else if (GTA_Title.toLowerCase().includes("gta+")) {
 			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n${gtaParas[2]}\n`;
-		}	
+		}		
 		else if (GTA_Title.toLowerCase().includes("discount")) {
 			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n`;
 		}				
@@ -296,18 +296,18 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 										  .replace(/<\/b>/g, "")
 										  .replace(/<b>/g, "")
 											.replace(/\n\n• /g, "\n• ") //removes spaces before a list item
-											.replace(/.\n\*\*/g, ".\n\n**")
+											.replace(/.\n\*\*/g, "\n\n**")
 											.replace(/\n\n\n/g, "\n\n")
 											.replace(/• undefined/g, "• ")
 
 			//console.log(`gtaFinalString: ${gtaFinalString}`);
     function gtaPost() {
-        return gtaFinalString.slice(0, 3745); //FIXME: adjust this for the best break - up to 4000
+        return gtaFinalString.slice(0, 3768); //FIXME: adjust this for the best break - up to 4000
     }
     //console.log(`1: ${gtaFinalString.length}\n`) 
     function gtaPost2() {
       if (gtaFinalString.length > 4000) {
-        let post02 = gtaFinalString.substr(3745, 2099); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
+        let post02 = gtaFinalString.substr(3768, 2099); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
         return post02;
       } else {
         return "";
@@ -373,9 +373,9 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		    .setDescription(`These bonuses & discounts may be expired. \nRockstar typically releases the latest weekly bonuses & discounts every \nThursday after 1:00 PM EST.`)
 
     //if ( (aDay === 3) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
-		// if ( (aDay === 4) && (aHour > 3) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (3>17)
-		// 	await interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(err => console.log(`gtaExpiredEmbed Error: ${err.stack}`));
-		// }			
+		if ( (aDay === 4) && (aHour > 3) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (3<17)
+			await interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(err => console.log(`gtaExpiredEmbed Error: ${err.stack}`));
+		}			
 
 			//interaction.editReply(`Console logged! 👍`);
 	} else {
