@@ -1,14 +1,11 @@
-const Discord = require("discord.js"); //Discord package
-const fs = require("fs")
-
-const client = new Discord.Client();
-
-const prefix = "?"; //Creates a prefix $
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-	name: 'ping',
-	description: 'Ping!',
-	execute(message) {
-		message.channel.send(`🏓 Pong! (${message.client.ws.ping} ms)`);
+	data: new SlashCommandBuilder()
+		.setName('ping')
+		.setDescription('Replies with Pong!')
+		.setDMPermission(true),
+	async execute(interaction) {
+		await interaction.reply('Pong!');
 	},
 };
