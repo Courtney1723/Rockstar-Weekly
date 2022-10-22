@@ -1,7 +1,0 @@
-guild:undefined - channel:undefined - role:undefined -  
-guild:981688162382413946 - admin:no - role:undefined - 
-guild:822761002546364417 - admin:yes - role:undefined - 
-guild:822761002546364417 - admin:yes - role:1002265084099313836 - 
-guild:981688162382413946 - admin:no - role:1024428426343501834 - 
-guild:1032676517869793381 - admin:yes - role:undefined - 
-guild:1032676517869793381 - admin:yes - role:1032676517869793390 - 
