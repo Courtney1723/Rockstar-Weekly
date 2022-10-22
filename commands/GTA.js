@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 		let errorText = `There was an error while executing this command!\nThe error has been sent to the developer and it will be fixed as soon as possible. \nIf the error persists you can try re-inviting the Rockstar Weekly bot by [clicking here](<${process.env.invite_link}>). \nReport the error by joining the Rockstar Weekly bot support server: [click here](<${process.env.support_link}>).`;
 
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('gta')
@@ -10,10 +11,7 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply().catch(console.error);
 		
-		let gtaURL = process.env.SOCIAL_URL_GTA2;
-
-		//await interaction.editReply(`Console Logged 👍`).catch(console.error);
-	
+		let gtaURL = process.env.SOCIAL_URL_GTA;
 		const instance = await phantom.create();
 		const page = await instance.createPage();
 
@@ -23,28 +21,7 @@ module.exports = {
 	if (status === `success`) { //checks if Rockstar Social Club website is down
 		const content = await page.property('content'); // Gets the latest gta updates
 			//console.log(content); 
-
-		let baseURL = "https://socialclub.rockstargames.com/events/";
-		
-		let urlHash02 = content.split("urlHash\":\"");
-		let urlHash01 = urlHash02[1].split("\"");
-		let urlHash = urlHash01[0];
-			//console.log(`urlHash: ${urlHash}`);
-
-		let urlSlug02 = content.split("slug\":\"");
-		let urlSlug01 = urlSlug02[1].split("\"");
-		let urlSlug = urlSlug01[0];
-			//console.log(`urlSlug: ${urlSlug}`);
-
-		let url = `${baseURL}${urlHash}/${urlSlug}`;
-			//console.log(`url: ${url}`);
-
-		const gtaStatus = await page.open(url);
-		if (gtaStatus === `success`) {
-
-		const gtaContent = await page.property('content'); // Gets the latest gta updates
-			//console.log(content); 
-		let gtaString001 = gtaContent.toString(); //converts HTML to string (necessary? not sure.);
+		let gtaString001 = content.toString(); //converts HTML to string (necessary? not sure.);
 			//console.log(`gtaString001: ${gtaString001}`);	
 		let gtaString01 = gtaString001.split("cm-content\">"); //splits the header from the body
 		let gtaHeader = gtaString01[0];
@@ -272,12 +249,6 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		else if (GTA_Title.toLowerCase().includes("simeon's showroom")) {
 			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n`;
 		}	
-		else if (GTA_Title.toLowerCase().includes("2x")) {
-			gtaFinalString01 += `**${GTA_Title}** \n`;
-		}	
-		else if (GTA_Title.toLowerCase().includes("3x")) {
-			gtaFinalString01 += `**${GTA_Title}** \n`;
-		}				
 		else if (GTA_Title.toLowerCase().includes("gta+")) {
 			gtaFinalString01 += `**${GTA_Title}**\n• ${gtaParas[1]}\n${gtaParas[2]}\n`;
 		}		
@@ -351,14 +322,14 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
     }		
     function gtaFooterMax() {
       if (gtaFinalString.length > 4000) {
-        return `\n** [click here](${url}) for more details**`;
+        return `\n** [click here](${gtaURL}) for more details**`;
       } else {
         return "";
       }
     }
     function gtaFooterMin() { 
       if (gtaFinalString.length <= 4000) {
-        return `** [click here](${url}) for more details**`;
+        return `\n** [click here](${gtaURL}) for more details**`;
       } else {
         return "";
       }
@@ -395,56 +366,24 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		const aDay = aDate.getDay(); //Day of the Week
 		    //console.log(`aDay: ${aDay}`);
 		const aHour = aDate.getHours(); //Time of Day UTC (+6 MST; +4 EST)
-		    //console.log(`aHour: ${aHour}`);		
-
-		var estDate = aDate.toLocaleString("en-US", {
-		  timeZone: "America/New_York"
-		});
-		var estTime = estDate.split(", ");
-		var estHourMinute = estTime[1].split(":");
-		
-		var estHour = estHourMinute[0];
-		var estMinute = estHourMinute[1];
-
-		var amPM01 = estHourMinute[2].split(" ");
-		var amPM = amPM01[1];
-		
-		//console.log(`${estHour}:${estMinute} ${amPM}`);
+		    //console.log(`aHour: ${aHour}`);
 		
 		 let gtaExpiredEmbed = new EmbedBuilder()
 		    .setColor('0x00CD06') //Green
 		    .setDescription(`These bonuses & discounts may be expired. \nRockstar typically releases the latest weekly bonuses & discounts every \nThursday after 1:00 PM EST.`)
-				.setFooter({text:`It is ${estHour}:${estMinute} ${amPM} EST now.`, iconURL:process.env.logo_link})
 
-  	//   if ( (aDay === 0) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
+    //if ( (aDay === 3) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
 		if ( (aDay === 4) && (aHour > 3) && (aHour < 17) ) { //If it's Thursday(4) before 1:00PM EST (3<17)
-		 	await interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(err => console.log(`gtaExpiredEmbed Error: ${err.stack}`));
-		 }			
+			await interaction.followUp({embeds: [gtaExpiredEmbed], ephemeral:true}).catch(err => console.log(`gtaExpiredEmbed Error: ${err.stack}`));
+		}			
 
 			//interaction.editReply(`Console logged! 👍`);
-
-			
-		}
-		else {
+	} else {
 			let RStarDownEmbed = new EmbedBuilder()
 				.setColor('0xFF0000') //RED
 				.setDescription(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
 			interaction.editReply({embeds: [RStarDownEmbed], ephemeral: true});
 			console.log(`The Rockstar Social Club website is down.`);	
 	}
-
-		
-	}
-	else {
-			let RStarDownEmbed = new EmbedBuilder()
-				.setColor('0xFF0000') //RED
-				.setDescription(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
-			interaction.editReply({embeds: [RStarDownEmbed], ephemeral: true});
-			console.log(`The Rockstar Social Club website is down.`);	
-	}
-	
-
-		
-    },
-};
-
+}
+}

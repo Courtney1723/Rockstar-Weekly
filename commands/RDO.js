@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 		let errorText = `There was an error while executing this command!\nThe error has been sent to the developer and it will be fixed as soon as possible. \nIf the error persists you can try re-inviting the Rockstar Weekly bot by [clicking here](<${process.env.invite_link}>). \nReport the error by joining the Rockstar Weekly bot support server: [click here](<${process.env.support_link}>).`;
 
@@ -230,9 +231,6 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 	if (RDO_Title.toLowerCase().includes("discounts")) {
 			rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n\n`;
 	}	
-	if (RDO_Title.toLowerCase().includes("triple rewards")) {
-		rdoFinalString01 += `**${RDO_Title}**\n\n`;
-	}
 	else if (RDO_Bonus.includes("• ")) { // If the bonus includes a list
 
 		for (c = 1; c <= rdoParas.length - 1; c++) {
@@ -267,19 +265,19 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 											.replace(/<\/p>/g, "")
 										  .replace(/<\/b>/g, "")
 										  .replace(/<b>/g, "")
-											.replace(/\n• /g, "\n• ") //removes spaces before a list item
+											.replace(/\n\n• /g, "\n• ") //removes spaces before a list item
 											.replace(/\n\n\n/g, "\n")
 											.replace(/• undefined/g, "• ")
 											.replace(/\)• /g, ")\n• ") //adds a newline between link lists
 
 			//console.log(`rdoFinalString: ${rdoFinalString}`);
     function rdoPost() {
-        return rdoFinalString.slice(0, 3896); //FIXME: adjust this for the best break - up to 4000
+        return rdoFinalString.slice(0, 3901); //FIXME: adjust this for the best break - up to 4000
     }
     //console.log(`1: ${rdoFinalString.length}\n`) 
     function rdoPost2() {
       if (rdoFinalString.length > 4000) {
-        let post02 = rdoFinalString.substr(3896, 2000); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
+        let post02 = rdoFinalString.substr(3901, 2099); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
         return post02;
       } else {
         return "";
@@ -347,9 +345,9 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 		    .setDescription(`These bonuses & discounts may be expired. \nRockstar typically releases the latest weekly bonuses & discounts the first \nTuesday of every month after 12:30 PM EST.`)
 
     //if ( (aDay === 3) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
-		// if ( (aDay === 2) && (aHour < 17) && (aDigit <= 7) ) { //If it's Tuesday(2) before 1:00PM EST (17) and the first week of the month
-		// 	await interaction.followUp({embeds: [rdoExpiredEmbed], ephemeral:true}).catch(err => console.log(`rdoExpiredEmbed Error: ${err.stack}`));
-		// }			
+		if ( (aDay === 2) && (aHour < 17) && (aDigit <= 7) ) { //If it's Tuesday(2) before 1:00PM EST (17) and the first week of the month
+			await interaction.followUp({embeds: [rdoExpiredEmbed], ephemeral:true}).catch(err => console.log(`rdoExpiredEmbed Error: ${err.stack}`));
+		}			
 
 			//interaction.editReply(`Console logged! 👍`);
 	} else {
