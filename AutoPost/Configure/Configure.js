@@ -1,20 +1,10 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
-
-const expiredButton = new ActionRowBuilder()
-	.addComponents(
-		new ButtonBuilder()
-			.setCustomId(`expired`)
-			.setLabel('This interaction timed out.')
-			.setStyle(ButtonStyle.Secondary)
-			.setEmoji(':RSWeekly:1025248227248848940')
-			.setDisabled(true),			
-	);
 
 module.exports = {
 	name: 'interactionCreate',
@@ -64,99 +54,397 @@ module.exports = {
 			        channelIDArray.push(`${channel.id}`);
 			    }
 			});
-			//console.log(`channelIDArray: ${channelIDArray}`);			
+			//console.log(`channelIDArray: ${channelIDArray}`);		
+			
+			
+	//-----BEGIN TRANSLATIONS-----//
 
+	fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
+		if (err) {console.log(`Error: ${err}`)} 
+		  else {
+			  let lang03 = data.split("lang:");
+			  //console.log(`lang03.length: ${lang03.length}`);
 
+			  let langArray = [];
+			  for (i=1; i <= lang03.length - 1; i++) { //first will always be undefined
+				  let lang02 = lang03[i].split(" -");
+				  //console.log(`lang02 at ${i}: ${lang02}`);
+				  
+				  let lang01 = lang02[0];
+				  //console.log(`lang01 at ${i}: ${lang01}`);
 
-			const configureEmbed = new EmbedBuilder()
-.setColor(`0x00FFFF`) //Teal
-.setTitle(`Add or Remove a Role`)
-.setDescription(`Click **\'Add\'** to add a role that can configure auto posts.
+				  langArray.push(lang01);
+			  }
 
-Click **\'Remove\'** to remove a role that can configure auto posts.`)		
+			  //console.log(`langArray: ${langArray}`);
 
-const configureButtons = new ActionRowBuilder()
-.addComponents(
-    new ButtonBuilder()
-        .setCustomId(`configureadd - ${interaction.user.id}`)
-        .setLabel('Add')
-        .setStyle(ButtonStyle.Success),
-    new ButtonBuilder()
-        .setCustomId(`configurestop - ${interaction.user.id}`)
-        .setLabel('Remove')
-        .setStyle(ButtonStyle.Danger),
-		new ButtonBuilder()
-			.setCustomId(`configureback - ${interaction.user.id}`)
-			.setLabel('Go Back')
-			.setStyle(ButtonStyle.Secondary),	
-);	
+			  let guildID03 = data.split("guild:");
+			  //console.log(`guildID03.length: ${guildID03.length}`);
+			  let guildIDArray = [];
+			  for (i=2; i <= guildID03.length - 1; i++) { //first two will always be undefined
+				  let guildID02 = guildID03[i].split(" -");
+				  //console.log(`lang02 at ${i}: ${lang02}`);
+				  
+				  let guildID01 = guildID02[0];
+				  //console.log(`lang01 at ${i}: ${lang01}`);
+
+				  guildIDArray.push(guildID01);
+			  }
+
+			  //console.log(`guildIDArray: ${guildIDArray}`);	
+
+			  let lang = "";
+			  for (i=0; i <= guildIDArray.length - 1; i++) {
+				  //console.log(`guildIDArray at ${i}: ${guildIDArray[i]}`);
+				  //console.log(`langArray at ${i}: ${langArray[i]}`);
+				  //console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
+
+				  if (interaction.guild.id === guildIDArray[i]) {
+					  lang += `${langArray[i]}`;
+				  }
+			  }
+
+			  //console.log(`lang: ${lang}`);		
+
+			function configureTitle() {
+				if (lang === "en") {
+					return `Add or Remove a Role`;
+				}
+				else if (lang === "es") {
+					return `Agregar o quitar un rol`;
+				}
+				else if (lang === "ru") {
+					return `Добавление и удаление роли`;
+				}
+				else if (lang === "de") {
+					return `Hinzufügen oder Entfernen einer Rolle`;
+				}
+				else if (lang === "pt") {
+					return `Adicionar ou remover uma função`;
+				}
+				else {
+					return `Add or Remove a Role`;
+				}
+			}
+
+			function configureDesc() {
+				if (lang === "en") {
+					return `Click **\'Add\'** to add a role that can configure auto posts.
+					Click **\'Remove\'** to remove a role that can configure auto posts.`;
+				}
+				else if (lang === "es") {
+					return `Haga clic en **\'Agregar\'** para agregar un rol que pueda configurar publicaciones automáticas.
+					Haga clic en **\'Eliminar\'** para quitar un rol de tener la capacidad de configurar publicaciones automáticas.`;
+				}
+				else if (lang === "ru") {
+					return `Щелчок **\'Добавлять\'** чтобы добавить роль, которая может настроить автоматические публикации.
+					Щелчок **\'Убирать\'** чтобы удалить роль, которая может настраивать автоматические публикации.`;
+				}
+				else if (lang === "de") {
+					return `Klicken **\'Hinzufügen\'** um eine Rolle hinzuzufügen, die automatische Beiträge konfigurieren kann.
+					Klicken **\'Entfernen\'** um eine Rolle von der Möglichkeit zum Konfigurieren automatischer Beiträge zu entfernen.`;
+				}
+				else if (lang === "pt") {
+					return `Clique **\'Adicionar\'** para adicionar uma função que possa configurar postagens automáticas.
+					Clique **\'Retirar\'** para remover uma função de ter a capacidade de configurar postagens automáticas.`;
+				}
+				else {
+					return `Click **\'Add\'** to add a role that can configure auto posts.
+					Click **\'Remove\'** to remove a role that can configure auto posts.`;
+				}
+			}
+
+			function configureAdd() {
+				if (lang === "en") {
+					return `Add`;
+				}
+				else if (lang === "es") {
+					return `Agregar`;
+				}
+				else if (lang === "ru") {
+					return `Добавлять`;
+				}
+				else if (lang === "de") {
+					return `Hinzufügen`;
+				}
+				else if (lang === "pt") {
+					return `Adicionar`;
+				}
+				else {
+					return `Add`;
+				}
+			}
+
+			function configureRemove() {
+				if (lang === "en") {
+					return `Remove`;
+				}
+				else if (lang === "es") {
+					return `Eliminar`;
+				}
+				else if (lang === "ru") {
+					return `Убирать`;
+				}
+				else if (lang === "de") {
+					return `Entfernen`;
+				}
+				else if (lang === "pt") {
+					return `Retirar`;
+				}
+				else {
+					return `Remove`;
+				}
+			}
+
+			function goBack() {
+				if (lang === "en") {
+						return `Go Back`;
+				}
+				else if (lang === "es") {
+					return `Volver`;
+				}
+				else if (lang === "ru") {
+					return `Вернуться`;
+				}
+				else if (lang === "de") {
+					return `Zurück`;
+				}
+				else if (lang === "pt") {
+					return `Voltar`;
+				}
+				else {
+					return `Go Back`;
+				}					
+			}
+
+			function notYourButtonString() {
+				if (lang === "en") {
+					return `These buttons are not for you.`;
+				}
+				else if (lang === "es") {
+					return `Estos botones no son para ti.`;
+				}
+				else if (lang === "ru") {
+					return `Эти кнопки не для вас.`;
+				}
+				else if (lang === "de") {
+					return `Diese Schaltflächen sind nicht für Sie.`;
+				}
+				else if (lang === "pt") {
+					return `Esses botões não são para você.`;
+				}
+				else {
+					return `These buttons are not for you.`;
+				}				
+		}			
+
+		function firstCommandString() {
+			if (lang === "en") {
+				return `It looks like this is your first time using this command. Please try the configure button again.`;
+			}
+			else if (lang === "es") {
+				return `Esta es la primera vez que ha utilizado este comando. Intenta presionar el botón de configuración.`;
+			}
+			else if (lang === "ru") {
+				return `Вы впервые используете эту команду. Повторите попытку настройки.`;
+			}
+			else if (lang === "de") {
+				return `Dies ist das erste Mal, dass Sie diesen Befehl verwenden. Bitte versuchen Sie es erneut mit der Schaltfläche Konfigurieren.`;
+			}
+			else if (lang === "pt") {
+				return `Esta é a primeira vez que você usa este comando. Tente o botão configurar novamente.`;
+			}
+			else {
+				return `It looks like this is your first time using this command. Please try the configure button again.`;
+			}				
+	}	
+	
+	function missingPermissions()	{
+		if (lang === "en") {
+			return `You do not have the required permissions to do that.`;
+		}
+		else if (lang === "es") {
+		  return `No tienes permiso para hacer eso.`;
+		}
+		else if (lang === "ru") {
+		  return `У вас нет разрешения на это.`;
+		}
+		else if (lang === "de") {
+		  return `Sie haben keine Erlaubnis dazu.`;
+		}
+		else if (lang === "pt") {
+		  return `Você não tem permissão para fazer isso.`;
+		}
+		else {
+		  return `You do not have the required permissions to do that.`;
+		}				
+	}	
+	
+
+	function notYourButtonString() {	
+		if (lang === "en") {
+			return `These buttons are not for you.`;
+		}
+		else if (lang === "es") {
+			return `Estos botones no son para ti.`;
+		}
+		else if (lang === "ru") {
+			return `Эти кнопки не для вас.`;
+		}
+		else if (lang === "de") {
+			return `Diese Schaltflächen sind nicht für Sie.`;
+		}
+		else if (lang === "pt") {
+			return `Esses botões não são para você.`;
+		}
+		else {
+			return `These buttons are not for you.`;
+		}				
+	}	
+
+	function errorString() {
+		if (lang === "en") {
+			return `There was an error executing this button.`;
+		}
+		else if (lang === "es") {
+			return `Se ha producido un error.`;
+		}
+		else if (lang === "ru") {
+			return `Произошла ошибка.`;
+		}
+		else if (lang === "de") {
+			return `Es ist ein Fehler aufgetreten.`;
+		}
+		else if (lang === "pt") {
+			return `Ocorreu um erro.`;
+		}
+		else {
+			return `There was an error executing this button.`;
+		}
+	}
+
+	//-----END TRANSLATIONS-----//
+
+	const configureEmbed = new EmbedBuilder()
+	.setColor(`0x00FFFF`) //Teal
+	.setTitle(`${configureTitle()}`)
+	.setDescription(`${configureDesc()}`)
+
+	const configureButtons = new ActionRowBuilder()
+		.addComponents(
+			new ButtonBuilder()
+				.setCustomId(`configureadd - ${interaction.user.id}`)
+				.setLabel(`${configureAdd()}`)
+				.setStyle(ButtonStyle.Success),
+			new ButtonBuilder()
+				.setCustomId(`configurestop - ${interaction.user.id}`)
+				.setLabel(`${configureRemove()}`)
+				.setStyle(ButtonStyle.Danger),
+				new ButtonBuilder()
+					.setCustomId(`configureback - ${interaction.user.id}`)
+					.setLabel(`${goBack()}`)
+					.setStyle(ButtonStyle.Secondary),	
+		);				
 
 
                 //begin checking for permissions
                 await interaction.deferUpdate();
                 //console.log(`AdminRequired(): ${AdminRequired()}`)
 								if (interaction.user.id != buttonUserID) {
-									await interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
+									await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });
 								}		
 								else if (AdminRequired() === undefined) {
-										await interaction.followUp({ content: `It looks like this is your first time using this command. Please try the configure button again. :)`, ephemeral: true });
-								}									
-                else if (AdminRequired() === "AdminRequiredYes") { //if admin permissions are required
-                    if ((interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) && (interaction.user.id === buttonUserID) ) {
-                        await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => console.log(`configureEmbed Error: ${err}`));
-                    } 
-                    else if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-                        await interaction.followUp({content: `You do not have the required permissions to do that.`, ephemeral: true})
-                    }
-                    else if (!interaction.user.id === buttonUserID)  {
-                        await interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
-                    }
-                }	
-                else if (AdminRequired() === "AdminRequiredNo") { //if admin permissions are NOT required
-                    if ((interaction.user.id === buttonUserID) ) { 
-                
-                        //console.log(`guildRoleIds.length: ${guildRoleIds.length}`)
-                        let hasARole = 0;
-                        for (a=0;a<=guildRoleIds.length - 1;a++) { //iterates through each role - 0 is @everyone
-                            //console.log(`guildRoleIds at ${i}: ${guildRoleIds[i]}`);
-                            if (interaction.member.roles.cache.has(guildRoleIds[a])) {
-                                hasARole += 1;
-                            }
-                        } //end loop to check for hasARole
-                        	//console.log(`hasARole: ${hasARole} && required roles:${guildRoleIds.length}`)
+									await interaction.followUp({ content: `${firstCommandString()}`, ephemeral: true });
+								}				
+									
+      else if (AdminRequired() === "AdminRequiredYes") { //if admin permissions are required
+        if ((interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) && (interaction.user.id === buttonUserID) ) {
+				await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => console.log(`configureEmbed Error: ${err}`));
+     		} 
 											
-                        if (guildRoleIds.length === 0) { //no role required - @everyone allowed
-                            await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => console.log(`configureEmbed Error: ${err}`));
-                        }
-                        else if (hasARole >= 1) { //if the user has at least one role listed
-                            await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => console.log(`configureEmbed Error: ${err}`));
-                        } 
-												else if ((interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) && (interaction.user.id === buttonUserID)) {
-													await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => console.log(`configureEmbed Error: ${err}`));
-												}
-												else if (hasARole <= 0) {
-                            await interaction.followUp({content: `You do not have the required permissions to do that.`, ephemeral: true})
-                        }
-                    } //end if admin permission not required
-                    else {
-                        await interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
-                    }
-                }	
-                else {
-                    await interaction.followUp({ content: `There was an error executing this button.`, ephemeral: true });
-                } //end checking for permissions
+      else if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+					await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => {console.log(`configureEmbed Error: ${err}`); process.kill(1);});
+			}
+			else if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+				await interaction.followUp({content: `${missingPermissions()}`, ephemeral: true});
+			}
+			else if (!interaction.user.id === buttonUserID)  {
+					await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });
+			}
+    }	
+		else if (AdminRequired() === "AdminRequiredNo") { //if admin permissions are NOT required
+			if ((interaction.user.id === buttonUserID) ) { 
 	
-		}); //end fs:readFile for guildID and Admin check
+					//console.log(`guildRoleIds.length: ${guildRoleIds.length}`)
+					let hasARole = 0;
+					for (a=0;a<=guildRoleIds.length - 1;a++) { //iterates through each role - 0 is @everyone
+							//console.log(`guildRoleIds at ${i}: ${guildRoleIds[i]}`);
+							if (interaction.member.roles.cache.has(guildRoleIds[a])) {
+									hasARole += 1;
+							}
+					} //end loop to check for hasARole
+						//console.log(`hasARole: ${hasARole} && required roles:${guildRoleIds.length}`)
+				
+					if (guildRoleIds.length === 0) { //no role required - @everyone allowed
+							await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => {console.log(`configureEmbed Error: ${err}`); process.kill(1)});
+						}
+					else if (hasARole >= 1) { //if the user has at least one role listed
+							await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => {console.log(`configureEmbed Error: ${err}`); process.kill(1)});
+						}	
+					else if ((interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) && (interaction.user.id === buttonUserID)) {
+						await interaction.editReply({ embeds: [configureEmbed], components: [configureButtons] }).catch(err => {console.log(`configureEmbed Error: ${err}`); process.kill(1)});
+					}
+					else if (hasARole <= 0) {
+						await interaction.followUp({content: `${missingPermissions()}`, ephemeral: true});					
+					}
+				} 
+				else {
+					await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });	
+				}	
+			}//end if admin permission not required
+		else {
+				await interaction.followUp({ content: `${errorString()}`, ephemeral: true });
+		} //end checking for permissions
+
+			function expiredDesc() {
+				if (lang === "en") {
+					return `This interaction expired`;
+				}
+				if (lang === "es") {
+					return `Esta interacción expiró.`;
+				}
+				if (lang === "ru") {
+					return `Срок действия этого взаимодействия истек.`;
+				}
+				if (lang === "de") {
+					return `Diese Interaktion ist abgelaufen`;
+				}
+				if (lang === "pt") {
+					return `Esta interação expirou.`;
+				}
+				else {
+					return `This interaction expired`;
+				}						
+			}
+
+			const expiredButton = new ActionRowBuilder()
+				.addComponents(
+					new ButtonBuilder()
+						.setCustomId(`expired`)
+						.setLabel(`${expiredDesc()}`)
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(':RSWeekly:1025248227248848940')
+						.setDisabled(true),			
+				);		
 
 				setTimeout(() => {
 					interaction.editReply({components: [expiredButton]})
-				}, (60000 * 2))				
+				}, (60000 * 2))					
+
+				}}); //end fs.readFile for LANGDataBase.txt
+	
+		}); //end fs:readFile for guildID and Admin check			
 		
 		} //end if configure
 	},
 };
-
-
-
-
-	

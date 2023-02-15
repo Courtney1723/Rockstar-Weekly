@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, Partials, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Partials, EmbedBuilder, PermissionsBitField } = require('discord.js');
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
@@ -6,7 +6,7 @@ const client = new Client({
 const { exec } = require('node:child_process');
 const keepAlive = require('./server');
 var cron = require('node-cron'); //https://github.com/node-cron/node-cron
-
+const { get } = require("https");
 
 // node deploy-commands.js 
 //^^ type in shell to register a command
@@ -14,37 +14,117 @@ var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 //Logs all console logs in Discord - uncomment for main bot
 client.on("ready", () => {
 		console.log = function(log) {
-			if ((log.includes(`guilds`)) || (log.includes(`Logged in`)) || (log.includes(`You triggered`)) || (log.includes(`You clicked`)) ) {
+
+		const aDate = new Date();
+		var mstDate = aDate.toLocaleString("en-US", {
+		  timeZone: "America/Denver" //https://momentjs.com/timezone/docs/#/data-loading/
+		});
+		var mstTime = mstDate.split(", ");
+		var mstHourMinute = mstTime[1].split(":");
+		
+		var mstHour = mstHourMinute[0];
+		var mstMinute = mstHourMinute[1];
+
+		var amPM01 = mstHourMinute[2].split(" ");
+		var amPM = amPM01[1];
+
+				//console.log(`${mstHour}:${mstMinute} ${amPM}`);			
+			
+			if ( (log.includes(`guilds`)) || (log.includes(`Logged in`)) || (log.includes(`You triggered`)) || (log.includes(`You clicked`)) || (log.includes(`You changed`)) || (log.includes(`You added`)) ) {
 				const logChannel = client.channels.cache.get(process.env.logChannel2);	
 				let logEmbed = new EmbedBuilder()
 					.setColor('0xFF008B') //Pink
-					.setDescription(`${log}`)
-					.setTimestamp(Date.now());
+					.setDescription(`${log}\n${mstHour}:${mstMinute} ${amPM}`)
 				logChannel.send({embeds: [logEmbed]});
 			} 
 			else {
 				const logChannel = client.channels.cache.get(process.env.logChannel);	
 				let logEmbed = new EmbedBuilder()
 					.setColor('0xFF008B') //Pink
-					.setDescription(`${log}`)
-					.setTimestamp(Date.now());
+					.setDescription(`${log}\n${mstHour}:${mstMinute} ${amPM}`)
 				logChannel.send({embeds: [logEmbed]});
 			}
 		}
 	
-});
+}); 
 
 //prevents errors from shutting the bot off
 process.on("unhandledRejection", async (err) => {
-  console.error("Unhandled Promise Rejection:\n", err);
+  console.error("Unhandled Promise Rejection:\n", err.stack);
 });
 process.on("uncaughtException", async (err) => {
-  console.error("Uncaught Promise Exception:\n", err);
+  console.error("Uncaught Promise Exception:\n", err.stack);
 });
 process.on("uncaughtExceptionMonitor", async (err) => {
-  console.error("Uncaught Promise Exception (Monitor):\n", err);
+  console.error("Uncaught Promise Exception (Monitor):\n", err.stack);
 });
-client.setMaxListeners(30); // prevents max listeners error for buttons (DO NOT SET OVER 100)
+client.setMaxListeners(40); // prevents max listeners error for buttons (DO NOT SET OVER 100)
+
+//checks for 429 errors at startup and every 5 minutes
+function handleRateLimit() {
+  get(`https://discord.com/api/v10/gateway`, ({ statusCode }) => {
+		//console.log(`statusCode: ${statusCode}`);
+	  if ((statusCode === 429) || (statusCode === 404)) { 
+			console.log(`Status Code: ${statusCode}\nRestarting the bot.`);
+			process.kill(1);
+		}
+	});
+};
+handleRateLimit();
+setInterval(handleRateLimit, 3e5); //3e5 = 300000 (3 w/ 5 zeros)
+
+
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const command = interaction.client.commands.get(interaction.commandName);
+
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+
+      let errorEmbed = new EmbedBuilder()
+      .setColor('Red') 
+      .setTitle(`Uh Oh!`)
+      .setDescription(`There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again in a few minutes.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${process.env.support_link}>)`);
+
+		let trafficError = new EmbedBuilder()
+			.setColor('Orange')
+			.setTitle(`Uh Oh!`)
+			.setDescription(`It looks like Discord is under a heavy load! Please try again in a few minutes.`)
+		
+		console.log(`interaction error: ${error.stack}`);
+		if (error.toString().includes("has not been sent")) {
+			if ((error.toString().includes("50027")) || (error.toString().includes("10008"))) {
+				await interaction.reply({ embeds: [trafficError], ephemeral: true });
+				handleRateLimit();
+			}
+			else {
+				await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+			}
+		}
+		else if (error.toString().includes("is not a function")) {
+			if ((error.toString().includes("50027")) || (error.toString().includes("10008"))) {
+				await interaction.reply({ embeds: [trafficError], ephemeral: true });
+				handleRateLimit();
+			}
+			else {
+				await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+			}
+		}			
+		else {
+			if ((error.toString().includes("50027")) || (error.toString().includes("10008"))) {
+				await interaction.editReply({ embeds: [trafficError], ephemeral: true });
+				handleRateLimit();
+			}		
+			else {
+				await interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
+			}
+		}
+	}
+});
 
 //Access Command Files
 const fs = require('node:fs');
@@ -62,25 +142,6 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-client.on('interactionCreate', async interaction => {
-	if (!interaction.isChatInputCommand()) return;
-
-	const command = interaction.client.commands.get(interaction.commandName);
-
-	if (!command) return;
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-			console.log(`interaction error: ${error.stack}`);
-		if (error.toString().includes("InteractionNotReplied")) {
-			await interaction.reply({ content: `There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${proces.env.support_link}>)`, ephemeral: true });
-		} else {
-			await interaction.editReply({ content: `There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${process.env.support_link}>)`, ephemeral: true });
-		}
-	}
-});
-
 //Access Event files
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
@@ -92,6 +153,20 @@ for (const file of eventFiles) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {
 		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
+
+//Access Language files
+const languagePath = path.join(__dirname, 'language');
+const languageFiles = fs.readdirSync(languagePath).filter(file => file.endsWith('.js'));
+
+for (const file of languageFiles) {
+	const filePath = path.join(languagePath, file);
+	const language = require(filePath);
+	if (language.once) {
+		client.once(language.name, (...args) => language.execute(...args));
+	} else {
+		client.on(language.name, (...args) => language.execute(...args));
 	}
 }
 
@@ -184,43 +259,6 @@ for (const file of backButtonFiles) {
 		client.on(component.name, (...args) => component.execute(...args));
 	}
 }
-
-
-//sends a kill 1 command to the child node if there is a 429 error
-errorArray = [];
-client.on("debug", function(info){
-//console.log(`info -> ${info}`); //debugger
-	if (errorArray.length <= 3) {
-			errorArray.push(info);
-		}
-		setTimeout(() => {
-			if (errorArray.length >= 3) {
-				//console.log(`successfully connected`);
-				//console.log(`errorArray length: ${errorArray.length}`);
-			} 
-			else {
-				console.log(`Caught a 429 error!`); 
-					exec('kill 1', (err) => {
-							if (err) {
-									console.error("could not execute command: ", err.stack);
-									return
-							}
-						console.log(`Kill 1 command succeeded`);
-					});					
-			}
-		}, 10000);
-}); // end debug function
-
-cron.schedule('00 */4 * * *', () => { //(second),minute,hour,date,month,weekday //restarts the bot every four hours
-		console.log(`resarting the bot...`);
-		exec('kill 1', (err) => {
-				if (err) {
-						console.error("could not execute command: ", err);
-						return
-				}
-			console.log(`Kill 1 command succeeded`);
-		});	
-}); //end cron.schedule
 
 keepAlive();
 client.login(process.env.DISCORD_TOKEN).catch(err => console.log(`Login Error: ${err}`));

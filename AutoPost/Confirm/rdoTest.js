@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
@@ -15,9 +15,55 @@ module.exports = {
 		if (!interaction.isButton()) {return};
 		if (interaction.customId.startsWith(`rdoTest -`)) {
 
+		fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
+			  if (err) {console.log(`Error: ${err}`)} 
+				else {
+					let lang03 = data.split("lang:");
+					//console.log(`lang03.length: ${lang03.length}`);
 
+					let langArray = [];
+					for (i=1; i <= lang03.length - 1; i++) { //first will always be undefined
+						let lang02 = lang03[i].split(" -");
+						//console.log(`lang02 at ${i}: ${lang02}`);
+						
+						let lang01 = lang02[0];
+						//console.log(`lang01 at ${i}: ${lang01}`);
 
-	function rdoTest () {
+						langArray.push(lang01);
+					}
+
+					//console.log(`langArray: ${langArray}`);
+
+					let guildID03 = data.split("guild:");
+					//console.log(`guildID03.length: ${guildID03.length}`);
+					let guildIDArray = [];
+					for (i=2; i <= guildID03.length - 1; i++) { //first two will always be undefined
+						let guildID02 = guildID03[i].split(" -");
+						//console.log(`lang02 at ${i}: ${lang02}`);
+						
+						let guildID01 = guildID02[0];
+						//console.log(`lang01 at ${i}: ${lang01}`);
+
+						guildIDArray.push(guildID01);
+					}
+
+					//console.log(`guildIDArray: ${guildIDArray}`);	
+
+					let lang = "";
+					for (i=0; i <= guildIDArray.length - 1; i++) {
+						//console.log(`guildIDArray at ${i}: ${guildIDArray[i]}`);
+						//console.log(`langArray at ${i}: ${langArray[i]}`);
+						//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
+
+					if ((interaction.channel.type === 0) || (interaction.channel.type === 5)) {
+						if (interaction.guild.id === guildIDArray[i]) {
+								lang += `${langArray[i]}`;
+							}
+						}
+					}
+					//console.log(`lang: ${lang}`);	
+
+	function rdoTest() {
 
 //----------------------------------BEGIN RDO TEST POST----------------------------------//	
 			fs.readFile('./RDODataBase.txt', 'utf8', async function (err, data) {
@@ -70,7 +116,10 @@ module.exports = {
 					
 
 //Begin RDO Formatting		
-		let rdoURL = process.env.SOCIAL_URL_RDO;
+	let rdoURL = process.env.SOCIAL_URL_RDO2;
+
+		//await interaction.editReply(`Console Logged 👍`).catch(console.error);
+	
 		const instance = await phantom.create();
 		const page = await instance.createPage();
 
@@ -78,6 +127,42 @@ module.exports = {
 		const status = await page.open(rdoURL);
 			//console.log(`Page opened with status [${status}].`);
 	if (status === `success`) { //checks if Rockstar Social Club website is down
+		const content = await page.property('content'); // Gets the latest rdo updates
+			//console.log(content); 
+
+		let baseURL = "https://socialclub.rockstargames.com/";
+		
+		let urlHash02 = content.split("linkToUrl\":\"");
+		let urlHash01 = urlHash02[1].split("\"");
+		let urlHash = urlHash01[0];
+			//console.log(`urlHash: ${urlHash}`);
+
+		let urlLink02 = content.split("linkToUrl\":");
+		let urlLink01 = urlLink02[1].split("\"");
+		//let urlLink = urlLink01[1];
+			//console.log(`urlLink: ${urlLink01[1]}`);
+
+			function urlLink() {
+				if (urlLink01[1].includes(`\?`)) {
+					let urlLinkFix = urlLink01[1].split(`\?`);
+					let urlLink = urlLinkFix[0];
+					return urlLink;
+				}
+				else {
+					let urlLink = urlLink01[1];
+					return urlLink;
+				}					
+			}
+			//console.log(`urlLink: ${urlLink()}`);		
+
+			let langBase = `/?lang=`;
+			let langURL = `${langBase}${lang}`;
+			
+			let url = `${baseURL}/${urlLink()}${langURL}`;
+			//console.log(`url: ${url}`);	
+
+		const rdoStatus = await page.open(url);
+		if (rdoStatus === `success`) {
 		const content = await page.property('content'); // Gets the latest rdo updates
 			//console.log(content); 
 		let rdoString001 = content.toString(); //converts HTML to string (necessary? not sure.);
@@ -109,6 +194,7 @@ module.exports = {
 			.replace(/<\/ul>/g, "")
 			.replace(/&amp;/g, "&")
 			.replace(/&nbsp;/g, " ") //Non breaking space
+			.replace(/\n\n/g, "\n")			
 			.replace(/<ul style="line-height:1.5;">/g, "\n")
 			//.replace(/\n<p>/g, "<p>") //Removes spaces after a bonus
 			//console.log(`rdoString: ${rdoString}`);
@@ -139,8 +225,12 @@ module.exports = {
 
 		let rdoLinkFormatted = rdoString;
 		for (m = 0; m <= rdoLinks002.length - 1; m++) { // keep - 2; the last element will always be blank
-			rdoLinkFormatted = rdoLinkFormatted.replace(/<a.*?a>/, `[${rdoLinkTitles002[m]}](${rdoLinks002[m]})`); //replaces each link with proper discord formatted link
-			//console.log(`rdoLinkFormatted at ${m}: ${rdoLinkFormatted}`);
+		if (m != 9) { //FIXME - remove next month
+				rdoLinkFormatted = rdoLinkFormatted.replace(/<a.*?a>/, `[${rdoLinkTitles002[m]}](${rdoLinks002[m]})`); //replaces each link with proper discord formatted link
+				//console.log(`rdoLinkFormatted at ${m}: ${rdoLinkFormatted}`);
+				//console.log(`rdoLinkTitles002 at ${m}: ${rdoLinkTitles002[m]}`);
+				//console.log(`rdoLinks002 at ${m}: ${rdoLinks002[m]}`);
+			}
 		}
 		//console.log(`rdoLinkFormatted: ${rdoLinkFormatted}`);
 //--------------------END formatting for links--------------------//
@@ -199,7 +289,7 @@ module.exports = {
 //-----BEGIN for loop-----//		
 
 		//console.log(`RDOBonuses01 length: ${RDOBonuses01.length}`);
-for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be blank
+for (i = 0; i <= RDOBonuses01.length - 2; i++) { //final element will always be blank
 		//console.log(`RDOBonuses01 at ${i}: ${RDOBonuses01}`);
 	let RDOBonuses = RDOBonuses01[i].split("</b></p>");
 		//console.log(`RDOTitles at ${i}: ${RDOBonuses[0]}\nRDOBonuses at ${i}: ${RDOBonuses[1]}`);
@@ -279,66 +369,135 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 	
 	let RDO_Bonus = RDOBonuses[1];
 		//console.log(`RDO_Bonus at ${i}: ${RDO_Bonus}`);
-
-	let rdoParas = RDO_Bonus.split("<p>");
-			//console.log(`rdoParas at ${i}: ${rdoParas}`);
-			//console.log(`rdoParas length at ${i}: ${rdoParas.length}`);
-	let rdoParaBonuses = "";
 //-----BEGIN populating rdoFinalString01 -----//
-	
-	if (RDO_Title.toLowerCase().includes("discounts")) {
+	if (i === 0) {
+		let rdoParas = RDO_Title.split("<p>");
+		for (c = 1; c <= rdoParas.length - 1; c++) {
+			
+			rdoFinalString01 += `• ${rdoParas[c].charAt(0).toUpperCase()}${rdoParas[c].substring(1)}\n`;
+		}
+	}
+else if (RDO_Bonus != undefined) {
+	if ( 
+		(RDO_Title.toLowerCase().includes("discounts")) || 
+		(RDO_Title.toLowerCase().includes("descuentos")) || 
+		(RDO_Title.includes("Скидки")) || 
+		(RDO_Title.includes("Rabatte")) || 
+		(RDO_Title.includes("Descontos")) ) { 
+			rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n`;
+	}	
+	else if ( 
+		(RDO_Title.includes("2x")) || //German, and Portuguese use numbers 
+		(RDO_Title.includes("3x")) || 
+		(RDO_Title.toLowerCase().includes("double rewards")) || //English uses both.. of course 
+		(RDO_Title.toLowerCase().includes("triple rewards")) || 
+		(RDO_Title.includes("Doble De RDO"))  || //Spanish and Russian use words
+		(RDO_Title.includes("Triple De RDO")) || 
+		(RDO_Title.includes("Вдвое больше RDO")) || 
+		(RDO_Title.includes("Втрое больше RDO")) ) {
+			rdoFinalString01 += `**${RDO_Title}**\n\n`;
+	}
+	else if ( 
+		(RDO_Title.toLowerCase().includes("featured series")) || 
+		(RDO_Title.includes("Calendario De Series Destacadas")) ||
+		(RDO_Title.includes("Расписание избранных серий")) ||
+		(RDO_Title.includes("Übersicht Über Die Präsentierten Serien")) ||
+		(RDO_Title.includes("Calendário De Série Em Destaque")) ) { 
+			rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n\n`;
+	}		
+	else if ( 
+		(RDO_Title.toLowerCase().includes("weekly bonuses")) || 
+		(RDO_Title.includes("Bonificaciones Semanales")) ||  
+		(RDO_Title.includes("Еженедельные бонусы")) || 
+		(RDO_Title.includes("Wöchentliche Boni")) || 
+		(RDO_Title.includes("Bônus Semanais")) ) { 
 			rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n\n`;
 	}	
-	if (RDO_Title.toLowerCase().includes("triple rewards")) {
-		rdoFinalString01 += `**${RDO_Title}**\n\n`;
-	}		
+	else if ( 
+		(RDO_Title.toLowerCase().includes("monthlong rewards")) || 
+		(RDO_Title.includes("Recompensas Durante Todo El Mes")) || 
+		(RDO_Title.includes("Награды месяца")) || 
+		(RDO_Title.includes("Monatsbelohnungen")) || 
+		(RDO_Title.includes("Recompensas O Mês Inteiro")) ){ 
+			rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n\n`;
+	}	
+	else if (RDO_Title.toLowerCase().includes(":")) {
+		rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n\n`;
+	}			
 	else if (RDO_Bonus.includes("• ")) { // If the bonus includes a list
 
+			let rdoParas = RDO_Bonus.split("<p>");
+			//console.log(`rdoParas at ${i}: ${rdoParas}`);
+			//console.log(`rdoParas length at ${i}: ${rdoParas.length}`);
+			let rdoParaBonuses = "";
+		
 		for (c = 1; c <= rdoParas.length - 1; c++) {
 			rdoParaBonuses += `• ${rdoParas[c]}\n`;
 		}			
 		
-		rdoFinalString01 += `**${RDO_Title}**\n${rdoParaBonuses}\n\n`;
-	}		
-	else if (rdoParas.length === 2) { //If the bonus only has one paragraph
-		rdoFinalString01 += `**${RDO_Title}**\n\n`
-	} 
-	else if (RDO_Title.toLowerCase().includes("featured series")) {
-		
-		if (RDOBonuses[2] != null) {
-			rdoFinalString01 += `**${RDO_Title}**\n${RDO_Bonus}\n${RDOBonuses[2]}\n\n`;
-		}
-	}		
+		rdoFinalString01 += `**${RDO_Title}**\n${rdoParaBonuses}\n`;
+	}			
 	else {
-
+			let rdoParas = RDO_Bonus.split("<p>");
+			//console.log(`rdoParas at ${i}: ${rdoParas}`);
+			//console.log(`rdoParas length at ${i}: ${rdoParas.length}`);
+			let rdoParaBonuses = "";		
 		for (c = 1; c <= rdoParas.length - 1; c++) {
 			rdoParaBonuses += `• ${rdoParas[c]}\n`;
 		}			
-		
-		rdoFinalString01 += `**${RDO_Title}**\n${rdoParaBonuses}\n\n`;
+		rdoFinalString01 += `**${RDO_Title}**\n${rdoParaBonuses}\n`;
 	}
 	
 	}
-
+}
 //-----------END for loop----------//		
 	//console.log(`rdoFinalString01: ${rdoFinalString01}`); //rdoFinalString before HTML formatting
 		let rdoFinalString = rdoFinalString01.replace(/<p>/g, "")
 											.replace(/<\/p>/g, "")
 										  .replace(/<\/b>/g, "")
 										  .replace(/<b>/g, "")
-											.replace(/\n• /g, "\n• ") //removes spaces before a list item
+											.replace(/\n\n• /g, "• ") //removes spaces before a list item - titles already have newlines
+											.replace(/\n\n/g, "\n")
 											.replace(/\n\n\n/g, "\n")
+											.replace(/\*\*\n\*\*/g, "**\n\n**")
 											.replace(/• undefined/g, "• ")
 											.replace(/\)• /g, ")\n• ") //adds a newline between link lists
+					      .replace(/<a href=\"https:\/\/socialclub.rockstargames.com\/games\/rdr2\/catalogue\/online\/products\/23bc7710\/c\/8bdc1af5" target=\"_blank\" draggable=\"false\">\n\<\/a>•/g, "") //FIXME - delete next month
+					      .replace(/<a href=\"https:\/\/socialclub.rockstargames.com\/games\/rdr2\/catalogue\/online\/products\/23bc7710\/c\/8bdc1af5" target=\"_blank\">\n\<\/a>•/g, ""); //FIXME - delete next month		
+
+						function bestBreak() {
+							var rdoSpaces = rdoFinalString.split(`\n\n`); //counts the newlines
+							var charCount = 0;//( (rdoTitleString().length) + (rdoDate[0].length) + (rdoFooterMin().length) + (elipseFunction().length) ); 
+							//console.log(`( T${(rdoTitleString().length)} + D${(rdoDate[0].length)} + F${(rdoFooterMin().length)} + E${(elipseFunction().length)} )`);
+							
+							var finalZ = 0;
+							var countZ = 0;
+							for (z = 0; charCount <= 3950; z++) {
+								//console.log(`rdoSpaces at ${z}: ${rdoSpaces[z]}`);
+									charCount += rdoSpaces[z].length;
+								//console.log(`charCount at ${z}: ${charCount}`);
+								var finalZ = rdoSpaces[z].length;
+								countZ++;
+							}
+							//console.log(`charCount: ${charCount}`);
+							return (charCount - finalZ) + (countZ * 2) - 3;
+							// ( (rdoTitleString().length) + (rdoDate[0].length) + (rdoFooterMin().length) + (elipseFunction().length) )
+						}
+						//console.log(`bestBreak: ${bestBreak()}`);
+
+						function bestEndBreak() {
+							return (6000 - (bestBreak()) - (rdoFooterMax().length) - (rdoImage[0].length) - 3); //- 3 for the ellipse function
+						}
+						//console.log(`bestEndBreak: ${bestEndBreak()}`);				
 
 			//console.log(`rdoFinalString: ${rdoFinalString}`);
     function rdoPost() {
-        return rdoFinalString.slice(0, 3896); //FIXME: adjust this for the best break - up to 4000
+        return rdoFinalString.slice(0, bestBreak()); //FIXME: adjust this for the best break - up to 4000
     }
     //console.log(`1: ${rdoFinalString.length}\n`) 
     function rdoPost2() {
       if (rdoFinalString.length > 4000) {
-        let post02 = rdoFinalString.substr(3896, 2000); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
+        let post02 = rdoFinalString.substr(bestBreak(), bestEndBreak()); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
         return post02;
       } else {
         return "";
@@ -353,23 +512,84 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
     }		
     function rdoFooterMax() {
       if (rdoFinalString.length > 4000) {
-        return `** [click here](${rdoURL}) for more details**`;
+				if (lang === "en") {
+					return `\n** [click here](${url}) for more details**`;
+				}
+				else if (lang === "es" ) {
+					return `\n** [haga clic aquí](${url}) para más detalles**`;
+				}
+				else if (lang === "ru" ) {
+					return `\n** [нажмите здесь](${url}) для получения более подробной информации**`;
+				}				
+				else if (lang === "de" ) {
+					return `\n** [Klicken Sie hier](${url}) für weitere Details**`;
+				}		
+				else if (lang === "pt" ) {
+					return `\n** [clique aqui](${url}) para mais detalhes**`;
+				}								
+				else {
+					return `\n** [click here](${url}) for more details**`;
+				}
       } else {
         return "";
       }
     }
     function rdoFooterMin() { 
       if (rdoFinalString.length <= 4000) {
-        return `** [click here](${rdoURL}) for more details**`;
+				if (lang === "en") {
+					return `\n** [click here](${url}) for more details**`;
+				}
+				else if (lang === "es" ) {
+					return `\n** [haga clic aquí](${url}) para más detalles**`;
+				}
+				else if (lang === "ru" ) {
+					return `\n** [нажмите здесь](${url}) для получения более подробной информации**`;
+				}				
+				else if (lang === "de" ) {
+					return `\n** [Klicken Sie hier](${url}) für weitere Details**`;
+				}		
+				else if (lang === "pt" ) {
+					return `\n** [clique aqui](${url}) para mais detalhes**`;
+				}								
+				else {
+					return `\n** [click here](${url}) for more details**`;
+				}
       } else {
         return "";
       }
     } 		
+
+//--BEGIN TRANSLATIONS--//
+
+function rdoTitleFunction() {
+					
+			if (lang === "en") {
+				return `Red Dead Online Bonuses:`;
+			}
+			else if (lang === "es") {
+				return `Bonificaciones de Red Dead Online:`;
+			}
+			else if (lang === "ru") {
+				return `Бонусы Red Dead Online:`;
+			}
+			else if (lang === "de") {
+				return `Boni in Red Dead Online:`;
+			}
+			else if (lang === "pt") {
+				return `Bônus no Red Dead Online:`;
+			}
+			else {
+    		return `Red Dead Online Bonuses:`;
+			}		
+		}
+		//console.log(`rdoTitleFunction: ${rdoTitleFunction()}`);
+
+//--END TRANSLATIONS--//
 		
 
 		let rdoEmbed = new EmbedBuilder()
 			.setColor('0xC10000') //Red
-			.setTitle('Red Dead Redemption II Online Bonuses & Discounts:')
+			.setTitle(`${rdoTitleFunction()}`)
 			.setDescription(`${rdoDate[0]}\n\n${rdoPost()} \n${rdoFooterMin()} ${elipseFunction()}`)
 		let rdoEmbed2 = new EmbedBuilder()
 			.setColor('0xC10000') //Red
@@ -410,13 +630,13 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 				.setDescription(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
 			client.channels.fetch(process.env.logChannel).then(channel => channel.send({embeds: [RStarDownEmbed], ephemeral: true}));
 			console.log(`The Rockstar Social Club website is down.`);	
-	}		
-		
+	}	
+				}
 				}
 			});
 
 			
-//----------------------------------END RDO TEST POST----------------------------------//	
+//----------------------------------END RDO TEST FUNCTION----------------------------------//	
 	}
 
 
@@ -438,8 +658,8 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 								guildRoleIds.push(role.id);
 							}
 					});
-			guildRoleIds.shift(1); //removes the @everyone role
-				//console.log(`guildRoleIds: ${guildRoleIds}`);
+			guildRoleIds.splice(guildRoleIds.length - 1); //.splice(guildRoleIds.length - 1) removes the @everyone role
+			//console.log(`guildRoleIds: ${guildRoleIds}`);
 
 		let rdoChannelIds = [];
 		fs.readFile('./RDODataBase.txt', 'utf8', async function (err, data) {
@@ -470,25 +690,155 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 					return "AdminRequiredNo";
 				}
 			}		
-				//console.log(`AdminRequired(): ${AdminRequired()}`)			
+				//console.log(`AdminRequired(): ${AdminRequired()}`)		
+
+//--BEGIN TRANSLATIONS--//
+
+		function success() {
+			if (lang === "en") {
+				return `Success`;
+			}
+			else if (lang === "es") {
+				return `Éxito`;
+			}
+			else if (lang === "ru") {
+				return `Успех`;
+			}
+			else if (lang === "de") {
+				return `Erfolg`;
+			}
+			else if (lang === "pt") {
+				return `Éxito`;
+			}	
+			else {
+				return `Success`;
+			}				
+		}
+
+		function sentPostDesc() {
+			if (lang === "en") {
+				return `• Posts have been sent to your subscribed channels!\n• If a channel you are subscribed to did not get a test post check to make sure the bot has the **\'View Channel\'**, **\'Send Messages\'**, and **\'Embed Links\'** permissions.`;
+			}
+			else if (lang === "es") {
+				return `• Se han enviado publicaciones a tus canales suscritos.\n• Si un canal al que está suscrito no obtuvo una comprobación posterior de prueba para asegurarse de que el bot tiene permiso para ver el canal, enviar mensajes e insertar vínculos.`;
+			}
+			else if (lang === "ru") {
+				return `• Сообщения были отправлены на ваши каналы с подпиской.\n• Если канал, на который вы подписаны, не получил тестовую запись, чтобы убедиться, что бот имеет разрешение на просмотр канала, отправку сообщений и встраивание ссылок.`;
+			}
+			else if (lang === "de") {
+				return `• Beiträge wurden an Ihre abonnierten Kanäle gesendet.\n• Wenn ein Kanal, den Sie abonniert haben, keine Testbeitragsüberprüfung erhalten hat, um sicherzustellen, dass der Bot über die Berechtigung zum Anzeigen des Kanals, zum Senden von Nachrichten und zum Einbetten von Links verfügt.`;
+			}
+			else if (lang === "pt") {
+				return `• Se han enviado publicaciones a sus canales suscritos.\n• Se um canal no qual você está inscrito não recebeu uma verificação de postagem de teste para garantir que o bot tenha permissão para visualizar o canal, enviar mensagens e incorporar links.`;
+			}
+			else {
+				return `• Posts have been sent to your subscribed channels!\n• If a channel you are subscribed to did not get a test post check to make sure the bot has the **\'View Channel\'**, **\'Send Messages\'**, and **\'Embed Links\'** permissions.`;
+			}			
+		}
+
+			function notYourButtonString() {
+					if (lang === "en") {
+						return `These buttons are not for you.`;
+					}
+					else if (lang === "es") {
+						return `Estos botones no son para ti.`;
+					}
+					else if (lang === "ru") {
+						return `Эти кнопки не для вас.`;
+					}
+					else if (lang === "de") {
+						return `Diese Schaltflächen sind nicht für Sie.`;
+					}
+					else if (lang === "pt") {
+						return `Esses botões não são para você.`;
+					}
+					else {
+						return `These buttons are not for you.`;
+					}				
+			}	
+
+	function noSubscriptions() {
+		if (lang === "en") {
+			return `You do not have any channels subscribed to Red Dead Online auto posts.`;
+		}
+		else if (lang === "es") {
+			return `No tienes ningún canal suscrito a las publicaciones automáticas de Red Dead Online.`;
+		}
+		else if (lang === "ru") {
+			return `У вас нет каналов, подписанных на автоматические посты Red Dead Online.`;
+		}
+		else if (lang === "de") {
+			return `Sie haben keine Kanäle, die Red Dead Online-Autobeiträge abonniert haben.`;
+		}
+		else if (lang === "pt") {
+			return `Você não tem nenhum canal inscrito nas postagens automáticas do Red Dead Online.`;
+		}
+		else {
+			return `You do not have any channels subscribed to Red Dead Online auto posts.`;
+		}		
+	}
+
+	function firstTime() {
+		if (lang === "en") {
+			return `It looks like this is your first time using this command. Please try the test button again.`;
+		}
+		else if (lang === "es") {
+			return `Parece que es la primera vez que usas este comando. Vuelva a intentar el botón de prueba.`;
+		}
+		else if (lang === "ru") {
+			return `Похоже, вы впервые используете эту команду. Повторите попытку нажатия кнопки теста.`;
+		}
+		else if (lang === "de") {
+			return `Es sieht so aus, als ob Sie diesen Befehl zum ersten Mal verwenden. Bitte versuchen Sie es erneut mit dem Test-Button.`;
+		}
+		else if (lang === "pt") {
+			return `Parece que esta é a primeira vez que você usa esse comando. Tente o botão de teste novamente.`;
+		}
+		else {
+			return `It looks like this is your first time using this command. Please try the test button again.`;
+		}		
+	}
+
+			function missingPermissions()	{
+				if (lang === "en") {
+					return `You do not have the required permissions to do that.`;
+				}
+				else if (lang === "es") {
+				  return `No tienes permiso para hacer eso.`;
+				}
+				else if (lang === "ru") {
+				  return `У вас нет разрешения на это.`;
+				}
+				else if (lang === "de") {
+				  return `Sie haben keine Erlaubnis dazu.`;
+				}
+				else if (lang === "pt") {
+				  return `Você não tem permissão para fazer isso.`;
+				}
+				else {
+				  return `You do not have the required permissions to do that.`;
+				}				
+			}				
+
+//--END TRANSLATIONS--//
 
 		const testEmbed = new EmbedBuilder()
 			.setColor(`Green`) 
-			.setTitle(`Success!`)
-			.setDescription(`• Posts have been sent to your subscribed channels!\n• If a channel you are subscribed to did not get a test post check to make sure the bot has the **\'View Channel\'**, **\'Send Messages\'**, and **\'Embed Links\'** permissions.`)
+			.setTitle(`${success()}`)
+			.setDescription(`${sentPostDesc()}`)
 
 
 //begin checking for permissions
 					await interaction.deferUpdate();
 		//console.log(`AdminRequired(): ${AdminRequired()}`)
 				if (interaction.user.id != buttonUserID) {
-					await interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
+					await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });
 				}	
 		else if (rdoChannelIds.length <= 0) { 
-			await interaction.followUp({ content: `You do not have any channels subscribed to RDR2 auto posts.`, ephemeral: true });
+			await interaction.followUp({ content: `${noSubscriptions()}`, ephemeral: true });
 		}						
 		else if (AdminRequired() === undefined) { //uncessary because confirm already checked? 
-			await interaction.followUp({ content: `It looks like this is your first time using this command. Please try the Test button again. :) `, ephemeral: true });
+			await interaction.followUp({ content: `${firstTime()}`, ephemeral: true });
 		}
 		else if (AdminRequired() === "AdminRequiredYes") { //if admin permissions are required
 			if ( (interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) && (interaction.user.id === buttonUserID) ) {
@@ -496,10 +846,10 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 				await interaction.followUp({ embeds: [testEmbed], components: [], ephemeral: true }).catch(err => console.log(`testEmbed Error: ${err}`));
 			} 
 			else if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-				await interaction.followUp({content: `You do not have the required permissions to do that.`, ephemeral: true})
+				await interaction.followUp({content: `${missingPermissions()}`, ephemeral: true})
 			}
 			else if (!interaction.user.id === buttonUserID)  {
-				await interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
+				await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });
 			}
 		}
 		else if (AdminRequired() === "AdminRequiredNo") { //if admin permissions are NOT required
@@ -526,15 +876,21 @@ for (i = 1; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 					await interaction.followUp({ embeds: [testEmbed], components: [], ephemeral: true }).catch(err => console.log(` Error: ${err.stack}`));
 				}		
 				else if (hasARole <= 0) {
-					await interaction.followUp({content: `You do not have the required permissions to do that.`, ephemeral: true})
+					await interaction.followUp({content: `${missingPermissions()}`, ephemeral: true})
 				}											
 		}
 		else {
-			await interaction.followUp({ content: `There was an error executing this button.`, ephemeral: true });
+			await interaction.followUp({ content: `There was an error executing this button. Please try again in a few minutes.`, ephemeral: true });
+			console.log(`rdoTest error: ${error.stack}`);
 		} //end checking for permissions	
 
+			
+
 		});
+
+		}}); //end fs.readFile for LANGDataBase.txt
 		}
+	
 
 },
 

@@ -11,10 +11,10 @@ module.exports = {
 	async execute(interaction) {
 
 		if (!interaction.isButton()) {return};
-		if (interaction.customId.startsWith(`confirm - `)) {
-			//console.log(`begin start: '${interaction.customId}'`);		
+		if (interaction.customId.startsWith(`initialback -`)) {			
 
-		let buttonUserID01 = (interaction.customId).split("confirm - ");
+
+		let buttonUserID01 = (interaction.customId).split("initialback - ");
 		let buttonUserID = buttonUserID01[1];
 			//console.log(`buttonUserID: ${buttonUserID}`);
 			//console.log(`interaction.user.id === buttonUserID? ${interaction.user.id === buttonUserID}`)
@@ -262,7 +262,7 @@ module.exports = {
 				return `Your Current Auto Post Channels:`;
 			}
 			else if (lang === "es") {
-				return `Tus canales de publicación automática actuales:`;
+				return `Tus canales actuales de publicación automática:`;
 			}
 			else if (lang === "ru") {
 				return `Текущие настройки автоматической публикации:`;
@@ -292,7 +292,7 @@ module.exports = {
 				return `Rollen, die automatische Beiträge konfigurieren dürfen:`;	
 			}
 			else if (lang === "pt") {
-				return `Papéis que têm permissão para configurar publicações automáticas:`;	
+				return `Posições que têm permissão para configurar postagens automáticas:`;	
 			}
 			else {
 				return `Roles Allowed to Configure Auto Posts`;	
@@ -322,22 +322,22 @@ module.exports = {
 
 		function testRDOString() {
 			if (lang === "en") {
-					return `Click **\'Test RDO\'** to send a test post to your subscribed GTA Online channel(s).`;
+					return `Click **\'Test RDO\'** to send a test post to your subscribed Red Dead Online channel(s).`;
 			}
 			else if (lang === "es") {
-				return `Haga clic en **\'Prueba RDO\'** para enviar una publicación de prueba a sus canal(es) RDO suscritos.`;
+				return `Haga clic en **\'Prueba RDO\'** para enviar una publicación de prueba a sus canal(es) Red Dead Online suscritos.`;
 			}
 			else if (lang === "ru") {
-				return `Щелчок **\'Тест RDO\'** для того, чтобы отправить тестовое сообщение на подписанные каналы RDO.`;
+				return `Щелчок **\'Тест RDO\'** для того, чтобы отправить тестовое сообщение на подписанные каналы Red Dead Online.`;
 			}
 			else if (lang === "de") {
-				return `Klicken Sie auf **\'RDO testen\'**, um einen Testbeitrag an Ihre abonnierten RDO-Kanäle zu senden.`;
+				return `Klicken Sie auf **\'RDO testen\'**, um einen Testbeitrag an Ihre abonnierten Red Dead Online-Kanäle zu senden.`;
 			}
 			else if (lang === "pt") {
-				return `Clique em **\'Testar RDO\'** para enviar uma postagem de teste para seus canais RDO inscritos.`;
+				return `Clique em **\'Testar RDO\'** para enviar uma postagem de teste para seus canais Red Dead Online inscritos.`;
 			}
 			else {
-			  return `Click **\'Test RDO\'** to send a test post to your subscribed GTA Online channel(s).`;
+			  return `Click **\'Test RDO\'** to send a test post to your subscribed Red Dead Online channel(s).`;
 			}			
 		}			
 
@@ -505,7 +505,7 @@ ${testRDOString()}`)
 					await interaction.followUp({ content: `${firstCommandString()}`, ephemeral: true });
 				}	
 				else if (interaction.user.id === buttonUserID) {
-					await interaction.editReply({ embeds: [confirmEmbed], components: [confirmButtons] }).catch(err => {console.log(`confirmEmbed Error: ${err}`); process.kill(1);});						
+					await interaction.followUp({ embeds: [confirmEmbed], components: [confirmButtons] }).catch(err => {console.log(`confirmBackEmbed Error: ${err}`); process.kill(1);});	
 				} 	
 				else {
 					await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });
@@ -514,7 +514,7 @@ ${testRDOString()}`)
 	
 	}); //end fs.readFile GTADataBase
 	}); //end fs.readFile RDODataBase
-	}) //end fs.readFile rolesDataBase	
+	}) //end fs.readFile rolesDataBase		
 
 			function expiredDesc() {
 				if (lang === "en") {
@@ -547,19 +547,15 @@ ${testRDOString()}`)
 						.setDisabled(true),			
 				);	
 
-		setTimeout(() => {
-			interaction.editReply({components: [expiredButton]})
-		}, (60000 * 2))					
+				setTimeout(() => {
+					interaction.editReply({components: [expiredButton]})
+				}, (60000 * 5))						
 
 	}}); //end fs.readFile LANGDataBase
 	
-		}); //end fs:readFile for guildID and Admin check					
-		
-		} //end if start
+		}); //end fs:readFile for guildID and Admin check
+			
+		} //end if interaction starts with startback - stopback - configureback
+
 	},
-};
-
-
-
-
-	
+}

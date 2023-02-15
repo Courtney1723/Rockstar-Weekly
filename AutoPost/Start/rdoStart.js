@@ -1,20 +1,10 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
-
-const expiredButton = new ActionRowBuilder()
-	.addComponents(
-		new ButtonBuilder()
-			.setCustomId(`expired`)
-			.setLabel('This interaction timed out.')
-			.setStyle(ButtonStyle.Secondary)
-			.setEmoji(':RSWeekly:1025248227248848940')
-			.setDisabled(true),			
-	);
 
 module.exports = {
 	name: 'interactionCreate',
@@ -33,16 +23,175 @@ module.exports = {
 				//console.log(`interaction.user.id === buttonUserID? ${interaction.user.id === buttonUserID}`)						
 
 			//console.log(`begin rdostart - ${interaction.customId}`);
-			
+
+//-----BEGIN TRANSLATIONS-----//				
+
+		fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
+			  if (err) {console.log(`Error: ${err}`)} 
+				else {
+					let lang03 = data.split("lang:");
+					//console.log(`lang03.length: ${lang03.length}`);
+
+					let langArray = [];
+					for (i=1; i <= lang03.length - 1; i++) { //first will always be undefined
+						let lang02 = lang03[i].split(" -");
+						//console.log(`lang02 at ${i}: ${lang02}`);
+						
+						let lang01 = lang02[0];
+						//console.log(`lang01 at ${i}: ${lang01}`);
+
+						langArray.push(lang01);
+					}
+
+					//console.log(`langArray: ${langArray}`);
+
+					let guildID03 = data.split("guild:");
+					//console.log(`guildID03.length: ${guildID03.length}`);
+					let guildIDArray = [];
+					for (i=2; i <= guildID03.length - 1; i++) { //first two will always be undefined
+						let guildID02 = guildID03[i].split(" -");
+						//console.log(`lang02 at ${i}: ${lang02}`);
+						
+						let guildID01 = guildID02[0];
+						//console.log(`lang01 at ${i}: ${lang01}`);
+
+						guildIDArray.push(guildID01);
+					}
+
+					//console.log(`guildIDArray: ${guildIDArray}`);	
+
+					let lang = "";
+					for (i=0; i <= guildIDArray.length - 1; i++) {
+						//console.log(`guildIDArray at ${i}: ${guildIDArray[i]}`);
+						//console.log(`langArray at ${i}: ${langArray[i]}`);
+						//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
+
+						if (interaction.guild.id === guildIDArray[i]) {
+							lang += `${langArray[i]}`;
+						}
+					}
+
+					//console.log(`lang: ${lang}`);		
+
+	function rdoStartTitle() {
+		if (lang === "en") {
+			return `Start Auto Posting Red Dead Online Bonuses`;
+		}
+		if (lang === "es") {
+			return `Comience a publicar automáticamente bonos y descuentos de Red Dead Online`;
+		}		
+		if (lang === "ru") {
+			return `Начните автоматическую публикацию бонусов и скидок Red Dead Online`;
+		}			
+		if (lang === "de") {
+			return `Starten Sie die automatische Veröffentlichung von Red Dead Online-Boni`;
+		}		
+		if (lang === "pt") {
+			return `Iniciar publicações automáticas`;
+		}		
+		else {
+			return `Start automatically publishing Red Dead Online bonuses`;
+		}			
+	}					
+
+	function rdoStartDesc() {
+		if (lang === "en") {
+			return `Click **the dropdown menu** to confirm the channel you want to send Red Dead Online Auto Posts to \n**the first Tuesday of every month at 2:00 PM EST**.`;
+		}
+		if (lang === "es") {
+			return `Haga clic en **El menú desplegable** para confirmar el canal al que desea enviar publicaciones automáticas de RDO \n**el primer martes de cada mes a las 14:00 EST**.`;
+		}
+		if (lang === "ru") {
+			return `Щелчок **раскрывающееся меню** для подтверждения канала вы хотите отправлять автоматические сообщения RDO на \n**в первый вторник каждого месяца в 14:00 EST**.`;
+		}
+		if (lang === "de") {
+			return `Klicken **Das Dropdown-Menü** um den Kanal zu bestätigen, an den Sie automatische RDO-Beiträge senden möchten \n** am ersten Dienstag eines jeden Monats um 14:00 EST**.`;
+		}
+		if (lang === "pt") {
+			return `Clique **no menu suspenso** para confirmar o canal para o qual deseja enviar as publicações automáticas do Red Dead Online \n**na primeira terça-feira de cada mês às 14:00 EST**.`;
+		}
+		else {
+			return `Click **the dropdown menu** to confirm the channel you want to send Red Dead Online Auto Posts to \n**the first Tuesday of every month at 2:00 PM EST**.`;
+		}		
+	}			
+
+	function rdoStartFooter() {
+		if (lang === "en") {
+			return `Auto posts can only be sent to text channels the bot has permission to \'Send Messages\' in.`;
+		}
+		if (lang === "es") {
+			return `Las publicaciones automáticas solo se pueden enviar a canales de texto en los que el bot tiene permiso para \'Enviar mensajes\'.`;
+		}
+		if (lang === "ru") {
+			return `Автоматические сообщения могут быть отправлены только на текстовые каналы, на которые бот имеет разрешение \'Отправить сообщения\'.`;
+		}
+		if (lang === "de") {
+			return `Automatische Posts können nur an Textkanäle gesendet werden, in denen der Bot die Berechtigung zum \'Senden von Nachrichten\' hat.`;
+		}
+		if (lang === "pt") {
+			return `Autoposts só podem ser enviados para canais de texto que o bot tenha permissão de \'Enviar mensagens\'.`;
+		}
+		else {
+			return `Auto posts can only be sent to text channels the bot has permission to \'Send Messages\' in.`;
+		}		
+	}
+
+		function goBack() {
+			if (lang === "en") {
+					return `Go Back`;
+			}
+			else if (lang === "es") {
+				return `Volver`;
+			}
+			else if (lang === "ru") {
+				return `Вернуться`;
+			}
+			else if (lang === "de") {
+				return `Zurück`;
+			}
+			else if (lang === "pt") {
+				return `Voltar`;
+			}
+			else {
+				return `Go Back`;
+			}					
+		}		
+
+				function notYourButtonString() {
+					if (lang === "en") {
+						return `These buttons are not for you.`;
+					}
+					else if (lang === "es") {
+						return `Estos botones no son para ti.`;
+					}
+					else if (lang === "ru") {
+						return `Эти кнопки не для вас.`;
+					}
+					else if (lang === "de") {
+						return `Diese Schaltflächen sind nicht für Sie.`;
+					}
+					else if (lang === "pt") {
+						return `Esses botões não são para você.`;
+					}
+					else {
+						return `These buttons are not for you.`;
+					}				
+			}						
+
+//-----END TRANSLATIONS-----//					
+
 			const rdoStartEmbed = new EmbedBuilder()
 			.setColor(`Green`) 
-			.setTitle(`Start Auto Posting RDR2 Online Bonuses & Discounts`)
-			.setDescription(`Click **the dropdown menu** to confirm the channel you want to send Red Dead Redemption II Auto Posts to \n**the first Tuesday of every month at 2:00 PM EST**.`)	
-			.setFooter({ text: 'Auto posts can only be sent to text channels.', iconURL: process.env.logo_link });
+			.setTitle(`${rdoStartTitle()}`)
+			.setDescription(`${rdoStartDesc()}`)	
+			.setFooter({ text: `${rdoStartFooter()}`, iconURL: process.env.logo_link });					
+
+		fs.readFile('./RDODataBase.txt', 'utf8', async function (err, data) {
+    	if (err) {console.log(`Error: ${err}`)} //If an error, console.log						
 
 			let rdoChannelCount = 0;
 				interaction.guild.channels.cache.forEach(channel => {
-					if ( (channel.type === 0) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
+					if ( ((channel.type === 0) || (channel.type === 5)) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
 						rdoChannelCount += 1;
 					}
 				})
@@ -50,7 +199,7 @@ module.exports = {
 			var rdoChannelIDs = new Array(rdoChannelCount);
 			var rdoChannelTypes = new Array(rdoChannelCount);
 			interaction.guild.channels.cache.forEach(channel => {
-				if ( (channel.type === 0) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
+				if ( ((channel.type === 0) || (channel.type === 5)) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
 					rdoChannelNames.splice((channel.rawPosition), 1, channel.name);   //rdoChannelNames.push(channel.name); 
 					rdoChannelIDs.splice((channel.rawPosition), 1, channel.id); 	//rdoChannelIDs.push(channel.id);
 					rdoChannelTypes.splice((channel.rawPosition), 1, channel.type);	//rdoChannelTypes.push(channel.type);
@@ -61,7 +210,7 @@ module.exports = {
 
 			let rdoStartMenu = new ActionRowBuilder()
 			    .addComponents(
-			        new SelectMenuBuilder()
+			        new StringSelectMenuBuilder()
 			        .setCustomId(`rdoStartMenu - u:${interaction.user.id} - c:undefinedchannel`)
 			        .setPlaceholder('Select a Channel')
 			        .addOptions([{
@@ -84,12 +233,13 @@ module.exports = {
 				.addComponents(
 					new ButtonBuilder()
 			        .setCustomId(`rdostartback - ${interaction.user.id}`)
-			        .setLabel('Go Back')
+			        .setLabel(`${goBack()}`)
 			        .setStyle(ButtonStyle.Secondary),	
-			);	
+				);
+				
 			let rdoStartMenu2 = new ActionRowBuilder()
 			    .addComponents(
-			        new SelectMenuBuilder()
+			        new StringSelectMenuBuilder()
 			        .setCustomId(`rdoStartMenu2 - u:${interaction.user.id} - c:undefinedchannel`)
 			        .setPlaceholder('Select a Channel')
 			        .addOptions([{
@@ -124,22 +274,56 @@ module.exports = {
 				}
 
 				if (interaction.user.id === buttonUserID) { 
-		        await interaction.editReply({ embeds: [rdoStartEmbed], components: [rdoStartMenu, rdoStartMenu2, backButton] })
-		        .catch(err => console.log(`rdoStartEmbed+Menu Error: ${err.stack}`));
-		    } else {
-		       interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
-		    }				
+						await interaction.editReply({ embeds: [rdoStartEmbed], components: [rdoStartMenu, rdoStartMenu2, backButton] })
+		        .catch(err => console.log(`rdoStartEmbed+Menu Error: ${err.stack}`));				
+		    } 
+				else {
+						await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });	
+				}
+		  			
 				
 			} //end if rdoChannelCount >24
 
+			function expiredDesc() {
+				if (lang === "en") {
+					return `This interaction expired`;
+				}
+				if (lang === "es") {
+					return `Esta interacción expiró.`;
+				}
+				if (lang === "ru") {
+					return `Срок действия этого взаимодействия истек.`;
+				}
+				if (lang === "de") {
+					return `Diese Interaktion ist abgelaufen`;
+				}
+				if (lang === "pt") {
+					return `Esta interação expirou.`;
+				}
+				else {
+					return `This interaction expired`;
+				}						
+			}
+
+			const expiredButton = new ActionRowBuilder()
+				.addComponents(
+					new ButtonBuilder()
+						.setCustomId(`expired`)
+						.setLabel(`${expiredDesc()}`)
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(':RSWeekly:1025248227248848940')
+						.setDisabled(true),			
+				);				
+
 				setTimeout(() => {
 					interaction.editReply({components: [expiredButton]})
-				}, (60000 * 2))					
-
-				
+				}, (60000 * 5))		
+			
+				}); //end fs.readFile for rolesDataBase.txt
+				}}); //end fs.readFile LANGDataBase
 		} // end if rdostart button
 
-		
+			
 		}); //end fs:readFile
 				
 		

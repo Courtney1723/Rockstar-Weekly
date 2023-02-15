@@ -1,20 +1,10 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
-
-const expiredButton = new ActionRowBuilder()
-	.addComponents(
-		new ButtonBuilder()
-			.setCustomId(`expired`)
-			.setLabel('This interaction timed out.')
-			.setStyle(ButtonStyle.Secondary)
-			.setEmoji(':RSWeekly:1025248227248848940')
-			.setDisabled(true),			
-	);
 
 module.exports = {
 	name: 'interactionCreate',
@@ -46,11 +36,169 @@ module.exports = {
             AdminYesNoAdd += 'yes';
         }
 
+//--BEGIN TRANSLATIONS--//
+
+			fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
+			  if (err) {console.log(`Error: ${err}`)} 
+				else {
+					let lang03 = data.split("lang:");
+					//console.log(`lang03.length: ${lang03.length}`);
+
+					let langArray = [];
+					for (i=1; i <= lang03.length - 1; i++) { //first will always be undefined
+						let lang02 = lang03[i].split(" -");
+						//console.log(`lang02 at ${i}: ${lang02}`);
+						
+						let lang01 = lang02[0];
+						//console.log(`lang01 at ${i}: ${lang01}`);
+
+						langArray.push(lang01);
+					}
+
+					//console.log(`langArray: ${langArray}`);
+
+					let guildID03 = data.split("guild:");
+					//console.log(`guildID03.length: ${guildID03.length}`);
+					let guildIDArray = [];
+					for (i=2; i <= guildID03.length - 1; i++) { //first two will always be undefined
+						let guildID02 = guildID03[i].split(" -");
+						//console.log(`lang02 at ${i}: ${lang02}`);
+						
+						let guildID01 = guildID02[0];
+						//console.log(`lang01 at ${i}: ${lang01}`);
+
+						guildIDArray.push(guildID01);
+					}
+
+					//console.log(`guildIDArray: ${guildIDArray}`);	
+
+					let lang = "";
+					for (i=0; i <= guildIDArray.length - 1; i++) {
+						//console.log(`guildIDArray at ${i}: ${guildIDArray[i]}`);
+						//console.log(`langArray at ${i}: ${langArray[i]}`);
+						//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
+
+						if (interaction.guild.id === guildIDArray[i]) {
+							lang += `${langArray[i]}`;
+						}
+					}
+
+					//console.log(`lang: ${lang}`);						
+				function AddARole() {
+					if (lang === "en") {
+							return `Add a Role`;
+					}
+					else if (lang === "es") {
+						return `Agregar un rol`;
+					}
+					else if (lang === "ru") {
+						return `Добавление роли`;
+					}
+					else if (lang === "de") {
+						return `Hinzufügen einer Rolle`;
+					}
+					else if (lang === "pt") {
+						return `Adicionar uma função`;
+					}
+					else {
+						return `Add a Role`;
+					}					
+				}			
+
+				function dropdownMenu() {
+					if (lang === "en") {
+						return `Click **the dropdown menu** to allow a role to configure auto posts.`;	
+					}
+					else if (lang === "es") {
+						return `Haga clic en el menú desplegable para permitir que un rol configure publicaciones automáticas.`;
+					}
+					else if (lang === "ru") {
+						return `щелкните раскрывающееся меню, чтобы разрешить роли настраивать автоматические публикации.`;
+					}
+					else if (lang === "de") {
+						return `Klicken Sie auf das Dropdown-Menü, damit eine Rolle automatische Beiträge konfigurieren kann.`;
+					}
+					else if (lang === "pt") {
+						return `Clique no menu suspenso para permitir que uma função configure postagens automáticas.`;
+					}
+					else {
+						return `Click **the dropdown menu** to allow a role to configure auto posts.`;
+					}					
+				}
+
+				function adminFooter() {
+					if (lang === "en") {
+						return `Administrators can always configure auto posts.`;	
+					}
+					else if (lang === "es") {
+						return `Los administradores siempre pueden configurar publicaciones automáticas.`;
+					}
+					else if (lang === "ru") {
+						return `Администраторы всегда могут настроить автоматические публикации.`;
+					}
+					else if (lang === "de") {
+						return `Administratoren können automatische Beiträge jederzeit konfigurieren.`;
+					}
+					else if (lang === "pt") {
+						return `Os administradores sempre podem configurar postagens automáticas.`;
+					}
+					else {
+						return `Administrators can always configure auto posts.`;
+					}					
+				}
+
+				function goBack() {
+					if (lang === "en") {
+							return `Go Back`;
+					}
+					else if (lang === "es") {
+						return `Volver`;
+					}
+					else if (lang === "ru") {
+						return `Вернуться`;
+					}
+					else if (lang === "de") {
+						return `Zurück`;
+					}
+					else if (lang === "pt") {
+						return `Voltar`;
+					}
+					else {
+						return `Go Back`;
+					}					
+				}		
+
+			function notYourButtonString() {
+					if (lang === "en") {
+						return `These buttons are not for you.`;
+					}
+					else if (lang === "es") {
+						return `Estos botones no son para ti.`;
+					}
+					else if (lang === "ru") {
+						return `Эти кнопки не для вас.`;
+					}
+					else if (lang === "de") {
+						return `Diese Schaltflächen sind nicht für Sie.`;
+					}
+					else if (lang === "pt") {
+						return `Esses botões não são para você.`;
+					}
+					else {
+						return `These buttons are not for you.`;
+					}				
+			}				
+
+//--END TRANSLATIONS--//				
+
 				const configureStartEmbed = new EmbedBuilder()
 				.setColor(`0x00FFFF`) //Teal
-				.setTitle(`Add a Role`)
-				.setDescription(`Click **the dropdown menu** to allow a role to configure auto posts.`)	
-				.setFooter({text: `Administrators can always configure auto posts.`, iconURL: process.env.logo_link })
+				.setTitle(`${AddARole()}`)
+				.setDescription(`${dropdownMenu()}`)	
+				.setFooter({text: `${adminFooter()}`, iconURL: process.env.logo_link })
+
+		fs.readFile('./rolesDataBase.txt', 'utf8', async function (err, data) {
+    if (err) {console.log(`Error: ${err}`)} //If an error, console.log					
 
 			let userHighestRoleRawPosition = 0;
 			let userRoles = "";
@@ -89,7 +237,7 @@ module.exports = {
 				
 				let configureStartMenu = new ActionRowBuilder()
 				    .addComponents(
-				        new SelectMenuBuilder()
+				        new StringSelectMenuBuilder()
 				        .setCustomId(`configureStartMenu - u:${interaction.user.id}`)
 				        .setPlaceholder('Select a Role')
 				        .addOptions([{
@@ -113,7 +261,7 @@ module.exports = {
 			.addComponents(
 					new ButtonBuilder()
 							.setCustomId(`configurestartback - ${interaction.user.id}`)
-							.setLabel('Go Back')
+							.setLabel(`${goBack()}`)
 							.setStyle(ButtonStyle.Secondary),	
 			);		
 
@@ -124,7 +272,7 @@ module.exports = {
 	        await interaction.editReply({ embeds: [configureStartEmbed], components: [configureStartMenu, backButton] })
 	        .catch(err => console.log(`configureStartEmbed+Menu Error: ${err.stack}`));
 	    } else {
-	       interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
+	       interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });
 	    }
 				
 		} //end if there are fewer than 23 roles
@@ -132,7 +280,7 @@ module.exports = {
 
 			let configureStartMenu2 = new ActionRowBuilder()
 			    .addComponents(
-			        new SelectMenuBuilder()
+			        new StringSelectMenuBuilder()
 			        .setCustomId(`configureStartMenu2 - u:${interaction.user.id} - r:${configureRoleIDs[24]}`)
 			        .setPlaceholder('Select a Role')
 			        .addOptions([{
@@ -158,16 +306,49 @@ module.exports = {
 		        await interaction.editReply({ embeds: [configureStartEmbed], components: [configureStartMenu, configureStartMenu2, backButton] })
 		        .catch(err => console.log(`configureStartEmbed+Menu Error: ${err.stack}`));
 		    } else {
-		       interaction.followUp({ content: `These buttons aren't for you!`, ephemeral: true });
+		       interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });
 		    }				
 				
 			} //end if configureRoleCount >24				
 
-		
+			function expiredDesc() {
+				if (lang === "en") {
+					return `This interaction expired`;
+				}
+				if (lang === "es") {
+					return `Esta interacción expiró.`;
+				}
+				if (lang === "ru") {
+					return `Срок действия этого взаимодействия истек.`;
+				}
+				if (lang === "de") {
+					return `Diese Interaktion ist abgelaufen`;
+				}
+				if (lang === "pt") {
+					return `Esta interação expirou.`;
+				}
+				else {
+					return `This interaction expired`;
+				}						
+			}
+
+			const expiredButton = new ActionRowBuilder()
+				.addComponents(
+					new ButtonBuilder()
+						.setCustomId(`expired`)
+						.setLabel(`${expiredDesc()}`)
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(':RSWeekly:1025248227248848940')
+						.setDisabled(true),			
+				);			
 
 				setTimeout(() => {
 					interaction.editReply({components: [expiredButton]})
-				}, (60000 * 2))	
+				}, (60000 * 5))	
+
+				}); //end fs.redFile for rolesDataBase.txt
+
+				}}); //end fs.readFile for LANGDataBase.txt
 		
 		} // end if configurestart button
 		
