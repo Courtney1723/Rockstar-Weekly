@@ -100,7 +100,7 @@ module.exports = {
 		});			
 
 		//Counts the guilds - uncomment for main bot
-		// const GuildIDs = client.guilds.cache.map(guild => guild.id);
+		const GuildIDs = client.guilds.cache.map(guild => guild.id);
 		// const GuildNames = client.guilds.cache.map(guild => guild.name);
 		// Guilds = "";
 		// for (i = 0; i <= GuildIDs.length; ++i) {
@@ -109,7 +109,7 @@ module.exports = {
 		// 	}
 		// }
 		// //console.log(Guilds);
-		//   console.log(`${GuildIDs.length} guilds`);
+		console.log(`${GuildIDs.length} guilds`);
 
 
 	},

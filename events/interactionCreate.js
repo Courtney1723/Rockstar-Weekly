@@ -14,7 +14,7 @@ module.exports = {
 					console.log(`You triggered ${interaction.commandName} in a guild`);
 				} 
 				else {
-					console.log(`A user triggered ${interaction.commandName} in a guild`);
+					console.log(`${interaction.user.tag} triggered ${interaction.commandName} in a guild`);
 				}
 			}
 			else if (interaction.channel.type === 1) {
@@ -22,7 +22,7 @@ module.exports = {
 					console.log(`You triggered ${interaction.commandName} in a DM`);
 				} 
 				else {
-					console.log(`A user triggered ${interaction.commandName} in a DM`);
+					console.log(`${interaction.user.tag} triggered ${interaction.commandName} in a DM`);
 				}
 			}
 			else if (interaction.channel.type === 5) {
@@ -30,11 +30,11 @@ module.exports = {
 					console.log(`You triggered ${interaction.commandName} in an announcement channel`);
 				} 
 				else {
-					console.log(`A user triggered ${interaction.commandName} in an announcement channel`);
+					console.log(`${interaction.user.tag} triggered ${interaction.commandName} in an announcement channel`);
 				}
 			}					
 			else {
-				console.log(`A user triggered ${interaction.commandName} ...somewhere?`);
+				console.log(`${interaction.user.tag} triggered ${interaction.commandName} ...somewhere?`);
 			}
 		}
 	},

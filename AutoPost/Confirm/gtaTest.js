@@ -208,11 +208,16 @@ function gtaTest() {
 
 			//--BEGIN FOREIGN LANGUAGE FORMATTING-----//
 				//--RUSSIAN--//
-				.replace(/=\"\"/g, "")
-				.replace(/<liЗаработайте/g, "")
-				.replace(/<\/liЗаработайте>/g, "")
-				.replace(/< li>/g, "")
-				.replace(/<\/>/g, "")
+					.replace(/=\"\"/g, "")
+					.replace(/<liЗаработайте/g, "")
+					.replace(/<\/liЗаработайте>/g, "")
+					.replace(/< li>/g, "")
+					.replace(/<\/>/g, "")
+					.replace(/<\/strong>/g, "")
+					.replace(/<strong>/g, "")
+
+				//--Spanish--//
+					.replace(/<mq:rxt><\/mq:rxt>/g, "")			
 
 			//-----END FOREIGN LANGUAGE FORMATTING-----//
 
