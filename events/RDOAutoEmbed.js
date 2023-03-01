@@ -496,26 +496,26 @@ else if (RDO_Bonus != undefined) {
 
 			//console.log(`rdoFinalString: ${rdoFinalString}`);
     function rdoPost() {
-        return rdoFinalString.slice(0, bestBreak()); //FIXME: adjust this for the best break - up to 4000
+        return rdoFinalString.slice(0, bestBreak()); //FIXME: adjust this for the best break - up to 3950
     }
     //console.log(`1: ${rdoFinalString.length}\n`) 
     function rdoPost2() {
-      if (rdoFinalString.length > 4000) {
-        let post02 = rdoFinalString.substr(bestBreak(), bestEndBreak()); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
+      if (rdoFinalString.length > 3950) {
+        let post02 = rdoFinalString.substr(bestBreak(), bestEndBreak()); //FIXME: adjust this for the best break - up to 3950 (a, b) a+b !> 5890
         return post02;
       } else {
         return "";
       }
     }  
     function elipseFunction() {
-      if (rdoFinalString.length > 4000) {
+      if (rdoFinalString.length > 3950) {
         return "...";
         } else {
         return "";
         }
     }		
     function rdoFooterMax() {
-      if (rdoFinalString.length > 4000) {
+      if (rdoFinalString.length > 3950) {
 				if (lang === "en") {
 					return `\n** [click here](${url}) for more details**`;
 				}
@@ -539,7 +539,7 @@ else if (RDO_Bonus != undefined) {
       }
     }
     function rdoFooterMin() { 
-      if (rdoFinalString.length <= 4000) {
+      if (rdoFinalString.length <= 3950) {
 				if (lang === "en") {
 					return `\n** [click here](${url}) for more details**`;
 				}
@@ -616,7 +616,7 @@ function rdoTitleFunction() {
 			//console.log(`channelIDArray at c${c}: ${channelIDArray[c]}`);
 			if (channelIDArray[c].startsWith("undefined")) {}
 			else {
-				if (rdoFinalString.length <= 4000) {
+				if (rdoFinalString.length <= 3950) {
 					client.channels.fetch(channelIDArray[c]).then(channel => channel.send(({embeds: [rdoImageEmbed, rdoEmbed]}))).catch(err => console.log(`Min Error: ${err}\nChannel ID: ${channelIDArray[c]}`));
 				} 
 				else {

@@ -423,7 +423,7 @@ else if (RDO_Bonus != undefined) {
     }
     //console.log(`1: ${rdoFinalString.length}\n`) 
     function rdoPost2() {
-      if (rdoFinalString.length > 4000) {
+      if (rdoFinalString.length > 3950) {
         let post02 = rdoFinalString.substr(bestBreak(), bestEndBreak()); 
         return post02;
       } else {
@@ -431,14 +431,14 @@ else if (RDO_Bonus != undefined) {
       }
     }  
     function elipseFunction() {
-      if (rdoFinalString.length > 4000) {
+      if (rdoFinalString.length > 3950) {
         return "...";
         } else {
         return "";
         }
     }		
     function rdoFooterMax() {
-      if (rdoFinalString.length > 4000) {
+      if (rdoFinalString.length > 3950) {
         if (lang === "en") {
 					return `** [Click here](${url}) for more details**`;
 				}
@@ -462,7 +462,7 @@ else if (RDO_Bonus != undefined) {
       }
     }
     function rdoFooterMin() { 
-      if (rdoFinalString.length <= 4000) {
+      if (rdoFinalString.length <= 3950) {
 				if (lang === "en") {
 					return `\n** [Click here](${url}) for more details**`;
 				}
@@ -524,7 +524,7 @@ else if (RDO_Bonus != undefined) {
 		 // console.log(`rdoEmbed length: ${rdoEmbed.length}`); //no more than 4096 (line 199)
 		 // console.log(`rdoEmbed2 length: ${rdoEmbed2.length}`); //no more than 6000 - rdoEmbed.length (line 204)
 
-		if (rdoFinalString.length <= 4000) {
+		if (rdoFinalString.length <= 3950) {
 			await interaction.editReply({embeds: [rdoImageEmbed, rdoEmbed]}).catch(err => 
 				interaction.editReply({embeds: [errorEmbed], ephemeral: true }).then( 
 				console.log(`There was an error! \nUser:${interaction.user.tag} - ${interaction} \nError: ${err.stack}`))
