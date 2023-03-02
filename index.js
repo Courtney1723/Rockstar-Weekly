@@ -88,7 +88,7 @@ client.on('interactionCreate', async interaction => {
       let errorEmbed = new EmbedBuilder()
       .setColor('Red') 
       .setTitle(`Uh Oh!`)
-      .setDescription(`There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again in a few minutes.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${process.env.support_link}>)`);
+		 	.setDescription(`There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again in a few minutes.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${process.env.support_link}>)`);
 
 		let trafficError = new EmbedBuilder()
 			.setColor('Orange')

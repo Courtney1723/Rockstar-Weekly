@@ -15,7 +15,7 @@ fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
 					//console.log(`lang03.length: ${lang03.length}`);
 
 					let langArray = [];
-					for (i=1; i <= lang03.length - 1; i++) { //first will always be undefined
+					for (i=2; i <= lang03.length - 1; i++) { //first will always be undefined
 						let lang02 = lang03[i].split(" -");
 						//console.log(`lang02 at ${i}: ${lang02}`);
 						
@@ -102,7 +102,7 @@ fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
       .setTitle(`${helpTitle()}`)
       .setDescription(`${helpDesc()}`);
 
-		await interaction.editReply({ embeds: [helpEmbed] }).catch(console.error.stack);
+		await interaction.editReply({ content: `The rockstar social club website has been recently updated and event information is currently inaccesible. The developer is working on a solution now. Sorry for the inconvenience.`,embeds: [helpEmbed] }).catch(console.error.stack);
 
 				}}); 
 	},
