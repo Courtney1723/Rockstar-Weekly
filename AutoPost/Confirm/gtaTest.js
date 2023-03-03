@@ -510,6 +510,10 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 							var finalZ = 0;
 							var countZ = 0;
 							for (z = 0; charCount <= 3790; z++) {
+								if (gtaFinalString.length <= 4100) {
+									charCount = 3950;
+									finalZ = gtaFinalString.length;
+								}								
 								if (gtaSpaces[z] !== undefined) {
 									//console.log(`gtaSpaces at ${z}: ${gtaSpaces[z]}`);
 										charCount += gtaSpaces[z].length;

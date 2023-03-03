@@ -102,7 +102,7 @@ fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
       .setTitle(`${helpTitle()}`)
       .setDescription(`${helpDesc()}`);
 
-		await interaction.editReply({ content: `The rockstar social club website has been recently updated and event information is currently inaccesible. The developer is working on a solution now. Sorry for the inconvenience.`,embeds: [helpEmbed] }).catch(console.error.stack);
+		await interaction.editReply({ embeds: [helpEmbed] }).catch(console.error.stack);
 
 				}}); 
 	},
