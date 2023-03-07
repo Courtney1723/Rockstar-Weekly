@@ -388,7 +388,7 @@ else if (RDO_Bonus != undefined) {
 		(RDO_Title.includes("Скидки")) || 
 		(RDO_Title.includes("Rabatte")) || 
 		(RDO_Title.includes("Descontos")) ) { 
-			rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n`;
+			rdoFinalString01 += `**${RDO_Title}\n**${RDO_Bonus}\n\n`;
 	}	
 	else if ( 
 		(RDO_Title.includes("2x")) || //German, and Portuguese use numbers 
@@ -477,6 +477,10 @@ else if (RDO_Bonus != undefined) {
 							var finalZ = 0;
 							var countZ = 0;
 							for (z = 0; charCount <= 3950; z++) {
+								if (rdoFinalString.length <= 4100) {
+									charCount = 3950;
+									finalZ = rdoFinalString.length;
+								}									
 								//console.log(`rdoSpaces at ${z}: ${rdoSpaces[z]}`);
 									charCount += rdoSpaces[z].length;
 								//console.log(`charCount at ${z}: ${charCount}`);
@@ -496,12 +500,12 @@ else if (RDO_Bonus != undefined) {
 
 			//console.log(`rdoFinalString: ${rdoFinalString}`);
     function rdoPost() {
-        return rdoFinalString.slice(0, bestBreak()); //FIXME: adjust this for the best break - up to 3950
+        return rdoFinalString.slice(0, bestBreak()); //FIXME: adjust this for the best break - up to 4000
     }
     //console.log(`1: ${rdoFinalString.length}\n`) 
     function rdoPost2() {
       if (rdoFinalString.length > 3950) {
-        let post02 = rdoFinalString.substr(bestBreak(), bestEndBreak()); //FIXME: adjust this for the best break - up to 3950 (a, b) a+b !> 5890
+        let post02 = rdoFinalString.substr(bestBreak(), bestEndBreak()); //FIXME: adjust this for the best break - up to 4000 (a, b) a+b !> 5890
         return post02;
       } else {
         return "";

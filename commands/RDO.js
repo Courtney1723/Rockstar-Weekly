@@ -10,11 +10,10 @@ const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('rdo')
-		.setDescription('Latest RDR2 online bonuses and discounts')
+		.setDescription('Latest Red Dead Online Bonuses')
 		.setDMPermission(true),
 	async execute(interaction) {
-		await interaction.deferReply().catch(console.error);	
-
+		await interaction.deferReply().catch(console.error);
 
 
 				let rdoURL = process.env.SOCIAL_URL_RDO2;
@@ -311,7 +310,7 @@ else if (RDO_Bonus != undefined) {
 		(RDO_Title.includes("Скидки")) || 
 		(RDO_Title.includes("Rabatte")) || 
 		(RDO_Title.includes("Descontos")) ) { 
-			rdoFinalString01 += `**${RDO_Title}**${RDO_Bonus}\n`;
+			rdoFinalString01 += `**${RDO_Title}\n**${RDO_Bonus}\n\n`;
 	}	
 	else if ( 
 		(RDO_Title.includes("2x")) || //German, and Portuguese use numbers 
@@ -379,6 +378,7 @@ else if (RDO_Bonus != undefined) {
 }
 //-----------END for loop----------//		
 	//console.log(`rdoFinalString01: ${rdoFinalString01}`); //rdoFinalString before HTML formatting
+			//console.log(`rdoFinalString01.length: ${rdoFinalString01.length}`);	
 		let rdoFinalString = rdoFinalString01.replace(/<p>/g, "")
 											.replace(/<\/p>/g, "")
 										  .replace(/<\/b>/g, "")
@@ -388,10 +388,9 @@ else if (RDO_Bonus != undefined) {
 											.replace(/\n\n\n/g, "\n")
 											.replace(/\*\*\n\*\*/g, "**\n\n**")
 											.replace(/• undefined/g, "• ")
-											.replace(/\)• /g, ")\n• ") //adds a newline between link lists
-					      .replace(/<a href=\"https:\/\/socialclub.rockstargames.com\/games\/rdr2\/catalogue\/online\/products\/23bc7710\/c\/8bdc1af5" target=\"_blank\" draggable=\"false\">\n\<\/a>•/g, "") //FIXME - delete next month
-					      .replace(/<a href=\"https:\/\/socialclub.rockstargames.com\/games\/rdr2\/catalogue\/online\/products\/23bc7710\/c\/8bdc1af5" target=\"_blank\">\n\<\/a>•/g, ""); //FIXME - delete next month		
+											.replace(/\)• /g, ")\n• ") //adds a newline between link lists	
 
+						//console.log(`rdoFinalString.length: ${rdoFinalString.length}`);	
 						function bestBreak() {
 							var rdoSpaces = rdoFinalString.split(`\n\n`); //counts the newlines
 							var charCount = 0;//( (rdoTitleString().length) + (rdoDate[0].length) + (rdoFooterMin().length) + (elipseFunction().length) ); 
@@ -418,10 +417,12 @@ else if (RDO_Bonus != undefined) {
 						//console.log(`bestEndBreak: ${bestEndBreak()}`);			
 
 			//console.log(`rdoFinalString: ${rdoFinalString}`);
+			//console.log(`1: ${rdoFinalString.length}\n`); 
+		
     function rdoPost() {
         return rdoFinalString.slice(0, bestBreak());
     }
-    //console.log(`1: ${rdoFinalString.length}\n`) 
+		
     function rdoPost2() {
       if (rdoFinalString.length > 3950) {
         let post02 = rdoFinalString.substr(bestBreak(), bestEndBreak()); 
@@ -430,6 +431,7 @@ else if (RDO_Bonus != undefined) {
         return "";
       }
     }  
+		
     function elipseFunction() {
       if (rdoFinalString.length > 3950) {
         return "...";
@@ -504,7 +506,7 @@ else if (RDO_Bonus != undefined) {
 				return `Bônus no Red Dead Online:`;
 			}
 			else {
-    		return `Red Dead Online Bonuses & Discounts:`;
+    		return `Red Dead Online Bonuses:`;
 			}		
 		}
 		//console.log(`rdoTitleFunction: ${rdoTitleFunction()}`);

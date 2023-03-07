@@ -50,7 +50,7 @@ var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 			}); //END FS:READFILE gtaDataBase.txt
 		} // end gtaRemove()
 		gtaRemove();
-		setInterval(gtaRemove, 864e5); //every 24 hours
+		setInterval(gtaRemove, 18e5); //every 30 minutes
 
 
 		
@@ -96,7 +96,7 @@ var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 			}); //END FS:READFILE rdoDataBase.txt
 		} // end rdoRemove()
 		rdoRemove();
-		setInterval(rdoRemove, 864e5); //every 24 hours
+		setInterval(rdoRemove, 18e5); //every 30 minutes
 
 
 		
@@ -145,7 +145,7 @@ var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 			}); //END FS:READFILE rolesDataBase.txt		
 		}	//end of roleRemove()
 			roleRemove();
-			setInterval(roleRemove, 864e5); //every 24 hours		
+			setInterval(roleRemove, 18e5); //every 30 minutes		
 		
 
 		
@@ -192,7 +192,7 @@ var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 				}); //END FS:READFILE LANGDataBase.txt		
 			}	//end of langRemove()
 			LANGRemove();
-			setInterval(LANGRemove, 864e5); //every 24 hours		
+			setInterval(LANGRemove, 18e5); //every 30 minutes		
 
 
 		
@@ -243,7 +243,7 @@ var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 			}); //END FS:READFILE gtaDataBase.txt
 		} // end deletedChannelRemove()
 		deletedGTAChannelRemove();
-		setInterval(deletedGTAChannelRemove, 864e5); //every 24 hours		
+		setInterval(deletedGTAChannelRemove, 18e5); //every 30 minutes		
 		
 
 		
@@ -294,7 +294,7 @@ var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 			}); //END FS:READFILE rdoDataBase.txt
 		} // end deletedChannelRemove()
 		deletedRDOChannelRemove();
-		setInterval(deletedRDOChannelRemove, 864e5); //every 24 hours			
+		setInterval(deletedRDOChannelRemove, 18e5); //every 30 minutes			
 
 	}
 }
