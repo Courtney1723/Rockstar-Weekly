@@ -1,8 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActivityType } = require('discord.js');
- const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
+const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 var cron = require('node-cron'); //https://github.com/node-cron/node-cron
-
-//FIXME... How to add functionality for when the bot is added to a new guild?
 
  module.exports = {
  	name: 'ready',
