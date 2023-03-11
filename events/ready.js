@@ -11,7 +11,8 @@ module.exports = {
 
 		async function newBonusPresence() {
 			let gtaURL = process.env.SOCIAL_URL_GTA2;
-	
+				//console.log(`gtaURL: ${gtaURL}`);
+
 			const instance = await phantom.create();
 			const page = await instance.createPage();
 	
@@ -109,8 +110,7 @@ module.exports = {
 		// 	}
 		// }
 		// //console.log(Guilds);
-		console.log(`${GuildIDs.length} guilds`);
-
+		  console.log(`${GuildIDs.length} guilds`);
 
 	},
 };
