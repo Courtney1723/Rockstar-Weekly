@@ -277,7 +277,7 @@ Click **\'RDO\'** to set up Red Dead Online Auto Posts for **the first Tuesday o
 //--END TRANSLATIONS--//
 
 		const startEmbed = new EmbedBuilder()
-			.setColor(`Green`) 
+			.setColor(0x0FFF00)//green 
 			.setTitle(`${startTitle()}`)
 			.setDescription(`${startDesc()}`)	
 			

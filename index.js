@@ -30,17 +30,17 @@ client.on("ready", () => {
 
 				//console.log(`${mstHour}:${mstMinute} ${amPM}`);			
 			
-			if ( (log.includes(`guilds`)) || (log.includes(`Logged in`)) || (log.includes(`You triggered`)) || (log.includes(`You clicked`)) || (log.includes(`You changed`)) || (log.includes(`You added`)) || (log.includes(`You removed`)) ) {
+			if ( (log.includes(`guilds`)) || (log.includes(`Logged in`)) || (log.includes(`You triggered`)) || (log.includes(`You clicked`)) || (log.includes(`You changed`)) || (log.includes(`You added`)) || (log.includes(`You removed`)) || (log.includes(`You unsubcribed`)) ) {
 				const logChannel = client.channels.cache.get(process.env.logChannel2);	
 				let logEmbed = new EmbedBuilder()
-					.setColor('0xFF008B') //Pink
+					.setColor(0xFF008B) //Pink
 					.setDescription(`${log}\n${mstHour}:${mstMinute} ${amPM}`)
 				logChannel.send({embeds: [logEmbed]});
 			} 
 			else {
 				const logChannel = client.channels.cache.get(process.env.logChannel);	
 				let logEmbed = new EmbedBuilder()
-					.setColor('0xFF008B') //Pink
+					.setColor(0xFF008B) //Pink
 					.setDescription(`${log}\n${mstHour}:${mstMinute} ${amPM}`)
 				logChannel.send({embeds: [logEmbed]});
 			}
@@ -86,12 +86,12 @@ client.on('interactionCreate', async interaction => {
 	} catch (error) {
 
       let errorEmbed = new EmbedBuilder()
-      .setColor('Red') 
+      .setColor(0xFF0000) //Red 
       .setTitle(`Uh Oh!`)
 		 	.setDescription(`There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again in a few minutes.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${process.env.support_link}>)`);
 
 		let trafficError = new EmbedBuilder()
-			.setColor('Orange')
+			.setColor(0xFFAE00) //Orange
 			.setTitle(`Uh Oh!`)
 			.setDescription(`It looks like Discord is under a heavy load! Please try again in a few minutes.`)
 		

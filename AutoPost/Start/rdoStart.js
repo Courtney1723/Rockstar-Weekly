@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ChannelType } = require('discord.js');
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 
 module.exports = {
@@ -176,7 +176,7 @@ module.exports = {
 //-----END TRANSLATIONS-----//					
 
 			const rdoStartEmbed = new EmbedBuilder()
-			.setColor(`Green`) 
+			.setColor(0x0FFF00)//green 
 			.setTitle(`${rdoStartTitle()}`)
 			.setDescription(`${rdoStartDesc()}`)	
 			.setFooter({ text: `${rdoStartFooter()}`, iconURL: process.env.logo_link });					
@@ -186,7 +186,7 @@ module.exports = {
 
 			let rdoChannelCount = 0;
 				interaction.guild.channels.cache.forEach(channel => {
-					if ( ((channel.type === 0) || (channel.type === 5)) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
+					if ( ((channel.type === ChannelType.GuildText) || (channel.type === ChannelType.GuildAnnouncement)) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
 						rdoChannelCount += 1;
 					}
 				})
@@ -194,7 +194,7 @@ module.exports = {
 			var rdoChannelIDs = new Array(rdoChannelCount);
 			var rdoChannelTypes = new Array(rdoChannelCount);
 			interaction.guild.channels.cache.forEach(channel => {
-				if ( ((channel.type === 0) || (channel.type === 5)) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
+				if ( ((channel.type === ChannelType.GuildAnnouncement) || (channel.type === ChannelType.GuildText)) && (!data.includes(channel.id)) && (channel.permissionsFor(process.env.CLIENT_ID).has(PermissionsBitField.Flags.SendMessages)) ) { 
 					rdoChannelNames.splice((channel.rawPosition), 1, channel.name);   //rdoChannelNames.push(channel.name); 
 					rdoChannelIDs.splice((channel.rawPosition), 1, channel.id); 	//rdoChannelIDs.push(channel.id);
 					rdoChannelTypes.splice((channel.rawPosition), 1, channel.type);	//rdoChannelTypes.push(channel.type);

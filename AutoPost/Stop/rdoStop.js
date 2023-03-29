@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ChannelType } = require('discord.js');
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 
 module.exports = {
@@ -174,7 +174,7 @@ module.exports = {
 //-----END TRANSLATIONS-----//				
 			
 			const rdoStopEmbed = new EmbedBuilder()
-				.setColor(`Red`) 
+				.setColor(0xFF0000) //RED
 				.setTitle(`${rdoStopTitle()}`)
 				.setDescription(`${rdoStopDesc()}`)		
 
@@ -193,7 +193,7 @@ module.exports = {
 			        }])
 			    )
 			interaction.guild.channels.cache.forEach(channel => {
-			    if (((channel.type === 0) || (channel.type === 5)) && (data.includes(channel.id))) {
+			    if (((channel.type === ChannelType.GuildText) || (channel.type === ChannelType.GuildAnnouncement)) && (data.includes(channel.id))) {
 			        rdoStopMenu.components[0].addOptions([{
 			            label: `${channel.name}`,
 			            description: `${channel.name}`,

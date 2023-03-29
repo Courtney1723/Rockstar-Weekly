@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ChannelType } = require('discord.js');
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 		let errorText = `There was an error while executing this command!\nThe error has been sent to the developer and it will be fixed as soon as possible. \nIf the error persists you can try re-inviting the Rockstar Weekly bot by [clicking here](<${process.env.invite_link}>). \nReport the error by joining the Rockstar Weekly bot support server: [click here](<${process.env.support_link}>).`;
 
@@ -51,7 +51,7 @@ module.exports = {
 						//console.log(`langArray at ${i}: ${langArray[i]}`);
 						//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
 
-					if ((interaction.channel.type === 0) || (interaction.channel.type === 5)) {
+					if ((interaction.channel.type === ChannelType.GuildText) || (interaction.channel.type === ChannelType.GuildAnnouncement)) {
 						if (interaction.guild.id === guildIDArray[i]) {
 								lang += `${langArray[i]}`;
 							}
@@ -587,14 +587,14 @@ function rdoTitleFunction() {
 		
 
 		let rdoEmbed = new EmbedBuilder()
-			.setColor('0xC10000') //Red
+			.setColor(0xC10000) //Red
 			.setTitle(`${rdoTitleFunction()}`)
 			.setDescription(`${rdoDate[0]}\n\n${rdoPost()} \n${rdoFooterMin()} ${elipseFunction()}`)
 		let rdoEmbed2 = new EmbedBuilder()
-			.setColor('0xC10000') //Red
+			.setColor(0xC10000) //Red
 			.setDescription(`${elipseFunction()} \n${rdoPost2()} ${rdoFooterMax()}`)	
 		let rdoImageEmbed = new EmbedBuilder()
-			.setColor('0xC10000') //Red
+			.setColor(0xC10000) //Red
 			.setImage(`${rdoImage[0]}`);
 
 		 // console.log(`rdoEmbed length: ${rdoEmbed.length}`); //no more than 4096 (line 199)
@@ -679,7 +679,7 @@ function rdoTitleFunction() {
 		}
 
 		const testEmbed = new EmbedBuilder()
-			.setColor(`Green`) 
+			.setColor(0x0FFF00) //green 
 			.setTitle(`${success()}`)
 			.setDescription(`${sentPostDesc()}`)
 
@@ -831,7 +831,7 @@ function rdoTitleFunction() {
 					}						
 
 			let missingPermissionsEmbed = new EmbedBuilder()
-				.setColor('0xFF0000') //RED
+				.setColor(0xFF0000) //RED
 				.setDescription(`${missingPermissionsDesc()}`)
 
 				if ( ((interaction.guild.members.me).permissionsIn(channelIDArray[c]).has(PermissionsBitField.Flags.SendMessages)) && ((interaction.guild.members.me).permissionsIn(channelIDArray[c]).has(PermissionsBitField.Flags.ViewChannel)) && ((interaction.guild.members.me).permissionsIn(channelIDArray[c]).has(PermissionsBitField.Flags.EmbedLinks)))
@@ -852,7 +852,7 @@ function rdoTitleFunction() {
 
 	} else {
 			let RStarDownEmbed = new EmbedBuilder()
-				.setColor('0xFF0000') //RED
+				.setColor(0xFF0000) //RED
 				.setDescription(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
 			client.channels.fetch(process.env.logChannel).then(channel => channel.send({embeds: [RStarDownEmbed], ephemeral: true}));
 			console.log(`The Rockstar Social Club website is down.`);	

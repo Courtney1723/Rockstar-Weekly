@@ -272,7 +272,7 @@ module.exports = {
 //-----END TRANSLATIONS-----//
 						  
 			const stopEmbed = new EmbedBuilder()
-			.setColor(`Red`) 
+			.setColor(0xFF0000)//red 
 			.setTitle(`${stopTitle()}`)
 			.setDescription(`${stopDesc()}`)		
 

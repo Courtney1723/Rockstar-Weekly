@@ -1,8 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ChannelType } = require('discord.js');
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
       let errorEmbed = new EmbedBuilder()
-      .setColor('Red') 
+      .setColor(0xFF0000) 
       .setTitle(`Uh Oh!`)
       .setDescription(`There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again in a few minutes.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${process.env.support_link}>)`);
 
@@ -77,7 +77,7 @@ module.exports = {
 						//console.log(`langArray at ${i}: ${langArray[i]}`);
 						//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
 
-					if ((interaction.channel.type === 0) || (interaction.channel.type === 5)) {
+					if ((interaction.channel.type === ChannelType.GuildText) || (interaction.channel.type === ChannelType.GuildAnnouncement)) {
 						if (interaction.guild.id === guildIDArray[i]) {
 								lang += `${langArray[i]}`;
 							}
@@ -513,14 +513,14 @@ else if (RDO_Bonus != undefined) {
 		
 
 		let rdoEmbed = new EmbedBuilder()
-			.setColor('0xC10000') //Red
+			.setColor(0xC10000) //Red
 			.setTitle(`${rdoTitleFunction()}`) //Red Dead Redemption II Online Bonuses & Discounts:
 			.setDescription(`${rdoDate[0]}\n\n${rdoPost()} \n${rdoFooterMin()} ${elipseFunction()}`)
 		let rdoEmbed2 = new EmbedBuilder()
-			.setColor('0xC10000') //Red
+			.setColor(0xC10000) //Red
 			.setDescription(`${elipseFunction()} \n${rdoPost2()} ${rdoFooterMax()}`)	
 		let rdoImageEmbed = new EmbedBuilder()
-			.setColor('0xC10000') //Red
+			.setColor(0xC10000) //Red
 			.setImage(`${rdoImage[0]}`);	
 
 		 // console.log(`rdoEmbed length: ${rdoEmbed.length}`); //no more than 4096 (line 199)
@@ -547,7 +547,7 @@ else if (RDO_Bonus != undefined) {
 				//console.log(`aDigit: ${aDigit}`);
 		
 		 let rdoExpiredEmbed = new EmbedBuilder()
-		    .setColor('0xC10000') //Red
+		    .setColor(0xC10000) //Red
 		    .setDescription(`These bonuses & discounts may be expired. \nRockstar typically releases the latest bonuses & discounts the first \nTuesday of every month after 1:00 PM EST.`)
 
     //if ( (aDay === 3) ) { //Test for today 0 = Sunday, 1 = Monday ... 6 = Saturday
@@ -558,7 +558,7 @@ else if (RDO_Bonus != undefined) {
 			//interaction.editReply(`Console logged! 👍`);
 	} else {
 			let RStarDownEmbed = new EmbedBuilder()
-				.setColor('0xFF0000') //RED 
+				.setColor(0xFF0000) //RED 
 				.setDescription(`The Rockstar Social Club website is down. \nPlease try again later. \nSorry for the inconvenience.`)
 			interaction.editReply({embeds: [RStarDownEmbed], ephemeral: true});
 			console.log(`The Rockstar Social Club website is down.`);	
