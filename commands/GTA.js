@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 let errorEmbed = new EmbedBuilder()
-	.setColor(0xFF0000)
+	.setColor('Red')
 	.setTitle(`Uh Oh!`)
 	.setDescription(`There was an error while executing this command!\nThe error has been sent to the developer and will be fixed as soon as possible.\nPlease try again in a few minutes.\n\nIf the problem persists you can try [re-inviting the bot](<${process.env.invite_link}>) or \nYou can report it in the [Rockstar Weekly Support Server](<${process.env.support_link}>)`);
 
@@ -109,7 +109,7 @@ module.exports = {
 						//console.log(`langArray at ${i}: ${langArray[i]}`);
 						//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
 
-						if ((interaction.channel.type === ChannelType.GuildTex) || (interaction.channel.type === ChannelType.GuildAnnouncement)) {
+						if ((interaction.channel.type === 0) || (interaction.channel.type === 5)) {
 							if (interaction.guild.id === guildIDArray[i]) {
 								lang += `${langArray[i]}`;
 							}

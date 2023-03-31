@@ -725,7 +725,7 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 		}
 
 		const testEmbed = new EmbedBuilder()
-			.setColor(0x0FFF00)//green 
+			.setColor(0x00CD06) 
 			.setTitle(`${success()}`)
 			.setDescription(`${sentPostDesc()}`)
 

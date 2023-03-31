@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActivityType } = require('discord.js');
 const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 var cron = require('node-cron'); //https://github.com/node-cron/node-cron
+const fetch = require("@replit/node-fetch");
 
 module.exports = {
 	name: 'ready',
@@ -56,10 +57,10 @@ module.exports = {
 	
 					//console.log(`${mtDateNum} ${mtHour}:${mtMinute} ${amPM} - \n${mtDate}\n`);	
 	
-					if ( (aDay === 4) && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 23) && (amPM === "PM")) ) ) { //New GTA Bonuses
+					if ( (aDay === 4) && ( ((mtHour >= 11) && (amPM === "AM")) || ((aHour >= 6) && (amPM === "PM")) ) ) { //New GTA Bonuses
 						client.user.setPresence({ activities: [{ name: 'New GTA Bonuses', type: ActivityType.Watching }] });
 					}
-					else if ( (aDay === 2) && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 23) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
+					else if ( (aDay === 2) && ( ((mtHour >= 11) && (amPM === "AM")) || ((aHour >= 6) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
 						client.user.setPresence({ activities: [{ name: 'New RDO Bonuses', type: ActivityType.Watching }] });
 					}
 				}
@@ -111,6 +112,7 @@ module.exports = {
 		// }
 		// //console.log(Guilds);
 		  console.log(`${GuildIDs.length} guilds`);
+
 
 	},
 };
