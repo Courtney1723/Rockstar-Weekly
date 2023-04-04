@@ -250,10 +250,10 @@ module.exports = {
 							.catch(err => console.log(`gtaConfirmEmbed Error: ${err.stack}`));
 
 							if ((interaction.user.id === process.env.USER_ID_1) || (interaction.user.id === process.env.USER_ID_2)) {
-								console.log(`You added a channel for GTA Online auto posts.`);
+								console.log(`You added the ${menuChannelID} channel for GTA Online auto posts.`);
 							}
 							else {
-								console.log(`A user added a channel for GTA Online auto posts.`);
+								console.log(`A user added the ${menuChannelID} channel for GTA Online auto posts.`);
 							}
 						}
 
@@ -297,7 +297,7 @@ module.exports = {
 				);		
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]})
+					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`gtaAdd expiredButton Error: ${err.stack}`)});
 				}, (60000 * 5))					
 
 				}}); //end fs.readFileLANGDataBase

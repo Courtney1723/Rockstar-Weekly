@@ -11,7 +11,7 @@ module.exports = {
 				console.log(`You clicked the '${interaction.customId}' button in a guild`);
 			} 
 			else {
-				console.log(`A user clicked the '${interaction.customId}' button in a guild`);
+				console.log(`${interaction.user.tag} clicked the '${interaction.customId}' button in a guild`);
 			}
 		}
 		else if (interaction.channel.type === ChannelType.GuildAnnouncement) {
@@ -19,7 +19,7 @@ module.exports = {
 				console.log(`You clicked the ${interaction.customId} button in a DM`);
 			} 
 			else {
-				console.log(`A user clicked the ${interaction.customId} button in a DM`);
+				console.log(`${interaction.user.tag} clicked the ${interaction.customId} button in a DM`);
 			}
 		}
 		else if (interaction.channel.type === ChannelType.GuildAnnouncement) {
@@ -27,11 +27,11 @@ module.exports = {
 				console.log(`You clicked the ${interaction.customId} button in an Announcement channel`);
 			} 
 			else {
-				console.log(`A user clicked the ${interaction.customId} button in an Announcement channel`);
+				console.log(`${interaction.user.tag} clicked the ${interaction.customId} button in an Announcement channel`);
 			}
 		}		
 		else {
-			console.log(`A user clicked the ${interaction.customId} button ...somewhere?`);
+			console.log(`${interaction.user.tag} clicked the ${interaction.customId} button ...somewhere?`);
 		}
 		}
 			

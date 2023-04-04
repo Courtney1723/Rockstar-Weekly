@@ -228,10 +228,10 @@ module.exports = {
 								 return
 									 }		
 							if ((interaction.user.ID === process.env.USER_ID_1) || (interaction.user.ID === process.env.USER_ID_1)) {
-								console.log(`You added a channel for RDO auto posts.`);
+								console.log(`You added the ${menuChannelID} channel for RDO auto posts.`);
 							}
 							else {
-								console.log(`A user added a channel for RDO auto posts.`);
+								console.log(`A user added the ${menuChannelID} channel for RDO auto posts.`);
 							}
 						}); // end fs:appendFile to add a channel for rdo autop posts	
 							
@@ -273,7 +273,7 @@ module.exports = {
 				);	
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]})
+					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`rdoAdd expiredButton Error: ${err.stack}`)});
 				}, (60000 * 5))					
 
 				}}); //end fs.readFileLANGDataBase
