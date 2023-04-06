@@ -504,7 +504,15 @@ else if (RDO_Bonus != undefined) {
 								return (charCount - finalZ) + (countZ * 2) - 3;
 							// ( (rdoTitleString().length) + (rdoDate[0].length) + (rdoFooterMin().length) + (ellipsisFunction().length) )
 						}
-						//console.log(`bestBreak: ${bestBreak()}`);		
+						//console.log(`bestBreak: ${bestBreak()}`);
+
+						var constChars = (rdoFooterMax().length) + (rdoImage[0].length) + rdoTitleFunction().length;
+						var rdoNewlines = rdoFinalString.substr(bestBreak(), (6000 - bestBreak() - constChars)).split("\n");
+						var tempString = rdoNewlines[rdoNewlines.length - 1];
+						function bestEndBreak() {
+							return (6000 - bestBreak() - constChars - tempString.length);
+						}
+						//console.log(`bestEndBreak:${bestEndBreak()}`);		
 
 			//console.log(`rdoFinalString: ${rdoFinalString}`);
 			//console.log(`1: ${rdoFinalString.length}\n`); 

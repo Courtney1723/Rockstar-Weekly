@@ -297,7 +297,7 @@ module.exports = {
 				);		
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`gtaAdd expiredButton Error: ${err.stack}`)});
+					interaction.editReply({components: [expiredButton]})
 				}, (60000 * 5))					
 
 				}}); //end fs.readFileLANGDataBase

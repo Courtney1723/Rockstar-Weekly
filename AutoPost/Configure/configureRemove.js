@@ -458,7 +458,7 @@ else if (menuRoleID === `undefinedrole`) { //if the Admin role is already requir
 				);		
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`configureRemove expiredButton Error: ${err.stack}`)});
+					interaction.editReply({components: [expiredButton]});
 				}, (60000 * 5))					
 
 				}}); //end fs.readFile for LANGDataBase.txt

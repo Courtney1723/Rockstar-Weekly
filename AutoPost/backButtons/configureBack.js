@@ -375,7 +375,7 @@ const configureButtons = new ActionRowBuilder()
 				);		
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`configureBack expiredButton Error: ${err.stack}`)});
+					interaction.editReply({components: [expiredButton]});
 				}, (60000 * 5))						
 
 				}}); //end fs.readFile for LANGDataBase.txt

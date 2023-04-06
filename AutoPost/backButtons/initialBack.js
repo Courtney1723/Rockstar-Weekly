@@ -334,7 +334,7 @@ Click **\'Confirm\'** to view and test current settings.`;
 				);	
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`initialBack expiredButton Error: ${err.stack}`)});
+					interaction.editReply({components: [expiredButton]});
 				}, (60000 * 5))					
 				
 				}}); //end readFile for LANGDataBase

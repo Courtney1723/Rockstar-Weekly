@@ -365,7 +365,7 @@ module.exports = {
 					interaction.reply({ embeds: [initialEmbed], components:[initialButtons] });		
 
 		setTimeout(() => {
-			interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`language command  expiredButton Error: ${err.stack}`)});
+			interaction.editReply({components: [expiredButton]});
 		}, (60000 * 5))
 
 				}

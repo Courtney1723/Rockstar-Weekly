@@ -382,7 +382,7 @@ Click **\'RDO\'** to set up Red Dead Online Auto Posts for **the first Tuesday o
 				);						
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`start expiredButton Error: ${err.stack}`)});
+					interaction.editReply({components: [expiredButton]});
 				}, (60000 * 5))						
 
 				}});// end fs:readFile for LANGData.txt

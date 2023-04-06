@@ -313,7 +313,7 @@ module.exports = {
 				);				
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`gtaStart expiredButton Error: ${err.stack}`)});
+					interaction.editReply({components: [expiredButton]})
 				}, (60000 * 5))		
 
 					}); //end fs.readFile for GTADataBase.txt
