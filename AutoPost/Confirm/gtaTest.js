@@ -215,7 +215,10 @@ function gtaTest() {
 				.replace(/<strong>/g, "")
 
 			//--Spanish--//
-				.replace(/<mq:rxt><\/mq:rxt>/g, "")			
+				.replace(/<mq:rxt><\/mq:rxt>/g, "")		
+
+			//German
+			.replace(/\" draggable=\"false/g, "")			
 
 			//-----END FOREIGN LANGUAGE FORMATTING-----//
 
@@ -508,6 +511,9 @@ for (i = 0; i <= GTABonuses01.length - 2; i++) { //final element will always be 
 							var finalZ = 0;
 							var countZ = 0;
 							for (z = 0; charCount <= 3790; z++) {
+								if (lang === "pt") {
+									return gtaFinalString.length - gtaFooterMin().length; //FIXME - remove next week
+								}								
 								if (gtaFinalString.length <= 4100) {
 									charCount = 3950;
 									finalZ = gtaFinalString.length;
