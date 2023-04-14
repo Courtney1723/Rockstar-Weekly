@@ -56,7 +56,7 @@
 <div style="display: block;margin: 1vmin;">
 <h2>/gta</h2>
 
-<img alt="gta" src="https://imgur.com/ZfMltn9.gif" style="width: 75%;height: 75%"></img>
+<img alt="gta" src="https://imgur.com/Bjq4KPL.gif" style="width: 75%;height: 75%"></img>
 </div>
 
 <div style="display: block;margin: 1vmin;">
@@ -68,7 +68,7 @@
 <div style="display: block;margin: 1vmin;">
 <h2>/rdo</h2>
 
-<img alt="rdo" src="https://imgur.com/5dY3roG.gif" style="width: 75%;height: 75%"></img>
+<img alt="rdo" src="https://imgur.com/vBsbUZ0.gif" style="width: 75%;height: 75%"></img>
 </div>
 
 <div style="display: block;margin: 1vmin;">
