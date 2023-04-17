@@ -85,39 +85,38 @@
 
 English
 
-- [Examples of Commands in English on YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://www.youtube.com/watch?v=9z3MaO4lCcE&list=PL1BdidW4tvMbsBa3LiTVtfQYlPs3Ke5My)
+- <a href="https://www.youtube.com/watch?v=9z3MaO4lCcE&list=PL1BdidW4tvMbsBa3LiTVtfQYlPs3Ke5My" target="_blank" rel="noopener noreferrer">Examples of Commands in English on YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
 Espańol
 
-- [Ejemplos de Comandos en Español en YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://www.youtube.com/watch?v=0uHSCOyZ9k4&list=PL1BdidW4tvMYBGyrOm-nEpBoPQK5h2BME&pp=gAQB)
+- <a href="https://www.youtube.com/watch?v=0uHSCOyZ9k4&list=PL1BdidW4tvMYBGyrOm-nEpBoPQK5h2BME&pp=gAQB" target="_blank" rel="noopener noreferrer">Ejemplos de Comandos en Español en YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
 Русский
 
-- [Примеры команд на Pусском языке на YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://www.youtube.com/watch?v=6aRUM_B7Sc4&list=PL1BdidW4tvMZG0XP0o3Z16hW2pcHCyZdu&pp=gAQB)
+- <a href="https://www.youtube.com/watch?v=6aRUM_B7Sc4&list=PL1BdidW4tvMZG0XP0o3Z16hW2pcHCyZdu&pp=gAQB" target="_blank" rel="noopener noreferrer">Примеры команд на Pусском языке на YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
 Deutsch
 
-- [Beispiele für Befehle auf Deutsch auf YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://www.youtube.com/watch?v=Own7NogkPJ0&list=PL1BdidW4tvMboxjHmkue_l78myVrDMBmo&pp=gAQB)
+- <a href="https://www.youtube.com/watch?v=Own7NogkPJ0&list=PL1BdidW4tvMboxjHmkue_l78myVrDMBmo&pp=gAQB" target="_blank" rel="noopener noreferrer">Beispiele für Befehle auf Deutsch auf YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
 Português
 
-- [Exemplos de Comandos em Português no YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://www.youtube.com/watch?v=ssA_nxIYCHo&list=PL1BdidW4tvMYXIougqY12lwnGr35YRgMV&pp=gAQB)
+- <a href="https://www.youtube.com/watch?v=ssA_nxIYCHo&list=PL1BdidW4tvMYXIougqY12lwnGr35YRgMV&pp=gAQB" target="_blank" rel="noopener noreferrer">Exemplos de Comandos em Português no YouTube <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
 <br>
 <br>
 
 # Useful Links
 
-[RockstarWeeklyBot.com <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://RockstarWeeklyBot.com)
+<a href="https://RockstarWeeklyBot.com" target="_blank" rel="noopener noreferrer">RockstarWeeklyBot.com <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
-[Add the Rockstar Weekly bot to your Sever <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://discord.com/api/oauth2/authorize?client_id=977396560864346142&permissions=414464624704&scope=bot%20applications.commands)
+<a href="https://discord.com/api/oauth2/authorize?client_id=977396560864346142&permissions=414464624704&scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Add the Rockstar Weekly bot to your Sever <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img><img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
-[Privacy Policy <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://rockstar-weekly-website.courtney1723.repl.co/privacyPolicy.html)
+<a href="https://rockstar-weekly-website.courtney1723.repl.co/privacyPolicy.html" target="_blank" rel="noopener noreferrer">Provacy Policy <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
-[Terms of Service <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://rockstar-weekly-website.courtney1723.repl.co/termsOfService.html)
+<a href="https://rockstar-weekly-website.courtney1723.repl.co/termsOfService.html" target="_blank" rel="noopener noreferrer">Terms of Service <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
-[Join the Rockstar Weekly bot Support Server <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img>](https://discord.com/invite/TkrFcwHWfj)
-
+<a href="https://discord.com/invite/TkrFcwHWfj" target="_blank" rel="noopener noreferrer">Join the Rockstar Weekly bot Support Server  <img src="https://imgur.com/9YF3kFp.png" style="height:14px"></img></a>
 
 <br>
 <br>
