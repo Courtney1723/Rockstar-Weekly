@@ -44,6 +44,9 @@ module.exports = {
 					var mtDate = aDate.toLocaleString("en-US", {
 						timeZone: "America/Denver"
 					});
+					var mtDay = aDay.toLocaleString("en-US", {
+						timeZone: "America/Denver"
+					});					
 					var mtTime = mtDate.split(", ");
 					var mtDateNum02 = mtDate.split("/");
 					var mtDateNum01 = mtDateNum02[1].split("/");
@@ -57,10 +60,10 @@ module.exports = {
 	
 					//console.log(`${mtDateNum} ${mtHour}:${mtMinute} ${amPM} - \n${mtDate}\n`);	
 	
-					if ( (aDay === 4) && ( ((mtHour >= 11) && (amPM === "AM")) || ((aHour >= 6) && (amPM === "PM")) ) ) { //New GTA Bonuses
-						client.user.setPresence({ activities: [{ name: 'New GTA Bonuses', type: ActivityType.Watching }] });
+					if ( (mtDay === 4) && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) ) { //New GTA Bonuses
+						client.user.setPresence({ activities: [{ name: 'Bonuses', type: ActivityType.Watching }] });
 					}
-					else if ( (aDay === 2) && ( ((mtHour >= 11) && (amPM === "AM")) || ((aHour >= 6) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
+					else if ( (mtDay === 2) && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
 						client.user.setPresence({ activities: [{ name: 'New RDO Bonuses', type: ActivityType.Watching }] });
 					}
 				}
@@ -103,15 +106,7 @@ module.exports = {
 
 		//Counts the guilds - uncomment for main bot
 		const GuildIDs = client.guilds.cache.map(guild => guild.id);
-		// const GuildNames = client.guilds.cache.map(guild => guild.name);
-		// Guilds = "";
-		// for (i = 0; i <= GuildIDs.length; ++i) {
-		// 	if (GuildIDs[i] != null) {
-		// 		Guilds += `${i + 1}: ${GuildNames[i]} - ID: ${GuildIDs[i]} \n`
-		// 	}
-		// }
-		// //console.log(Guilds);
-		  console.log(`${GuildIDs.length} guilds`);
+		console.log(`${GuildIDs.length} guilds`);
 
 
 	},
