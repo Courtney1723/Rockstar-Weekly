@@ -231,7 +231,7 @@ module.exports = {
 								console.log(`You added the ${menuChannelID} channel for RDO auto posts.`);
 							}
 							else {
-								console.log(`A user added the ${menuChannelID} channel for RDO auto posts.`);
+								console.log(`A user added the ${menuChannelID} channel for RDO auto posts in ${interaction.guild.id}.`);
 							}
 						}); // end fs:appendFile to add a channel for rdo autop posts	
 							

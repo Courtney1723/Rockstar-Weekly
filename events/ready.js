@@ -60,10 +60,10 @@ module.exports = {
 	
 					//console.log(`${mtDateNum} ${mtHour}:${mtMinute} ${amPM} - \n${mtDate}\n`);	
 	
-					if ( (mtDay === 4) && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) ) { //New GTA Bonuses
-						client.user.setPresence({ activities: [{ name: 'Bonuses', type: ActivityType.Watching }] });
+					if ( (mtDay === "4") && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) ) { //New GTA Bonuses
+						client.user.setPresence({ activities: [{ name: 'NEW GTA Bonuses', type: ActivityType.Watching }] });
 					}
-					else if ( (mtDay === 2) && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
+					else if ( (mtDay === "2") && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
 						client.user.setPresence({ activities: [{ name: 'New RDO Bonuses', type: ActivityType.Watching }] });
 					}
 				}
@@ -108,6 +108,18 @@ module.exports = {
 		const GuildIDs = client.guilds.cache.map(guild => guild.id);
 		console.log(`${GuildIDs.length} guilds`);
 
+		//gets a guild id from a channel id
+		// const channelID = process.env.logChannel2; 
+		// const specificChannel = () => {
+	 //    client.guilds.cache.map(guild => {
+		//     guild.channels.cache.map(channel => {
+		// 			if (channel.id === channelID) {
+		// 				console.log(`guild: ${guild.id} - channel:${channel.id}`);
+		// 			};
+		//     });
+	 //    });			
+		// }
+		// specificChannel();
 
 	},
 };

@@ -218,7 +218,6 @@ let gtaURL = process.env.SOCIAL_URL_GTA2;
 							.replace(/\n<p>/g, "<p>") //Removes spaces after a bonus
 							.replace(/<p>Only/g, "<p><b>Only")
 							.replace(/<\/span>/, "")
-							.replace(/<span style=\"font-weight: 700;\">/g, "") //FIXME- remove next week										
 
 						//--BEGIN FOREIGN LANGUAGE FORMATTING-----//
 							//--RUSSIAN--//

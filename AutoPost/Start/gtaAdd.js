@@ -253,7 +253,7 @@ module.exports = {
 								console.log(`You added the ${menuChannelID} channel for GTA Online auto posts.`);
 							}
 							else {
-								console.log(`A user added the ${menuChannelID} channel for GTA Online auto posts.`);
+								console.log(`A user added the ${menuChannelID} channel for GTA Online auto posts in ${interaction.guild.id}.`);
 							}
 						}
 

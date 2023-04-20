@@ -166,7 +166,6 @@ module.exports = {
 							.replace(/\n<p>/g, "<p>") //Removes spaces after a bonus
 							.replace(/<p>Only/g, "<p><b>Only")
 							.replace(/<\/span>/, "")
-							.replace(/<span style=\"font-weight: 700;\">/g, "") //FIXME- remove next week										
 
 						//--BEGIN FOREIGN LANGUAGE FORMATTING-----//
 							//--RUSSIAN--//
@@ -553,7 +552,28 @@ module.exports = {
 							} else {
 								return "";
 							}
-						}			
+						}		
+
+						function expiredDesc() {
+								if (lang === "en") {
+									return `These discounts are  expired. \nRockstar typically releases the latest weekly bonuses every \nThursday after 1:00 PM EST.`;
+								}
+								else if (lang === "es") {
+									return `Estos descuentos están vencidos. \nRockstar normalmente publica los últimos bonos semanales todos los \njueves después de la 1:00 p. m. EST.`;
+								}
+								else if (lang === "ru") {
+									return `Срок действия этих скидок истек. \nRockstar обычно выпускает последние еженедельные бонусы каждый\nчетверг после 13:00 по восточному поясному времени.`;
+								}
+								else if (lang === "de") {
+									return `Diese Rabatte sind abgelaufen. \nRockstar veröffentlicht normalerweise die neuesten wöchentlichen Boni jeden \nDonnerstag nach 13:00 Uhr EST.`;
+								}
+								else if (lang === "pt") {
+									return `Esses descontos expiraram. \nA Rockstar normalmente lança os últimos bônus semanais toda \nquinta-feira após 13:00 EST.`;
+								}
+								else {
+									return `These discounts are  expired. \nRockstar typically releases the latest weekly bonuses every \nThursday after 1:00 PM EST.`;
+								}						
+						}
 
 						constChars += (gtaFooterMin().length) + (ellipsisFunction().length);
 						var gtaNewlines = gtaFinalString.substr(0, (4000 - constChars)).split("\n\n");
@@ -639,7 +659,7 @@ module.exports = {
 
 						let gtaExpiredEmbed = new EmbedBuilder()
 							.setColor(0x00CD06) //Green
-							.setDescription(`These bonuses & discounts may be expired. \nRockstar typically releases the latest weekly bonuses & discounts every \nThursday after 1:00 PM EST.`)
+							.setDescription(`${expiredDesc()}`)
 							.setFooter({ text: `It is ${estHour}:${estMinute} ${amPM} EST now.`, iconURL: process.env.logo_link })
 
 						//console.log(`isPast: ${isPast()}`);
@@ -674,4 +694,3 @@ module.exports = {
 
 	},
 };
-
