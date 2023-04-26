@@ -44,7 +44,7 @@ module.exports = {
 			let urlLink02 = content.split("linkToUrl\":");
 			let urlLink01 = urlLink02[1].split("\"");
 
-			function urlLink() {
+			function urlLink() { 
 				//return `/events/e9Lot6x3/gta-online-bonuses/1`; //test for finalstring <= 4000 
 				//return `events/B3RJmhuX/gta-online-bonuses/1`; //test for finalstring >= 4000 && <= 6000
 				//return `events/tgHCnzSZ/gta-online-bonuses/1`; //test for finalString >= 6000				
@@ -552,28 +552,7 @@ module.exports = {
 							} else {
 								return "";
 							}
-						}		
-
-						function expiredDesc() {
-								if (lang === "en") {
-									return `These discounts are  expired. \nRockstar typically releases the latest weekly bonuses every \nThursday after 1:00 PM EST.`;
-								}
-								else if (lang === "es") {
-									return `Estos descuentos están vencidos. \nRockstar normalmente publica los últimos bonos semanales todos los \njueves después de la 1:00 p. m. EST.`;
-								}
-								else if (lang === "ru") {
-									return `Срок действия этих скидок истек. \nRockstar обычно выпускает последние еженедельные бонусы каждый\nчетверг после 13:00 по восточному поясному времени.`;
-								}
-								else if (lang === "de") {
-									return `Diese Rabatte sind abgelaufen. \nRockstar veröffentlicht normalerweise die neuesten wöchentlichen Boni jeden \nDonnerstag nach 13:00 Uhr EST.`;
-								}
-								else if (lang === "pt") {
-									return `Esses descontos expiraram. \nA Rockstar normalmente lança os últimos bônus semanais toda \nquinta-feira após 13:00 EST.`;
-								}
-								else {
-									return `These discounts are  expired. \nRockstar typically releases the latest weekly bonuses every \nThursday after 1:00 PM EST.`;
-								}						
-						}
+						}			
 
 						constChars += (gtaFooterMin().length) + (ellipsisFunction().length);
 						var gtaNewlines = gtaFinalString.substr(0, (4000 - constChars)).split("\n\n");
@@ -637,6 +616,71 @@ module.exports = {
 							);
 						}
 
+	//BEGIN expiredEmbed	
+
+						function gtaExpiredEmbedString() {
+							if (lang === "en") {
+								return `These bonuses are expired. \nRockstar typically releases the latest weekly bonuses every \nThursday after 1:00 PM EST.`;
+							}
+							else if (lang === "es") {
+								return `Estos bonos pueden estar vencidos. \nRockstar suele publicar bonificaciones cada \njueves después de las 13:00 hora del este.`;
+							}
+							else if (lang === "ru") {
+								return `Срок действия этих бонусов истек. \nRockstar обычно выпускает последние еженедельные бонусы каждый \nчетверг после 13:00 по восточному поясному времени.`;
+							}
+							else if (lang === "de") {
+								return `Diese Boni sind möglicherweise abgelaufen. \nNormalerweise veröffentlicht Rockstar die Boni \nDonnerstags nach 13:00 Uhr Ostküsten-Standardzeit (Nordamerika).`;
+							}
+							else if (lang === "pt") {
+								return `Esses bônus expiraram. \nA Rockstar normalmente lança os últimos bônus semanais a cada \nquinta-feira depois das 13:00 Hora do Leste.`;
+							}
+							else {
+								return `These bonuses are expired. \nRockstar typically releases the latest weekly bonuses every \nThursday after 1:00 PM EST.`;
+							}
+						}	
+
+
+						function itIs() {
+							if (lang === "en") {
+								return "It is";
+							}
+							else if (lang === "es") {
+								return "Son las";
+							}
+							else if (lang === "ru") {
+								return "Сейчас";
+							}
+							else if (lang === "de") {
+								return "Es ist jetzt";
+							}
+							else if (lang === "pt") {
+								return "São";
+							}
+							else {
+								return "It is";
+							}
+						}						
+						function now() {
+							if (lang === "en") {
+								return " EST now.";
+							}
+							else if (lang === "es") {
+								return " hora del este ahora.";
+							}
+							else if (lang === "ru") {
+								return " по восточному поясному времени.";
+							}
+							else if (lang === "de") {
+								return " Ostküsten-Standardzeit (Nordamerika).";
+							}
+							else if (lang === "pt") {
+								return ", horário do leste agora.";
+							}
+							else {
+								return " EST now.";
+							}
+						}						
+
 						const aDate = new Date();
 						const aDay = aDate.getDay(); //Day of the Week
 						//console.log(`aDay: ${aDay}`);
@@ -645,22 +689,35 @@ module.exports = {
 
 						var estDate = aDate.toLocaleString("en-US", {
 							timeZone: "America/New_York"
-						});
+						});						
 						var estTime = estDate.split(", ");
 						var estHourMinute = estTime[1].split(":");
 
-						var estHour = estHourMinute[0];
 						var estMinute = estHourMinute[1];
 
 						var amPM01 = estHourMinute[2].split(" ");
-						var amPM = amPM01[1];
+
+						function hourCheck() {
+							var estHour = Number(`${estHourMinute[0]}`);
+							if ( !((lang === "") || (lang === "en")) && (amPM01[1] === "PM")) { //foreign language
+								estHour += 12;
+							}
+							return `${estHour}`;					
+						}						
+						function amPMCheck() {
+							var amPM = "";
+							if ((lang === "") || (lang === "en")) { //foreign language
+								amPM += ` ${amPM01[1]}`;
+							}
+							return amPM;
+						}
 
 						//console.log(`${estHour}:${estMinute} ${amPM}`);
 
 						let gtaExpiredEmbed = new EmbedBuilder()
 							.setColor(0x00CD06) //Green
-							.setDescription(`${expiredDesc()}`)
-							.setFooter({ text: `It is ${estHour}:${estMinute} ${amPM} EST now.`, iconURL: process.env.logo_link })
+							.setDescription(`${gtaExpiredEmbedString()}`)
+							.setFooter({ text: `${itIs()} ${hourCheck()}:${estMinute}${amPMCheck()}${now()}`, iconURL: process.env.logo_link })
 
 						//console.log(`isPast: ${isPast()}`);
 						if (isPast() === "true") {
@@ -694,3 +751,4 @@ module.exports = {
 
 	},
 };
+
