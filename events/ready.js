@@ -58,12 +58,12 @@ module.exports = {
 					var amPM01 = mtHourMinute[2].split(" ");
 					var amPM = amPM01[1];
 	
-					//console.log(`${mtDateNum} ${mtHour}:${mtMinute} ${amPM} - \n${mtDate}\n`);	
+					//console.log(`${mtDateNum} ${mtHour}:${mtMinute} ${amPM} - \n${mtDay}\n`);	
 	
-					if ( (mtDay === "4") && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) ) { //New GTA Bonuses
+					if ( (mtDay === "4") && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 12) && (amPM === "PM")) ) ) { //New GTA Bonuses
 						client.user.setPresence({ activities: [{ name: 'NEW GTA Bonuses', type: ActivityType.Watching }] });
 					}
-					else if ( (mtDay === "2") && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 11) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
+					else if ( (mtDay === "2") && ( ((mtHour >= 11) && (amPM === "AM")) || ((mtHour <= 12) && (amPM === "PM")) ) && (mtDateNum <= 7) ) { //New RDO Bonuses
 						client.user.setPresence({ activities: [{ name: 'New RDO Bonuses', type: ActivityType.Watching }] });
 					}
 				}
