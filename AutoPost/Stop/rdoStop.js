@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ChannelType } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 
 module.exports = {
@@ -170,11 +170,53 @@ module.exports = {
 			return `These buttons are not for you.`;
 		}				
 	}	
+
+				function selectChannel() {
+					if (lang === "en") {
+						return `Select A Channel`;
+					}
+					else if (lang === "es") {
+						return `Elige un canal`;
+					}
+					else if (lang === "ru") {
+						return `Выберите канал`;
+					}
+					else if (lang === "de") {
+						return `Wählen Sie einen Kanal aus`;
+					}
+					else if (lang === "pt") {
+						return `Escolha um canal`;
+					}
+					else {
+						return `Select A Channel`;
+					}						
+				}
+
+				function noChannel() {
+					if (lang === "en") {
+						return `No Channel Selected`;
+					}
+					else if (lang === "es") {
+						return `Ningún canal elegido`;
+					}
+					else if (lang === "ru") {
+						return `Канал не выбран`;
+					}
+					else if (lang === "de") {
+						return `Kein Kanal ausgewählt`;
+					}
+					else if (lang === "pt") {
+						return `Nenhum canal escolhido`;
+					}
+					else {
+						return `No Channel Selected`;
+					}						
+				}						
 					
 //-----END TRANSLATIONS-----//				
 			
 			const rdoStopEmbed = new EmbedBuilder()
-				.setColor(0xFF0000) //RED
+				.setColor(0xFF0000) //Red 
 				.setTitle(`${rdoStopTitle()}`)
 				.setDescription(`${rdoStopDesc()}`)		
 
@@ -185,15 +227,15 @@ module.exports = {
 			    .addComponents(
 			        new StringSelectMenuBuilder()
 			        .setCustomId(`rdoStopMenu - u:${interaction.user.id} - c:undefinedchannel`)
-			        .setPlaceholder('Select a Channel')
+			        .setPlaceholder(`${selectChannel()}`)
 			        .addOptions([{
-			            label: `No Channel Selected`,
-			            description: 'No Channel Selected',
+			            label: `${noChannel()}`,
+			            description: `${noChannel()}`,
 			            value: `rdoStopMenu - u:${interaction.user.id} - c:undefinedchannel`,
 			        }])
 			    )
 			interaction.guild.channels.cache.forEach(channel => {
-			    if (((channel.type === ChannelType.GuildText) || (channel.type === ChannelType.GuildAnnouncement)) && (data.includes(channel.id))) {
+			    if (((channel.type === 0) || (channel.type === 5)) && (data.includes(channel.id))) {
 			        rdoStopMenu.components[0].addOptions([{
 			            label: `${channel.name}`,
 			            description: `${channel.name}`,
@@ -212,31 +254,26 @@ module.exports = {
 
 
 		let rdoChannelIds = [];
-		fs.readFile('./RDODataBase.txt', 'utf8', async function (err, data) {
-		    if (err) {console.log(`Error: ${err}`)} //If an error, console.log
-		
-					interaction.guild.channels.cache.forEach(channel => {
-							if (data.includes(channel.id)) {
-								rdoChannelIds.push(channel.id);
-							}
-					});
-			//console.log(`rdoChannelIds: ${rdoChannelIds}`);					
-				
+		interaction.guild.channels.cache.forEach(channel => {
+			if (data.includes(channel.id)) {
+				rdoChannelIds.push(channel.id);
+			}
+		});
+		//console.log(`rdoChannelIds: ${rdoChannelIds}`);						
 
 		if (interaction.user.id === buttonUserID) { 
 			if (rdoChannelIds.length <= 0) {
-					interaction.followUp({ content: `${noSubscriptions()}`, ephemeral: true });				
+				interaction.followUp({ content: `${noSubscriptions()}`, ephemeral: true });				
 			} 
 			else {
-				  await interaction.editReply({ embeds: [rdoStopEmbed], components: [rdoStopMenu, backButton] })
+				await interaction.editReply({ embeds: [rdoStopEmbed], components: [rdoStopMenu, backButton] })
         .catch(err => {console.log(`rdoStopEmbed+Menu Error: ${err.stack}`); process.kill(1);});
-				}				
-			}
-    		else {
-				await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });	
-    		}
+			}				
+		}
+    else {
+			await interaction.followUp({ content: `${notYourButtonString()}`, ephemeral: true });	
+  	}
 
-				}); // end checking for if no channels are subscribed
 
 			function expiredDesc() {
 				if (lang === "en") {
@@ -267,13 +304,13 @@ module.exports = {
 						.setStyle(ButtonStyle.Secondary)
 						.setEmoji(':RSWeekly:1025248227248848940')
 						.setDisabled(true),			
-				);					
+			);					
 
-				setTimeout(() => {
+			setTimeout(() => {
 					interaction.editReply({components: [expiredButton]});
 				}, (60000 * 5))	
 
-			}); //end fs.readFile for rolesDataBase.txt
+			}); //end fs.readFile for RDODataBase.txt
 
 				
 		} // end if rdostop button

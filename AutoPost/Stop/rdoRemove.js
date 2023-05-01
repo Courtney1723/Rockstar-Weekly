@@ -17,35 +17,103 @@ module.exports = {
 
 		let menuChannelID01 = (interaction.values).toString().split(`c:`);
 		let menuChannelID = menuChannelID01[1];
-				//console.log(`rdoStopMenu menuChannelID: ${menuChannelID}`)
+				//console.log(`rdoStopMenu menuChannelID: ${menuChannelID}`)	
 
-		let guildRoleIds = [];
-		fs.readFile('./rolesDataBase.txt', 'utf8', async function (err, data) {
-		    if (err) {console.log(`Error: ${err}`)} //If an error, console.log
-		
-					interaction.guild.roles.cache.forEach(role => {
-							if ((data.includes(role.id)) && (role.name != "@everyone")) {
-								guildRoleIds.push(role.id);
-							}
-					});
-				//console.log(`guildRoleIds: ${guildRoleIds}`);
+		fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
+			if (err) {console.log(`Error: ${err}`)} 
+			else {
+				let lang03 = data.split("lang:");
+				//console.log(`lang03.length: ${lang03.length}`);
 
-			function AdminRequired() {
-				let AdminRequiredBoolean = data.split(`guild:${interaction.guild.id} - admin:`);
-				if (AdminRequiredBoolean[1].includes(`yes`)) {
-					return "AdminRequiredYes";
+				let langArray = [];
+				for (i=2; i <= lang03.length - 1; i++) { //first will always be undefined
+					let lang02 = lang03[i].split(" -");
+					//console.log(`lang02 at ${i}: ${lang02}`);
+					
+					let lang01 = lang02[0];
+					//console.log(`lang01 at ${i}: ${lang01}`);
+
+					langArray.push(lang01);
+				}
+
+				//console.log(`langArray: ${langArray}`);
+
+				let guildID03 = data.split("guild:");
+				//console.log(`guildID03.length: ${guildID03.length}`);
+				let guildIDArray = [];
+				for (i=2; i <= guildID03.length - 1; i++) { //first two will always be undefined
+					let guildID02 = guildID03[i].split(" -");
+					//console.log(`lang02 at ${i}: ${lang02}`);
+					
+					let guildID01 = guildID02[0];
+					//console.log(`lang01 at ${i}: ${lang01}`);
+
+					guildIDArray.push(guildID01);
+				}
+
+				//console.log(`guildIDArray: ${guildIDArray}`);	
+
+				let lang = "";
+				for (i=0; i <= guildIDArray.length - 1; i++) {
+					//console.log(`guildIDArray at ${i}: ${guildIDArray[i]}`);
+					//console.log(`langArray at ${i}: ${langArray[i]}`);
+					//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
+
+					if (interaction.guild.id === guildIDArray[i]) {
+						lang += `${langArray[i]}`;
+					}
+				}
+
+				//console.log(`lang: ${lang}`);	
+
+			function duplicateTitle() {
+				if (lang === "en") {
+					return `Please Try Again`;
+				}
+				else if (lang === "es") {
+					return `Por favor, inténtalo de nuevo`;
+				}
+				else if (lang === "ru") {
+					return `Пожалуйста, попробуйте еще раз`;
+				}
+				else if (lang === "de") {
+					return `Inténtalo de nuevo`;
+				}
+				else if (lang === "pt") {
+					return `Por favor, tente novamente`;
 				}
 				else {
-					return "AdminRequiredNo";
+					return `Please Try Again`;
+				}			
+			}
+		
+			function invalidResponse() {
+				if (lang === "en") {
+					return `You selected an invalid response.`;
 				}
-			}		
+				else if (lang === "es") {
+					return `Seleccionó una respuesta no válida.`;
+				}
+				else if (lang === "ru") {
+					return `Вы выбрали неправильный ответ.`;
+				}
+				else if (lang === "de") {
+					return `Sie haben eine ungültige Antwort ausgewählt.`;
+				}
+				else if (lang === "pt") {
+					return `Você selecionou uma resposta inválida.`;
+				}
+				else {
+					return `You selected an invalid response.`;
+				}			
+			}	
 
-			if (menuChannelID.includes(`undefinedchannel`)) { //interaction.values === `undefinedchannel` does not work?
+			if (menuChannelID.includes(`undefinedchannel`)) { //User delected an invalid response
 
 				const rdoDuplicateEmbed = new EmbedBuilder()
-						.setColor(0xFFAE00)//orange 
-						.setTitle(`Please Try Again`)
-						.setDescription(`You selected an invalid response "No Channel Selected".\nPlease Try again. || (◕ᴥ◕ʋ) ||`)	
+						.setColor(0xFFAE00) //Orange 
+						.setTitle(`${duplicateTitle()}`)
+						.setDescription(`${invalidResponse()} || (⌐■_■) ||`)	
 				
 				await interaction.deferUpdate();
 				if (interaction.user.id === menuUserID) {
@@ -72,145 +140,98 @@ module.exports = {
 											throw err;
 										}
 										else {
-//-----BEGIN TRANSLATIONS-----//											
-											fs.readFile('./LANGDataBase.txt', 'utf8', async function (err, data) {
-												if (err) {console.log(`Error: ${err}`)} 
-												else {
-													let lang03 = data.split("lang:");
-													//console.log(`lang03.length: ${lang03.length}`);
-								
-													let langArray = [];
-													for (i=2; i <= lang03.length - 1; i++) { //first will always be undefined
-														let lang02 = lang03[i].split(" -");
-														//console.log(`lang02 at ${i}: ${lang02}`);
-														
-														let lang01 = lang02[0];
-														//console.log(`lang01 at ${i}: ${lang01}`);
-								
-														langArray.push(lang01);
-													}
-								
-													//console.log(`langArray: ${langArray}`);
-								
-													let guildID03 = data.split("guild:");
-													//console.log(`guildID03.length: ${guildID03.length}`);
-													let guildIDArray = [];
-													for (i=2; i <= guildID03.length - 1; i++) { //first two will always be undefined
-														let guildID02 = guildID03[i].split(" -");
-														//console.log(`lang02 at ${i}: ${lang02}`);
-														
-														let guildID01 = guildID02[0];
-														//console.log(`lang01 at ${i}: ${lang01}`);
-								
-														guildIDArray.push(guildID01);
-													}
-								
-													//console.log(`guildIDArray: ${guildIDArray}`);	
-								
-													let lang = "";
-													for (i=0; i <= guildIDArray.length - 1; i++) {
-														//console.log(`guildIDArray at ${i}: ${guildIDArray[i]}`);
-														//console.log(`langArray at ${i}: ${langArray[i]}`);
-														//console.log(`interaction.guildID at ${i}: ${interaction.guild.id}`);
-								
-														if (interaction.guild.id === guildIDArray[i]) {
-															lang += `${langArray[i]}`;
-														}
-													}
-								
-													//console.log(`lang: ${lang}`);														
 
-		function success() {
-			if (lang === "en") {
-				return `Success`;
-			}
-			else if (lang === "es") {
-				return `Éxito`;
-			}
-			else if (lang === "ru") {
-				return `Успех`;
-			}
-			else if (lang === "de") {
-				return `Erfolg`;
-			}
-			else if (lang === "pt") {
-				return `Éxito`;
-			}
-			else {
-				return `Success`;
-			}		
-		}
-
-		function rdoRemoveDesc() {
-			if (lang === "en") {
-				return `You will now no longer get RDO auto posts in the <#${menuChannelID}> channel.`;
-			}
-			else if (lang === "es") {
-				return `Ahora ya no obtendrá publicaciones automáticas de Rd Dead Online en el canal <#${menuChannelID}>.`;
-			}
-			else if (lang === "ru") {
-				return `Теперь вы больше не будете получать автоматические сообщения Red Dead Online в канале <#${menuChannelID}>.`;
-			}
-			else if (lang === "de") {
-				return `Sie erhalten jetzt keine automatischen Red Dead Online-Beiträge mehr im <#${menuChannelID}>-Kanal.`; //FIXME - double check translation
-			}
-			else if (lang === "pt") {
-				return `Agora você não receberá mais postagens automáticas do RDO no canal <#${menuChannelID}>.`;
-			}
-			else {
-				return `You will now no longer get RDO auto posts in the <#${menuChannelID}> channel.`;
-			}
-		}
-
-		function notYourOption() {
-			if (lang === "en") {
-				return `These options aren't for you.`;
-			}
-			else if (lang === "es") {
-				return `Estas opciones no son para ti.`;
-			}
-			else if (lang === "ru") {
-				return `Эти варианты не для вас.`;
-			}
-			else if (lang === "de") {
-				return `Diese Optionen sind nichts für Sie.`;
-			}
-			else if (lang === "pt") {
-				return `Essas opções não são para você.`;
-			}
-			else {
-				return `These options aren't for you.`;
-			}		
-		}		
-
-	function confirmSettingsString() {
-		if (lang === "en") {
-				return `Confirm Settings`;
-		}
-		else if (lang === "es") {
-			return `Confirmar la configuración`;
-		}
-		else if (lang === "ru") {
-			return `Подтвердить настройки`;
-		}
-		else if (lang === "de") {
-			return `Einstellungen bestätigen`;
-		}
-		else if (lang === "pt") {
-			return `Confirmar configurações`;
-		}
-		else {
-			return `Confirm Settings`;
-		}					
-	}														
+					function success() {
+						if (lang === "en") {
+							return `Success`;
+						}
+						else if (lang === "es") {
+							return `Éxito`;
+						}
+						else if (lang === "ru") {
+							return `Успех`;
+						}
+						else if (lang === "de") {
+							return `Erfolg`;
+						}
+						else if (lang === "pt") {
+							return `Éxito`;
+						}
+						else {
+							return `Success`;
+						}		
+					}
+			
+					function rdoRemoveDesc() {
+						if (lang === "en") {
+							return `You will now no longer get RDO auto posts in the <#${menuChannelID}> channel.`;
+						}
+						else if (lang === "es") {
+							return `Ahora ya no obtendrá publicaciones automáticas de Rd Dead Online en el canal <#${menuChannelID}>.`;
+						}
+						else if (lang === "ru") {
+							return `Теперь вы больше не будете получать автоматические сообщения Red Dead Online в канале <#${menuChannelID}>.`;
+						}
+						else if (lang === "de") {
+							return `Sie erhalten jetzt keine automatischen Red Dead Online-Beiträge mehr im <#${menuChannelID}>-Kanal.`; //FIXME - double check translation
+						}
+						else if (lang === "pt") {
+							return `Agora você não receberá mais postagens automáticas do RDO no canal <#${menuChannelID}>.`;
+						}
+						else {
+							return `You will now no longer get RDO auto posts in the <#${menuChannelID}> channel.`;
+						}
+					}
+			
+					function notYourOption() {
+						if (lang === "en") {
+							return `These options aren't for you.`;
+						}
+						else if (lang === "es") {
+							return `Estas opciones no son para ti.`;
+						}
+						else if (lang === "ru") {
+							return `Эти варианты не для вас.`;
+						}
+						else if (lang === "de") {
+							return `Diese Optionen sind nichts für Sie.`;
+						}
+						else if (lang === "pt") {
+							return `Essas opções não são para você.`;
+						}
+						else {
+							return `These options aren't for you.`;
+						}		
+					}		
+			
+				function confirmSettingsString() {
+					if (lang === "en") {
+						return `Confirm Settings`;
+					}
+					else if (lang === "es") {
+						return `Confirmar la configuración`;
+					}
+					else if (lang === "ru") {
+						return `Подтвердить настройки`;
+					}
+					else if (lang === "de") {
+						return `Einstellungen bestätigen`;
+					}
+					else if (lang === "pt") {
+						return `Confirmar configurações`;
+					}
+					else {
+						return `Confirm Settings`;
+					}					
+				}														
 
 													
 //-----END TRANSLATIONS-----//	
 
-		const rdoConfirmEmbed = new EmbedBuilder()
-			.setColor(0x0FFF00) //green
-			.setTitle(`${success()}`)
-			.setDescription(`${rdoRemoveDesc()}`)
+				const rdoConfirmEmbed = new EmbedBuilder()
+					.setColor(0x00FF00) //Green
+					.setTitle(`${success()}`)
+					.setDescription(`${rdoRemoveDesc()}`)
 
 				const confirmSettingsButton = new ActionRowBuilder()
 				.addComponents(
@@ -220,52 +241,51 @@ module.exports = {
 								.setStyle(ButtonStyle.Secondary),	
 				);														
 
-					await interaction.editReply({ embeds: [rdoConfirmEmbed], components: [confirmSettingsButton] })
-					.catch(err => {console.log(`rdoConfirmEmbed Error: ${err}`); process.kill(1);});											
+				await interaction.editReply({ embeds: [rdoConfirmEmbed], components: [confirmSettingsButton] })
+				.catch(err => {console.log(`rdoConfirmEmbed Error: ${err}`); process.kill(1);});											
 
-					if ((interaction.user.id === process.env.USER_ID_1) || (interaction.user.id === process.env.USER_ID_2)) {
-						console.log(`You unsubscribed ${menuChannelID} channel from RDR2 auto posts.`);	
-					}
-					else {
-						console.log(`A user unsubscribed ${menuChannelID} channel from RDR2 auto posts.`);	
-					}										
-
-			function expiredDesc() {
-				if (lang === "en") {
-					return `This interaction expired`;
-				}
-				if (lang === "es") {
-					return `Esta interacción expiró.`;
-				}
-				if (lang === "ru") {
-					return `Срок действия этого взаимодействия истек.`;
-				}
-				if (lang === "de") {
-					return `Diese Interaktion ist abgelaufen`;
-				}
-				if (lang === "pt") {
-					return `Esta interação expirou.`;
+				if ((interaction.user.id === process.env.USER_ID_1) || (interaction.user.id === process.env.USER_ID_2)) {
+					console.log(`You unsubscribed ${menuChannelID} from RDR2 auto posts.`);	
 				}
 				else {
-					return `This interaction expired`;
-				}						
-			}
+					console.log(`A user unsubscribed ${menuChannelID} from RDR2 auto posts.`);	
+				}										
 
-			const expiredButton = new ActionRowBuilder()
-				.addComponents(
-					new ButtonBuilder()
-						.setCustomId(`expired`)
-						.setLabel(`${expiredDesc()}`)
-						.setStyle(ButtonStyle.Secondary)
-						.setEmoji(':RSWeekly:1025248227248848940')
-						.setDisabled(true),			
+				function expiredDesc() {
+					if (lang === "en") {
+						return `This interaction expired`;
+					}
+					if (lang === "es") {
+						return `Esta interacción expiró.`;
+					}
+					if (lang === "ru") {
+						return `Срок действия этого взаимодействия истек.`;
+					}
+					if (lang === "de") {
+						return `Diese Interaktion ist abgelaufen`;
+					}
+					if (lang === "pt") {
+						return `Esta interação expirou.`;
+					}
+					else {
+						return `This interaction expired`;
+					}						
+				}
+	
+				const expiredButton = new ActionRowBuilder()
+					.addComponents(
+						new ButtonBuilder()
+							.setCustomId(`expired`)
+							.setLabel(`${expiredDesc()}`)
+							.setStyle(ButtonStyle.Secondary)
+							.setEmoji(':RSWeekly:1025248227248848940')
+							.setDisabled(true),			
 				);	
 
 				setTimeout(() => {
 					interaction.editReply({components: [expiredButton]});
 				}, (60000 * 5))												
 											
-					}}); //end fs.readFile for LANGDataBase
 				}}); //end fs.writeFile for RDODataBase.txt
 			}); //end fs:readFile RDODataBase.txt
 						
@@ -274,8 +294,7 @@ module.exports = {
 					}
 
 				} //end remove channel
-
-		});//end fs:readFile			
+			}}); //end fs.readFile for LANGDataBase
 			
 		}// end if interaction.customId === 'rdoStopMenu'
 		

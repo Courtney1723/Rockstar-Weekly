@@ -15,7 +15,7 @@ const expiredButton = new ActionRowBuilder()
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('language')
-		.setDescription('Change Language')
+		.setDescription('Language | Idioma | Язык | Sprache')
 		.setDMPermission(false),
 	async execute(interaction) {
 
@@ -337,7 +337,7 @@ module.exports = {
 			}					
 			
 			const initialEmbed = new EmbedBuilder()
-				.setColor(0xFFAE00) //Orange
+				.setColor(0xF98800) //Orange
 				.setTitle(`${langSettingsTitle()}`)
 				.setDescription(`${currentLanguage()}\n${languagesDesc()}`)
 				.setFooter({text: `${footerText()}`, iconURL: process.env.logo_link })		
@@ -365,7 +365,7 @@ module.exports = {
 					interaction.reply({ embeds: [initialEmbed], components:[initialButtons] });		
 
 		setTimeout(() => {
-			interaction.editReply({components: [expiredButton]});
+			interaction.editReply({components: [expiredButton]}).catch(err => {console.log(`language command expiredButton Error: ${err.stack}`)});
 		}, (60000 * 5))
 
 				}

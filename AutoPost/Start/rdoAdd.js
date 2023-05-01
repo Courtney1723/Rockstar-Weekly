@@ -22,29 +22,7 @@ module.exports = {
 
 		let menuChannelID01 = (interaction.values).toString().split(`c:`);
 		let menuChannelID = menuChannelID01[1];
-				//console.log(`rdoStartMenu menuChannelID: ${menuChannelID}`)
-
-		let guildRoleIds = [];
-		fs.readFile('./rolesDataBase.txt', 'utf8', async function (err, data) {
-		    if (err) {console.log(`Error: ${err}`)} //If an error, console.log
-		
-					interaction.guild.roles.cache.forEach(role => {
-							if (data.includes(role.id)) {
-								guildRoleIds.push(role.id);
-							}
-					});
-			guildRoleIds.shift(1); //removes the @everyone role
-				//console.log(`guildRoleIds: ${guildRoleIds}`);
-
-			function AdminRequired() {
-				let AdminRequiredBoolean = data.split(`guild:${interaction.guild.id} - admin:`);
-				if (AdminRequiredBoolean[1].includes(`yes`)) {
-					return "AdminRequiredYes";
-				}
-				else {
-					return "AdminRequiredNo";
-				}
-			}		
+				//console.log(`rdoStartMenu menuChannelID: ${menuChannelID}`)		
 
 //-----BEGIN TRANSLATIONS-----//			
 
@@ -121,16 +99,16 @@ module.exports = {
 			return `You will now get Red Dead Online auto posts to the <#${menuChannelID}> channel \n**the first Tuesday of every month at 2:00 PM EST**.`;
 		}
 		if (lang === "es") {
-			return `Ahora recibirás publicaciones automáticas de Red Dead Online en el canal <#${menuChannelID}> \n**el primer martes de cada mes a las 14:00 EST**.`;
+			return `Ahora recibirás publicaciones automáticas de Red Dead Online en el canal <#${menuChannelID}> \n**el primer martes de cada mes a las 14:00 hora del este**.`;
 		}		
 		if (lang === "ru") {
-			return `Теперь вы будете получать автоматические сообщения Red Dead Online на <#${menuChannelID}> канале \n**в первый вторник каждого месяца в 14:00 EST**.`;
+			return `Теперь вы будете получать автоматические сообщения Red Dead Online на <#${menuChannelID}> канале \n**в первый вторник каждого месяца в 14:00 по восточному времени**.`;
 		}		
 		if (lang === "de") {
-			return `Sie erhalten jetzt Red Dead Online Auto-Posts auf dem <#${menuChannelID}>-Kanal \n**am ersten Dienstag eines jeden Monats um 14:00 Uhr EST**.`;
+			return `Sie erhalten jetzt Red Dead Online Auto-Posts auf dem <#${menuChannelID}>-Kanal \n**am ersten Dienstag eines jeden Monats um 14:00 Uhr Ostküsten-Standardzeit (Nordamerika)**.`;
 		}		
 		if (lang === "pt") {
-			return `Agora você receberá postagens automáticas de Red Dead Online no canal <#${menuChannelID}> \n**na primeira terça-feira de cada mês às 14:00 EST**.`;
+			return `Agora você receberá postagens automáticas de Red Dead Online no canal <#${menuChannelID}> \n**na primeira terça-feira de cada mês às 14:00 Hora do Leste**.`;
 		}		
 		else {
 			return `You will now get Red Dead Online auto posts to the <#${menuChannelID}> channel \n**the first Tuesday of every month at 2:00 PM EST**.`;
@@ -179,6 +157,48 @@ module.exports = {
 		}					
 	}	
 
+	function duplicateTitle() {
+		if (lang === "en") {
+			return `Please Try Again`;
+		}
+		else if (lang === "es") {
+			return `Por favor, inténtalo de nuevo`;
+		}
+		else if (lang === "ru") {
+			return `Пожалуйста, попробуйте еще раз`;
+		}
+		else if (lang === "de") {
+			return `Inténtalo de nuevo`;
+		}
+		else if (lang === "pt") {
+			return `Por favor, tente novamente`;
+		}
+		else {
+			return `Please Try Again`;
+		}			
+	}
+
+	function invalidResponse() {
+		if (lang === "en") {
+			return `You selected an invalid response.`;
+		}
+		else if (lang === "es") {
+			return `Seleccionó una respuesta no válida.`;
+		}
+		else if (lang === "ru") {
+			return `Вы выбрали неправильный ответ.`;
+		}
+		else if (lang === "de") {
+			return `Sie haben eine ungültige Antwort ausgewählt.`;
+		}
+		else if (lang === "pt") {
+			return `Você selecionou uma resposta inválida.`;
+		}
+		else {
+			return `You selected an invalid response.`;
+		}			
+	}							
+
 //-----END TRANSLATIONS-----//
 
 					if (interaction.user.id != menuUserID) {
@@ -187,9 +207,9 @@ module.exports = {
 					else if (menuChannelID.includes(`undefinedchannel`)) { //interaction.values === `undefinedchannel` does not work?
 
 						const rdoDuplicateEmbed = new EmbedBuilder()
-								.setColor(0xFFAE00)//orange 
-								.setTitle(`Please Try Again`)
-								.setDescription(`You selected an invalid response "No Channel Selected".\nPlease Try again. || (◕ᴥ◕ʋ) ||`)	
+								.setColor(0xFFAE00) //Orange 
+								.setTitle(`${duplicateTitle()}`)
+								.setDescription(`${invalidResponse()} || ʕっ•ᴥ•ʔっ ||`)	
 						
 						await interaction.deferUpdate();
 						if (interaction.user.id === menuUserID) {
@@ -203,7 +223,7 @@ module.exports = {
 					else { //add new channel to RDODataBase.txt
 
 						const rdoConfirmEmbed = new EmbedBuilder()
-								.setColor(0x0FFF00)//green 
+								.setColor(0x00FF00) //Green
 								.setTitle(`${success()}`)
 								.setDescription(`${rdoAddDesc()}`)	
 
@@ -227,11 +247,16 @@ module.exports = {
 								 console.error(err);
 								 return
 									 }		
-							if ((interaction.user.ID === process.env.USER_ID_1) || (interaction.user.ID === process.env.USER_ID_1)) {
-								console.log(`You added the ${menuChannelID} channel for RDO auto posts.`);
+							if ((interaction.user.ID === process.env.USER_ID_1) || (interaction.user.ID === process.env.USER_ID_2)) {
+								console.log(`You added a channel for RDO auto posts.`);
 							}
 							else {
-								console.log(`A user added the ${menuChannelID} channel for RDO auto posts in ${interaction.guild.id}.`);
+								if ((interaction.user.id === process.env.USER_ID_1) || (interaction.user.id === process.env.USER_ID_2)) {
+									console.log(`You added ${menuChannelID} channel for RDO auto posts.`);
+								}
+								else {
+									console.log(`A user added ${menuChannelID} for RDO auto posts in ${interaction.guild.id}.`);
+								}
 							}
 						}); // end fs:appendFile to add a channel for rdo autop posts	
 							
@@ -277,7 +302,7 @@ module.exports = {
 				}, (60000 * 5))					
 
 				}}); //end fs.readFileLANGDataBase
-		});//end fs:readFileRolesDataBase	
+		
 			
 		}// end if interaction.customId === 'rdoStartMenu'
 		

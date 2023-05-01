@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ChannelType } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, Collection, Partials, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 
 module.exports = {
@@ -173,10 +173,52 @@ module.exports = {
 		}				
 	}	
 
+	function selectChannel() {
+			if (lang === "en") {
+				return `Select A Channel`;
+			}
+			else if (lang === "es") {
+				return `Elige un canal`;
+			}
+			else if (lang === "ru") {
+				return `Выберите канал`;
+			}
+			else if (lang === "de") {
+				return `Wählen Sie einen Kanal aus`;
+			}
+			else if (lang === "pt") {
+				return `Escolha um canal`;
+			}
+			else {
+				return `Select A Channel`;
+			}						
+		}
+	
+		function noChannel() {
+			if (lang === "en") {
+				return `No Channel Selected`;
+			}
+			else if (lang === "es") {
+				return `Ningún canal elegido`;
+			}
+			else if (lang === "ru") {
+				return `Канал не выбран`;
+			}
+			else if (lang === "de") {
+				return `Kein Kanal ausgewählt`;
+			}
+			else if (lang === "pt") {
+				return `Nenhum canal escolhido`;
+			}
+			else {
+				return `No Channel Selected`;
+			}						
+		}								
+
 //-----END TRANSLATIONS-----//		
 
 		const gtaStopEmbed = new EmbedBuilder()
-			.setColor(0xFF0000)//RED 
+			.setColor(0xFF0000) //Red 
 			.setTitle(`${gtaStopTitle()}`)
 			.setDescription(`${gtaStopDesc()}`)
 			
@@ -188,15 +230,15 @@ module.exports = {
 			    .addComponents(
 			        new StringSelectMenuBuilder()
 			        .setCustomId(`gtaStopMenu - u:${interaction.user.id} - c:undefinedchannel`)
-			        .setPlaceholder('Select a Channel')
+			        .setPlaceholder(`${selectChannel()}`)
 			        .addOptions([{
-			            label: `No Channel Selected`,
-			            description: 'No Channel Selected',
+			            label: `${noChannel()}`,
+			            description: `${noChannel()}`,
 			            value: `gtaStopMenu - u:${interaction.user.id} - c:undefinedchannel`,
 			        }])
 			    )
 			interaction.guild.channels.cache.forEach(channel => {
-			    if (((channel.type === ChannelType.GuildText) || (channel.type === ChannelType.GuildAnnouncement)) && (data.includes(channel.id))) {
+			    if (((channel.type === 0) || (channel.type === 5)) && (data.includes(channel.id))) {
 			        gtaStopMenu.components[0].addOptions([{
 			            label: `${channel.name}`,
 			            description: `${channel.name}`,

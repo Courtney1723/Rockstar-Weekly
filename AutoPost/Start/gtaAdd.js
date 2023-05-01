@@ -22,29 +22,7 @@ module.exports = {
 
 		let menuChannelID01 = (interaction.values).toString().split(`c:`);
 		let menuChannelID = menuChannelID01[1];
-				//console.log(`gtaStartMenu menuChannelID: ${menuChannelID}`)
-
-		let guildRoleIds = [];
-		fs.readFile('./rolesDataBase.txt', 'utf8', async function (err, data) {
-		    if (err) {console.log(`Error: ${err}`)} //If an error, console.log
-		
-					interaction.guild.roles.cache.forEach(role => {
-							if (data.includes(role.id)) {
-								guildRoleIds.push(role.id);
-							}
-					});
-			guildRoleIds.shift(1); //removes the @everyone role
-				//console.log(`guildRoleIds: ${guildRoleIds}`);
-
-			function AdminRequired() {
-				let AdminRequiredBoolean = data.split(`guild:${interaction.guild.id} - admin:`);
-				if (AdminRequiredBoolean[1].includes(`yes`)) {
-					return "AdminRequiredYes";
-				}
-				else {
-					return "AdminRequiredNo";
-				}
-			}		
+				//console.log(`gtaStartMenu menuChannelID: ${menuChannelID}`)		
 
 //-----BEGIN TRANSLATIONS-----//			
 
@@ -142,16 +120,16 @@ module.exports = {
 			return `You will now get GTA Online auto posts to the <#${menuChannelID}> channel \n**every Thursday at 2:00 PM EST**.`;
 		}
 		if (lang === "es") {
-			return `Ahora recibirás publicaciones automáticas de GTA Online en el canal <#${menuChannelID}> \n** todos los jueves a las 14:00 EST**.`;
+			return `Ahora recibirás publicaciones automáticas de GTA Online en el canal <#${menuChannelID}> \n** todos los jueves a las 14:00 hora del este**.`;
 		}	
 		if (lang === "ru") {
-			return `Теперь вы будете получать автоматические сообщения GTA Online на <#${menuChannelID}> канале \n**каждый четверг в 14:00 EST**.`;
+			return `Теперь вы будете получать автоматические сообщения GTA Online на <#${menuChannelID}> канале \n**каждый четверг в 14:00 по восточному времени**.`;
 		}		
 		if (lang === "de") {
-			return `Sie erhalten jetzt GTA Online Auto-Posts auf dem <#${menuChannelID}>-Kanal \n**jeden Donnerstag um 14:00 EST**.`;
+			return `Sie erhalten jetzt GTA Online Auto-Posts auf dem <#${menuChannelID}>-Kanal \n**jeden Donnerstag um 14:00 Uhr Ostküsten-Standardzeit (Nordamerika)**.`;
 		}		
 		if (lang === "pt") {
-			return `Agora você receberá postagens automáticas de GTA Online no canal <#${menuChannelID}> \n**todas as quintas-feiras às 14:00 EST**.`;
+			return `Agora você receberá postagens automáticas de GTA Online no canal <#${menuChannelID}> \n**todas as quintas-feiras às 14:00 Hora do Leste**.`;
 		}		
 		else {
 			return `You will now get GTA Online auto posts to the <#${menuChannelID}> channel \n**every Thursday at 2:00 PM EST**.`;
@@ -198,19 +176,61 @@ module.exports = {
 		else {
 			return `These options aren't for you.`;
 		}		
-	}							
+	}	
+
+	function duplicateTitle() {
+		if (lang === "en") {
+			return `Please Try Again`;
+		}
+		else if (lang === "es") {
+			return `Por favor, inténtalo de nuevo`;
+		}
+		else if (lang === "ru") {
+			return `Пожалуйста, попробуйте еще раз`;
+		}
+		else if (lang === "de") {
+			return `Inténtalo de nuevo`;
+		}
+		else if (lang === "pt") {
+			return `Por favor, tente novamente`;
+		}
+		else {
+			return `Please Try Again`;
+		}			
+	}
+
+	function invalidResponse() {
+		if (lang === "en") {
+			return `You selected an invalid response.`;
+		}
+		else if (lang === "es") {
+			return `Seleccionó una respuesta no válida.`;
+		}
+		else if (lang === "ru") {
+			return `Вы выбрали неправильный ответ.`;
+		}
+		else if (lang === "de") {
+			return `Sie haben eine ungültige Antwort ausgewählt.`;
+		}
+		else if (lang === "pt") {
+			return `Você selecionou uma resposta inválida.`;
+		}
+		else {
+			return `You selected an invalid response.`;
+		}			
+	}					
 
 //-----END TRASLATIONS-----//					
 
 					if (interaction.user.id != menuUserID) {
 						interaction.reply({ content: `${notYourOption()}`, ephemeral: true });
 					}
-					else if (menuChannelID.includes(`undefinedchannel`)) { //interaction.values === `undefinedchannel` does not work?
+					else if (menuChannelID.includes(`undefinedchannel`)) { 
 
 						const gtaDuplicateEmbed = new EmbedBuilder()
-								.setColor(0xFFAE00)//orange 
-								.setTitle(`Please Try Again`)
-								.setDescription(`You selected an invalid response "No Channel Selected".\nPlease Try again. || (◕ᴥ◕ʋ) ||`)	
+								.setColor(0xFFAE00) //orange 
+								.setTitle(`${duplicateTitle()}`)
+								.setDescription(`${invalidResponse()} || (◕ᴥ◕ʋ) ||`)	
 						
 						await interaction.deferUpdate();
 						if (interaction.user.id === menuUserID) {
@@ -224,7 +244,7 @@ module.exports = {
 					else { //add new channel to GTADataBase.txt
 
 						const gtaConfirmEmbed = new EmbedBuilder()
-								.setColor(0x0FFF00)//green 
+								.setColor(0x00FF00) //Green 
 								.setTitle(`${success()}`)
 								.setDescription(`${gtaAddDesc()}`)	
 
@@ -237,12 +257,12 @@ module.exports = {
 						);							
 						
 						await interaction.deferUpdate();
-						if (interaction.user.id === menuUserID) {					
+						if (interaction.user.id === menuUserID) {	
 
 						//Appends the GTADataBase.txt file with guildID, Channel ID, and choice of gta of gta
 					fs.appendFile(`./GTADataBase.txt`,`guild:${interaction.guild.id} - channel:${menuChannelID} - rdo_gta:gtaStartMenu - \n`, async err => {
 							 if (err) {
-								 console.error(err);
+								 console.error(err.stack);
 								 return
 									 }		
 						else {
@@ -250,10 +270,14 @@ module.exports = {
 							.catch(err => console.log(`gtaConfirmEmbed Error: ${err.stack}`));
 
 							if ((interaction.user.id === process.env.USER_ID_1) || (interaction.user.id === process.env.USER_ID_2)) {
-								console.log(`You added the ${menuChannelID} channel for GTA Online auto posts.`);
+								console.log(`You added a channel for GTA Online auto posts.`);
 							}
 							else {
-								console.log(`A user added the ${menuChannelID} channel for GTA Online auto posts in ${interaction.guild.id}.`);
+								if ((interaction.user.id === process.env.USER_ID_1) || (interaction.user.id === process.env.USER_ID_2)) {
+									console.log(`You added ${menuChannelID} for GTA Online auto posts.`)
+								} else {
+										console.log(`A user added ${menuChannelID} for GTA Online auto posts in ${interaction.guild.id}.`);
+								}
 							}
 						}
 
@@ -297,11 +321,11 @@ module.exports = {
 				);		
 
 				setTimeout(() => {
-					interaction.editReply({components: [expiredButton]})
+					interaction.editReply({components: [expiredButton]});
 				}, (60000 * 5))					
 
 				}}); //end fs.readFileLANGDataBase
-		});//end fs:readFileRolesDataBase	
+		
 			
 		}// end if interaction.customId === 'gtaStartMenu'
 		
