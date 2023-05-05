@@ -22,11 +22,15 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply().catch(console.error);
 
-		var lang = await LANG.LANG(interaction);
-		//console.log(`LANG:${await LANG.LANG(interaction)}`);				
+		//var lang = await LANG.LANG(interaction);
+		//console.log(`LANG:${await LANG.LANG(interaction)}`);
+
+		var LANG02 = interaction.locale.toString().split("-");
+		var lang = LANG02[0];
+		//console.log(`lang:${lang}`);					
 
 
-				let rdoURL = process.env.SOCIAL_URL_RDO2;
+		let rdoURL = process.env.SOCIAL_URL_RDO2;
 
 		//await interaction.editReply(`Console Logged 👍`).catch(console.error);
 	
@@ -105,6 +109,11 @@ module.exports = {
 			//console.log(`${rdoDate01[1]}`);
 		let rdoDate = rdoDate01[1].split("<"); //cuts off the end of the date
 			//console.log(`Date: ${rdoDate[0]}\n`);	
+
+		let rdoTitleOG01 = rdoHeader.split("h1>");
+		let rdoTitleOG02 = rdoTitleOG01[1].split("<");
+		let rdoTitleOG = rdoTitleOG02[0];
+		//console.log(`gtaTitleOG:${gtaTitleOG}`);			
 		
 		let rdoString002 = rdoString01[1]; //Splits the header from the body
 			//console.log(`rdoString: ${rdoString002}`)
@@ -382,28 +391,7 @@ for (i = 0; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 						//console.log(`rdoFinalString01.length: ${rdoFinalString01.length}`);
 						//console.log(`rdoFinalString.length: ${rdoFinalString.length}`);
 
-						function rdoTitleString() {
-							if (lang === "en") {
-								return "Red Dead Online Bonuses:";
-							}
-							else if (lang === "es") {
-								return "Bonificaciones de Red Dead Online:";
-							}
-							else if (lang === "ru") {
-								return "Бонусы Red Dead Online:";
-							}
-							else if (lang === "de") {
-								return "Boni in Red Dead Online:";
-							}
-							else if (lang === "pt") {
-								return "Bônus no Red Dead Online:";
-							}
-							else {
-								return "Red Dead Online Bonuses:";
-							}
-						}
-
-						var constChars = (rdoDate.length + 2) + (rdoTitleString().length);
+						var constChars = (rdoDate.length + 2) + (rdoTitleOG.length);
 						function ellipsisFunction() {
 							if (rdoFinalString.length >= (4000 - constChars)) {
 								return "...";
@@ -505,7 +493,7 @@ for (i = 0; i <= RDOBonuses01.length - 2; i++) { //final element will always be 
 
 		let rdoEmbed = new EmbedBuilder()
 			.setColor(0xC10000) //Red
-			.setTitle(`${rdoTitleString()}`) //Red Dead Redemption II Online Bonuses & Discounts:
+			.setTitle(`${rdoTitleOG}`) //Red Dead Redemption II Online Bonuses & Discounts:
 			.setDescription(`${rdoDate[0]}\n\n${rdoPost()} \n${rdoFooterMin()} ${ellipsisFunction()}`)
 		let rdoEmbed2 = new EmbedBuilder()
 			.setColor(0xC10000) //Red
