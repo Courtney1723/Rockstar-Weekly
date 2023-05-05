@@ -628,7 +628,7 @@ else if (RDO_Bonus != undefined) {
 		
 //-------------------------------------DO NOT CHANGE ANYTHING BELOW THIS-------------------------------------//
 //-------------------------------------DO NOT CHANGE ANYTHING BELOW THIS-------------------------------------//		
-//-------------------------------------DO NOT CHANGE ANYTHING BELOW THIS-------------------------------------//
+//-------------------------------------DO NOT CHANGE ANYTHING BELOW THIS-------------------------------------//					
 
 			//console.log(`channelIDArray length: ${channelIDArray.length}`);
 			//console.log(`channelIDArray: ${channelIDArray}`);
@@ -639,7 +639,7 @@ else if (RDO_Bonus != undefined) {
 					client.channels.fetch(channelIDArray[c]).then(channel => channel.send(({embeds: [rdoImageEmbed, rdoEmbed]}))).catch(err => console.log(`Min Error: ${err}\nChannel ID: ${channelIDArray[c]}`));
 				} 
 				else {
-					client.channels.fetch(channelIDArray[c]).then(channel => channel.send({embeds: [rdoImageEmbed, rdoEmbed, rdoEmbed2]})).catch(err => console.log(`Max Error: ${err}\nChannel ID: ${channelIDArray[c]}`));
+					client.channels.fetch(channelIDArray[c]).then(channel => channel.send({embeds: [rdoImageEmbed, rdoEmbed, rdoEmbed2]})).catch(err => console.log(`Max Error: ${err}\nChannel ID: ${channelIDArray[c]}`));				
 				}
 			}
 
