@@ -14,7 +14,7 @@ module.exports = {
                     console.log(`A user clicked the '${interaction.customId}' button in a guild`);
                 }
             }
-            else if (interaction.channel.type === ChannelType.GuildAnnouncement) {
+            else if (interaction.channel.type === ChannelType.DM) {
                 if ((interaction.user.id === process.env.USER_ID_1) || (interaction.user.id === process.env.USER_ID_2)) {
                     console.log(`You clicked the ${interaction.customId} button in a DM`);
                 }
