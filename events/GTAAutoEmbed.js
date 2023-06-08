@@ -100,8 +100,9 @@ module.exports = {
                             //console.log(`guildIDsArray: ${guildIDsArray}`);
                             //console.log(`guildIDLangArray: ${guildIDLangArray}`);
                             //console.log(`channelIDArray: ${channelIDArray}`);
-
-                            for (c = 0; c <= channelIDArray.length - 2; c++) { //first & last elements will always be undefined	
+													
+														c = 0;
+                            while (c <= channelIDArray.length - 2) { //first & last elements will always be undefined	
                                 let lang = "";
 
                                 for (langCheck = 0; langCheck <= langArray.length - 1; langCheck++) { //iterates through all the languages
@@ -420,13 +421,19 @@ module.exports = {
                                             if ((GTA_Bonus != null) && (!GTA_Title.includes("undefined")) && (!GTA_Bonus.includes("undefined"))) {
                                                 let gtaParas = GTA_Bonus.split("<p>");
                                                 if (
-                                                    (GTA_Title.toLowerCase() === "gta+ ") ||
-                                                    (GTA_Title.toLowerCase() === "discounts ") ||
-                                                    (GTA_Title.toLowerCase() === "descuentos ") ||
-                                                    (GTA_Title === "cкидки ") ||
-                                                    (GTA_Title === "Скидки ") ||
-                                                    (GTA_Title.toLowerCase() === "rabatte ") ||
-                                                    (GTA_Title.toLowerCase() === "descontos ")
+											                            (GTA_Title.toLowerCase() === "gta+ ") ||
+											                            (GTA_Title.toLowerCase() === "discounts ") ||
+											                            (GTA_Title.toLowerCase() === "descuentos ") ||
+											                            (GTA_Title === "cкидки ") ||
+											                            (GTA_Title === "Скидки ") ||
+																									(GTA_Title === "折扣優惠 ") ||
+																									(GTA_Title === "割引 ") ||
+																									(GTA_Title === "할인 ") ||
+											                            (GTA_Title.toLowerCase() === "rabatte ") ||
+																									(GTA_Title.toLowerCase() === "zniżki ") ||
+											                            (GTA_Title.toLowerCase() === "descontos ") ||
+																									(GTA_Title.toLowerCase() === "promotions ") ||
+																									(GTA_Title.toLowerCase() === "sconti ")
                                                 ) {
                                                     //console.log(`1 - discount`);
                                                     gtaFinalString01 += `**${GTA_Title}**\n`;
@@ -460,24 +467,26 @@ module.exports = {
                                                     }
                                                 }
                                                 else if ( //Adds only the title if the paragraph is unecessary
-                                                    (GTA_Title.toLowerCase().includes("1.5x")) ||
-                                                    (GTA_Title.toLowerCase().includes("1,5x")) ||
-                                                    (GTA_Title.toLowerCase().includes("2x")) ||
-                                                    (GTA_Title.toLowerCase().includes("2.5x")) ||
-                                                    (GTA_Title.toLowerCase().includes("2,5x")) ||
-                                                    (GTA_Title.toLowerCase().includes("3x")) ||
-                                                    (GTA_Title.toLowerCase().includes("4x")) ||
-                                                    (GTA_Title.toLowerCase().includes("40%")) ||
-                                                    (GTA_Title.toLowerCase().includes("40 %")) ||
-                                                    (GTA_Title.toLowerCase().includes("50%")) ||
-                                                    (GTA_Title.toLowerCase().includes("50 %")) ||
-                                                    (GTA_Title.toLowerCase().includes("double")) ||
-                                                    (GTA_Title.toLowerCase().includes("doble")) ||
-                                                    (GTA_Title.toLowerCase().includes("preisfahrzeug")) ||
-                                                    (GTA_Title.toLowerCase().includes("veículo-prêmio")) ||
-                                                    (GTA_Title.toLowerCase().includes("diamond casino")) ||
-                                                    (GTA_Title.toLowerCase().includes("cassino diamond")) ||
-                                                    (GTA_Title.includes("Премиальный Транспорт"))
+											                            (GTA_Title.toLowerCase().includes("1.5x")) ||
+											                            (GTA_Title.toLowerCase().includes("1,5x")) ||
+											                            (GTA_Title.toLowerCase().includes("2x")) ||
+											                            (GTA_Title.toLowerCase().includes("2.5x")) ||
+											                            (GTA_Title.toLowerCase().includes("2,5x")) ||
+											                            (GTA_Title.toLowerCase().includes("3x")) ||
+											                            (GTA_Title.toLowerCase().includes("4x")) ||
+											                            (GTA_Title.toLowerCase().includes("40%")) ||
+											                            (GTA_Title.toLowerCase().includes("40 %")) ||
+											                            (GTA_Title.toLowerCase().includes("50%")) ||
+											                            (GTA_Title.toLowerCase().includes("50 %")) ||
+											                            (GTA_Title.toLowerCase().includes("double")) ||
+											                            (GTA_Title.toLowerCase().includes("doble")) ||
+																									(GTA_Title.toLowerCase().includes("doublés")) ||
+																									(GTA_Title.toLowerCase().includes("doppi")) ||
+											                            (GTA_Title.toLowerCase().includes("preisfahrzeug")) ||
+											                            (GTA_Title.toLowerCase().includes("veículo-prêmio")) ||
+											                            (GTA_Title.toLowerCase().includes("diamond casino")) ||
+											                            (GTA_Title.toLowerCase().includes("cassino diamond")) ||
+											                            (GTA_Title.includes("Премиальный Транспорт"))
                                                 ) {
                                                     //console.log(`3 - only title`);
                                                     gtaFinalString01 += `**${GTA_Title}**\n\n`;
@@ -679,20 +688,19 @@ module.exports = {
                                         // console.log(`gtaEmbed2 length: ${gtaEmbed2.length}`); //no more than 6000 - gtaEmbed.length (line 204)
 
 
-
                                         //-------------------------------------DO NOT CHANGE ANYTHING BELOW THIS-------------------------------------//
                                         //-------------------------------------DO NOT CHANGE ANYTHING BELOW THIS-------------------------------------//		
                                         //-------------------------------------DO NOT CHANGE ANYTHING BELOW THIS-------------------------------------//
-
+																			
                                         //console.log(`channelIDArray[c] at c${c}: ${channelIDArray[c]}`);
                                         //console.log(`gtaFinalString.length: ${gtaFinalString.length}`)
                                         if (channelIDArray[c].includes("undefined")) { return; }
                                         else {
                                             if (gtaFinalString.length < (4000 - constChars)) {
-                                                client.channels.fetch(channelIDArray[c]).then(channel => channel.send(({ embeds: [gtaImageEmbed, gtaEmbed] }))).catch(err => console.log(`Min Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));
+                                                client.channels.fetch(channelIDArray[c]).then(channel => channel.send(({ embeds: [gtaImageEmbed, gtaEmbed] }))).then(c++).catch(err => console.log(`Min Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));																					
                                             }
                                             else {
-                                                client.channels.fetch(channelIDArray[c]).then(channel => channel.send({ embeds: [gtaImageEmbed, gtaEmbed, gtaEmbed2] })).catch(err => console.log(`Max Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));
+                                                client.channels.fetch(channelIDArray[c]).then(channel => channel.send({ embeds: [gtaImageEmbed, gtaEmbed, gtaEmbed2] })).then(c++).catch(err => console.log(`Max Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));
                                             }
                                         } //end if not undefined channel
                                     }
