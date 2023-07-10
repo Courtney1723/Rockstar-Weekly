@@ -99,9 +99,9 @@ Klicken Sie auf **\'RDO\'**, Red Dead Online Auto-Beiträge für **den ersten Di
 Kliknij **RDO**, aby uruchomić automatyczne wiadomości Red Dead Online na **pierwszy wtorek każdego miesiąca o 17:00 czasu wschodniego**.`;
                 }
                 else if (lang === "fr") {
-                    return `Cliquez sur **GTA** pour démarrer les messages automatiques de GTA Online pour **tous les jeudis à 14h00, heure de l'Est**.
+                    return `Cliquez sur **GTA** pour démarrer les messages automatiques de GTA Online pour **tous les jeudis à 17h00, heure de l'Est**.
 				
-Cliquez sur **RDO** pour démarrer les messages automatiques de Red Dead Online pour **le premier mardi de chaque mois à 14h00, heure de l'Est**.`;
+Cliquez sur **RDO** pour démarrer les messages automatiques de Red Dead Online pour **le premier mardi de chaque mois à 17h00, heure de l'Est**.`;
                 }
                 else if (lang === "it") {
                     return `Fai clic su **GTA** per avviare i messaggi automatici di GTA Online per **ogni giovedì alle 17:00 ora di New York**.
