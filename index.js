@@ -32,7 +32,7 @@ client.on("ready", () => {
 
 				//console.log(`${mstHour}:${mstMinute} ${amPM}`);			
 
-			if ((log.includes(`guilds`)) || (log.includes(`Logged in`)) || (log.includes(`You triggered`)) || (log.includes(`You clicked`)) || (log.includes(`You changed`)) || (log.includes(`You added`)) || (log.includes(`You removed`)) || (log.includes(`You unsubscribed`)) ) {
+			if ((log.includes(`free RAM`)) || (log.includes(`guilds`)) || (log.includes(`Logged in`)) || (log.includes(`You triggered`)) || (log.includes(`You clicked`)) || (log.includes(`You changed`)) || (log.includes(`You added`)) || (log.includes(`You removed`)) || (log.includes(`You unsubscribed`)) ) {
 				const logChannel = client.channels.cache.get(process.env.logChannel2);	
 				let logEmbed = new EmbedBuilder()
 					.setColor(0xFF008B) //Pink

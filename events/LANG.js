@@ -10,7 +10,7 @@ module.exports = {
         if (interaction.channel.type === ChannelType.DM) {
             var LANG02 = interaction.locale.toString().split("-");
             var lang = LANG02[0];
-            //console.log(`lang:${lang}`);			
+            //console.log(`lang:${lang}`);
             return lang;
         }
         else {
