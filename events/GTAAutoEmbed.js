@@ -151,41 +151,20 @@ module.exports = {
                                 var getgtaParse = JSON.parse(getgtaJSON);
                                 //console.log(getgtaJSON);
 
-                                var gtaImage = getgtaParse.data.posts.results[1].preview_images_parsed.newswire_block.d16x9;
+                                var gtaImage = getgtaParse.data.posts.results[0].preview_images_parsed.newswire_block.d16x9;
                                 //console.log(`gtaImage: ${gtaImage}`);
 
-																function langFunction() {
-																	if (supportedLanguages.indexOf(lang.substring(0, 2)) < 0) { //unsupported languages are treated as English
-																		return "";
-																	}		
-																	if (lang.includes("en")) {
-																		return "";
-																	}
-																	if (lang.includes("pt")) {
-																		return "/br";
-																	}	
-																	if (lang.includes("CH")) { //simplified Chinese (China)
-																		return "/zh";
-																	}
-																	if (lang.includes("TW")) { //traditional Chinese (Taiwan)
-																		return "/tw";
-																	}	
-																	if (lang.includes("ja")) {
-																		return "/jp";
-																	}																		
-																	if (lang.includes("ko")) {
-																		return "/kr";
-																	}
-																	if (lang.length >= 3) { //languages like "es-ES" or "pt-BR" are returnes as "es" or "pt"
-																		return `/${lang.substring(0, 2)}`;
-																	}
-																	else {
+																function langFunction() {		
+																	if (lang !== "") {
 																		return `/${lang}`;
 																	}
-																}
+																	else {
+																		return "";
+																	}
+																}	
 
-                                var gtaURLHash = getgtaParse.data.posts.results[1].id;
-                                var gtaURLFull = `https://www.rockstargames.com${langFunction()}${getgtaParse.data.posts.results[1].url}`;
+                                var gtaURLHash = getgtaParse.data.posts.results[0].id;
+                                var gtaURLFull = `https://www.rockstargames.com${langFunction()}${getgtaParse.data.posts.results[0].url}`;
                                 var fetchGTA = await fetch(`${process.env.gtaGraphURL3}${gtaURLHash}%22%2C%22locale%22%3A%22${lang}${process.env.gtaGraphURL4}`, {
                                     "cache": "default",
                                     "credentials": "omit",
@@ -226,75 +205,74 @@ module.exports = {
                                 var gtaPlusInsert = 0;
                                 var gtaPlusBottom = 0;
 
-                                //START Populating gtaPost
-                                for (var k = 2; k <= gtaBonus.length - 2; k++) { //first bonus is the subtitle and blurb, last bonus is the gun van inventory discounts
-                                    //console.log(`${JSON.stringify(gtaBonus[k])}\n\n`);
-                                    if (k === 17) { }//FIXME NEXT WEEK
-                                    else if (gtaBonus[k - 1].badge !== undefined) { //Do not include description if 2x, 3x, 4x, etc... bonus
-                                        if (gtaBonus[k].title !== undefined) {
-                                            gtaPost += `\n**${gtaBonus[k].title}**\n`;
-                                        }
-                                        else if (gtaBonus[k].description !== undefined) {
-                                            gtaPost += `• ${gtaBonus[k].description}\n`;
-                                        }
-                                    }
-                                    else if (gtaBonus[k - 1].badge === undefined) { //if the bonus is not linked to another bonus
-                                        if ((gtaBonus[k].text !== undefined) && (gtaPlusCount !== 1)) { //gta+ top
-                                            gtaPlusBonus += `\n**${gtaBonus[k].text}**\n`;
-                                            gtaPlusCount++;
-                                            gtaPlusInsert = gtaPost.length;
-                                            gtaPlusBottom = k + 1;
-                                        }
-                                        if ((gtaBonus[k].content !== undefined)) {
-                                            gtaPlusBonus += `• ${gtaBonus[k].content}\n`;
-                                        }
-                                        if (gtaBonus[k].title_and_description !== undefined) { //DISCOUNTS
-                                            gtaPost += `\n**${gtaBonus[k].title_and_description.title}**\n${gtaBonus[k].title_and_description.description}`;
-                                        }
-                                        if ((gtaBonus[k].title !== undefined)) {
-                                            gtaPost += `\n**${gtaBonus[k].title}**\n`;
-                                        }
-                                        if (gtaBonus[k].description !== undefined) {
-                                            gtaPost += `• ${gtaBonus[k].description}\n`;
-                                        }
-                                    }
-                                }
-                                //END for loop
-
-                                function gtaPlus() {
-                                    gtaPlusBonus += `${gtaBonus[gtaPlusBottom].text}\n`;
-                                    var gtaPost1 = gtaPost.slice(0, gtaPlusInsert);
-                                    var gtaPost2 = gtaPost.slice(gtaPlusInsert, gtaPost.length);
-                                    gtaPost = gtaPost1 + gtaPlusBonus + gtaPost2;
-                                }
-                                gtaPlus();
-
-                                function noBonus() {
-                                    var noBonusRegex = /<p>.*?<\/p><h3>/g;
-                                    gtaPost = gtaPost.replace(noBonusRegex, "<h3>");
-                                }
-                                noBonus();
+																//START Populating gtaPost
+																var misplacedBonus = "";
+																for (var k = 2; k <= gtaBonus.length - 2; k++) { //first bonus is the subtitle and blurb, last bonus is the gun van inventory discounts
+																			//console.log(`${k}: \n${JSON.stringify(gtaBonus[k])}`);
+																		if (k === 11) { //fixme - luxury autos was in the wrong order this week
+																			if (gtaBonus[k].content !== undefined) {
+																				misplacedBonus = `${gtaBonus[k].content}`;
+																			}
+																		}
+																		if (k === 12) {
+																			if (gtaBonus[k].title !== undefined) {
+																				gtaPost += `\n**${gtaBonus[k].title}**\n• ${misplacedBonus}\n`;
+																			}
+																		}
+																		//console.log(`${JSON.stringify(gtaBonus[k])}\n\n`);
+																		else if ((gtaBonus[k].text !== undefined) && (gtaPlusCount !== 1)){ //gta+ top
+																				gtaPlusBonus += `\n**${gtaBonus[k].text}**\n`;
+																				gtaPlusCount++;
+																				gtaPlusInsert = gtaPost.length;
+																				gtaPlusBottom = k + 1;
+																		}
+																		else if (gtaBonus[k].title !== undefined) {
+																			gtaPost += `\n**${gtaBonus[k].title}**\n`; 
+																		}
+																		else if (gtaBonus[k].description !== undefined) {
+																				gtaPost += `• ${gtaBonus[k].description}\n`;
+																		}
+																		else if ((gtaBonus[k].content !== undefined) && (k !== 11)) { //fixme next week 
+																				gtaPost += `• ${gtaBonus[k].content}\n`;
+																		}
+																}
+																//END for loop
+												
+																function gtaPlus() {
+																		gtaPlusBonus += `${gtaBonus[gtaPlusBottom].text}\n`; //adds the GTA+ bottom text
+																		var gtaPost1 = gtaPost.slice(0, gtaPlusInsert);
+																		var gtaPost2 = gtaPost.slice(gtaPlusInsert, gtaPost.length);
+																		gtaPost = gtaPost1 + gtaPlusBonus + gtaPost2;
+																}
+																gtaPlus();
+																function noBonus() { //fixme - next week
+																	gtaPost = gtaPost
+																		.replace(/<p>.*?<h3><br>/, "<h3>")
+																		.replace(/<\/h3><p>.*?<\/p>/, "</h3>")
+																}
+																noBonus();
                                 if (gtaBonus[gtaBonus.length - 1].content !== undefined) { //adds the gun van inventory discounts
                                     gtaPost += `${gtaBonus[gtaBonus.length - 1].content}\n`;
                                 }
 
-                                function replaceLinks() {
-                                    var gtaLinks = /<a href=\".*?<\/a>/g;
-                                    for (const match of gtaPost.matchAll(gtaLinks)) {
-                                        //console.log(match[0]);
-                                        var gtaLinkURL2 = match[0].toString().split("href=\"");
-                                        var gtaLinkURL1 = gtaLinkURL2[1].split("\">");
-                                        var gtaLinkURL = gtaLinkURL1[0];
-
-                                        var gtaLinkTitle1 = gtaLinkURL1[1].split("<");
-                                        var gtaLinkTitle = gtaLinkTitle1[0];
-                                        //console.log(`gtaLinkTitle: ${gtaLinkTitle} - gtaLinkURL: ${gtaLinkURL}`)
-
-                                        gtaPost = gtaPost.replace(gtaLinks, `[${gtaLinkTitle}](${gtaLinkURL})`);
-
-                                    }
-                                }
-                                replaceLinks();
+				                        function replaceLinks() {
+																	var gtaLinks = /<a href=\".*?<\/a>/g;
+																	for (const match of gtaPost.matchAll(gtaLinks)) {
+																		//console.log(match[0]);
+																		var gtaLinkURL2 = match[0].toString().split("href=\"");
+																		for (var j = 0; j <= gtaLinkURL2.length - 1; j++) { //iterates through all the links
+																			var gtaLinkURL1 = gtaLinkURL2[j].split("\">");
+																			if (gtaLinkURL1[1] !== undefined) {
+																				var gtaLinkTitle1 = gtaLinkURL1[1].split("<");
+																				var gtaLinkTitle = gtaLinkTitle1[0];
+																				var gtaLinkURL = gtaLinkURL1[0];
+																				//console.log(`match[0]: ${match[0]} - gtaLinkTitle: ${gtaLinkTitle} - gtaLinkURL: ${gtaLinkURL}`);
+																				gtaPost = gtaPost.replace(match[0], `[${gtaLinkTitle}](${gtaLinkURL})`);
+																			}
+																		}
+																	}
+																}
+																replaceLinks();
 
                                 var gtaReGex = /<.*?>/g;
                                 var gtaFinalString = gtaPost
@@ -325,90 +303,61 @@ module.exports = {
                                         return "";
                                     }
                                 }
-                                function gtaFooterMin() {
-                                    if (gtaFinalString.length < (4000 - constChars)) {
-                                        if (lang === "en") {
-                                            return `\n** [More details](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "es") {
-                                            return `\n** [Más detalles](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "ru") {
-                                            return `\n** [Подробнее](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "de") {
-                                            return `\n** [Mehr Details](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "pt") {
-                                            return `\n** [Mais detalhes](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "fr") {
-                                            return `\n** [Plus de détails](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "it") {
-                                            return `\n** [Più dettagli](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "zh") {
-                                            return `\n** [更多細節](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "pl") {
-                                            return `\n** [Więcej szczegółów](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "ko") {
-                                            return `\n** [자세한 내용은](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "ja") {
-                                            return `\n** [詳細](${gtaURLFull})**`;
-                                        }
-                                        else {
-                                            return `\n** [More Details](${gtaURLFull})**`;
-                                        }
-                                    } else {
-                                        return "";
-                                    }
-                                }
-                                function gtaFooterMax() {
-                                    if (gtaFinalString.length >= (4000 - constChars)) {
-                                        if (lang === "en") {
-                                            return `\n** [More details](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "es") {
-                                            return `\n** [Más detalles](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "ru") {
-                                            return `\n** [Подробнее](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "de") {
-                                            return `\n** [Mehr Details](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "pt") {
-                                            return `\n** [Mais detalhes](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "fr") {
-                                            return `\n** [Plus de détails](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "it") {
-                                            return `\n** [Più dettagli](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "zh") {
-                                            return `\n** [更多細節](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "pl") {
-                                            return `\n** [Więcej szczegółów](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "ko") {
-                                            return `\n** [자세한 내용은](${gtaURLFull})**`;
-                                        }
-                                        else if (lang === "ja") {
-                                            return `\n** [詳細](${gtaURLFull})**`;
-                                        }
-                                        else {
-                                            return `\n** [More Details](${gtaURLFull})**`;
-                                        }
-                                    } else {
-                                        return "";
-                                    }
-                                }
+																function footerText() {
+																	if (lang === "") {
+																			return `\n** [More details](${gtaURLFull})**`;
+																	}
+																	else if (lang === "es") {
+																			return `\n** [Más detalles](${gtaURLFull})**`;
+																	}
+																	else if (lang === "br") {
+																			return `\n** [Mais detalhes](${gtaURLFull})**`;
+																	}						
+																	else if (lang === "ru") {
+																			return `\n** [Подробнее](${gtaURLFull})**`;
+																	}
+																	else if (lang === "de") {
+																			return `\n** [Mehr Details](${gtaURLFull})**`;
+																	}
+																	else if (lang === "pl") {
+																			return `\n** [Więcej szczegółów](${gtaURLFull})**`;
+																	}
+																	else if (lang === "fr") {
+																			return `\n** [Plus de détails](${gtaURLFull})**`;
+																	}
+																	else if (lang === "it") {
+																			return `\n** [Più dettagli](${gtaURLFull})**`;
+																	}
+																	else if (lang === "zh") {
+																			return `\n** [更多细节](${gtaURLFull})**`;
+																	}
+																	else if (lang === "tw") {
+																			return `\n** [更多細節](${gtaURLFull})**`;
+																	}
+																	else if (lang === "jp") {
+																			return `\n** [さらに詳しく](${gtaURLFull})**`;
+																	}
+																	else if (lang === "kr") {
+																			return `\n** [자세한 내용은](${gtaURLFull})**`;
+																	}
+																	else {
+																			return `\n** [More Details](${gtaURLFull})**`;
+																	}					
+																}			
+												        function gtaFooterMin() {
+												            if (gtaFinalString.length < (4000 - constChars)) {
+												                return footerText();
+												            } else {
+												                return "";
+												            }
+												        }
+												        function gtaFooterMax() {
+												            if (gtaFinalString.length >= (4000 - constChars)) {
+												                return footerText();
+												            } else {
+												                return "";
+												            }
+												        }
 
                                 constChars += (gtaFooterMin().length) + (ellipsisFunction().length);
                                 var gtaNewlines = gtaFinalString.substr(0, (4000 - constChars)).split("\n\n");
@@ -465,7 +414,6 @@ module.exports = {
                                 //console.log(`channelIDArray[c] at c${c}: ${channelIDArray[c]}`);
                                 //console.log(`gtaFinalString.length: ${gtaFinalString.length}`)
                                 if (channelIDArray[c].includes("undefined")) { return; }
-                                else if (lang === "") { c++ }
                                 else {
                                     if (gtaFinalString.length < (4000 - constChars)) {
                                         client.channels.fetch(channelIDArray[c]).then(channel => channel.send(({ embeds: [gtaImageEmbed, gtaEmbed] }))).then(c++).catch(err => console.log(`Min Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));

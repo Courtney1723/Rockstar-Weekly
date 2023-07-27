@@ -2,6 +2,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType 
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 const LANG = require('../../events/LANG.js');
 const NEXT_BONUS = require('../../events/nextBonus.js');
+const THIS_BONUS = require('../../events/thisBonus.js');
 
 module.exports = {
     name: 'interactionCreate',
@@ -19,9 +20,37 @@ module.exports = {
             var lang = await LANG.LANG(interaction);
             //console.log(`LANG:${await LANG.LANG(interaction)}`);	
 
+						var thisBONUSGTA = await THIS_BONUS.thisBonus("gta");
+						var thisBONUSRDO = await THIS_BONUS.thisBonus("rdo");
 						var nextBONUSGTA = await NEXT_BONUS.nextBonus("gta");
 						var nextBONUSRDO = await NEXT_BONUS.nextBonus("rdo");
-						//console.log(`gta: ${nextBONUSGTA} - rdo: ${nextBONUSRDO}`);					
+
+						var nowDay = new Date();
+						var GTADayOf = thisBONUSGTA.setHours(21, 00, 00); //sets the time to 3:00 PM MTN
+						var RDODayOf = thisBONUSRDO.setHours(21, 00, 00); //sets the time to 3:00 PM MTN
+						var checkDayOfGTA = GTADayOf - nowDay;
+						var checkDayOfRDO = RDODayOf - nowDay;
+						
+						// console.log(`nextBonus: \ngta: ${nextBONUSGTA} - \nrdo: ${nextBONUSRDO}`);
+						// console.log(`thisBonus: \ngta: ${thisBONUSGTA} - \nrdo: ${thisBONUSRDO}`);
+						// console.log(`checkDayOfGTA ${checkDayOfGTA} \ncheckDayOfRDO ${checkDayOfRDO}`);
+
+						function thisGtaOrNext() {
+							if (checkDayOfGTA > 0) {
+								return GTADayOf;
+							}
+							else {
+								return nextBONUSGTA;
+							}
+						}
+						function thisRdoOrNext() {
+							if (checkDayOfRDO > 0) {
+								return RDODayOf;
+							}
+							else {
+								return nextBONUSRDO;
+							}
+						}			
 
             let channelIDArray = [];
             interaction.guild.channels.cache.forEach(channel => { //populates channelIDArray with the server text channels
@@ -48,13 +77,13 @@ module.exports = {
                 var subscriptionCheckGTA = false;
                 if (!GTAConfirmString.includes('• ')) {
                     var subscriptionCheckGTA = true;
-                    if (lang === "en") {
+                    if (lang === "") {
                         GTAConfirmString += `• There are no channels subscribed to GTA Online.\n`;
                     }
                     else if (lang === "es") {
                         GTAConfirmString += `• No hay canales suscritos a GTA Online.\n`;
                     }
-                    else if (lang === "pt") {
+                    else if (lang === "br") {
                         GTAConfirmString += `• Não há canais inscritos no GTA Online.\n`;
                     }
                     else if (lang === "ru") {
@@ -72,13 +101,16 @@ module.exports = {
                     else if (lang === "it") {
                         GTAConfirmString += `• Non ci sono canali abbonati a GTA Online.\n`;
                     }
-                    else if (lang === "zh") {
+										else if (lang === "zh") {
+                        GTAConfirmString += `• 没有订阅 GTA 在线模式的频道。\n`;
+                    }
+                    else if (lang === "tw") {
                         GTAConfirmString += `• 沒有訂閱 GTA 在線模式的頻道。\n`;
                     }
-                    else if (lang === "ja") {
+                    else if (lang === "jp") {
                         GTAConfirmString += `• GTA Online を購読しているチャンネルはありません。\n`;
                     }
-                    else if (lang === "ko") {
+                    else if (lang === "kr") {
                         GTAConfirmString += `• GTA 온라인을 구독하는 채널이 없습니다.\n`;
                     }
                     else {
@@ -103,13 +135,13 @@ module.exports = {
                     var subscriptionCheckRDO = false;
                     if (!RDOConfirmString.includes('• ')) {
                         var subscriptionCheckRDO = true;
-                        if (lang === "en") {
+                        if (lang === "") {
                             RDOConfirmString += `• There are no channels in this server subscribed to Red Dead Online.\n`;
                         }
                         else if (lang === "es") {
                             RDOConfirmString += `• No hay canales suscritos a Red Dead Online.\n`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             RDOConfirmString += `• Não há canais inscritos no Red Dead Online.\n`;
                         }
                         else if (lang === "ru") {
@@ -127,13 +159,16 @@ module.exports = {
                         else if (lang === "it") {
                             RDOConfirmString += `• Non ci sono canali abbonati a Red Dead Online.\n`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            RDOConfirmString += `• 没有订阅 Red Dead 在线模式的频道。\n`;
+                        }
+                        else if (lang === "tw") {
                             RDOConfirmString += `• 沒有訂閱 Red Dead 在線模式的頻道。\n`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             RDOConfirmString += `• Red Dead Online を購読しているチャンネルはありません。\n`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             RDOConfirmString += `• Red Dead 온라인을 구독하는 채널이 없습니다.\n`;
                         }
                         else {
@@ -142,13 +177,13 @@ module.exports = {
                     }
 
                     function confirmTitleString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Auto Posts`;
                         }
                         else if (lang === "es") {
                             return `Mensajes automatizados`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Mensagens Automatizadas`;
                         }
                         else if (lang === "ru") {
@@ -166,13 +201,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Messaggi automatici`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `自动消息`;
+                        }
+                        else if (lang === "tw") {
                             return `自動消息`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `自動メッセージ`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `자동화된 메시지`;
                         }
                         else {
@@ -182,41 +220,44 @@ module.exports = {
 
                     function everyThursday() {
                         if (subscriptionCheckGTA === false) {
-													if (lang === "en") {
-															return `\nNext Update: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+													if (lang === "") {
+															return `\nNext Update: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "es") {
-															return `\nPróxima actualización: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\nPróxima actualización: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
-													else if (lang === "pt") {
-															return `\nPróxima atualização: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+													else if (lang === "br") {
+															return `\nPróxima atualização: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "ru") {
-															return `\nСледующее обновление: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\nСледующее обновление: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "de") {
-															return `\nNächstes Update: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\nNächstes Update: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "pl") {
-															return `\nNastępna aktualizacja: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\nNastępna aktualizacja: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "fr") {
-															return `\nProchaine mise à jour: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\nProchaine mise à jour: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "it") {
-															return `\nProssimo aggiornamento: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\nProssimo aggiornamento: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "zh") {
-															return `\n下次更新：<t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\n下次更新：<t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
-													else if (lang === "ja") {
-															return `\n次回の更新: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+													else if (lang === "tw") {
+															return `\n下一個更新：<t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
-													else if (lang === "ko") {
-															return `\n다음 업데이트: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+													else if (lang === "jp") {
+															return `\n次回の更新: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
+													}
+													else if (lang === "kr") {
+															return `\n다음 업데이트: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
 													else {
-															return `\nNext Update: <t:${Math.round(nextBONUSGTA / 1000)}:F>`;
+															return `\nNext Update: <t:${Math.round(thisGtaOrNext() / 1000)}:F>`;
 													}
                         }
                         else {
@@ -226,41 +267,44 @@ module.exports = {
 
                     function firstTuesday() {
                         if (subscriptionCheckRDO === false) {
-													if (lang === "en") {
-													    return `\nNext Update: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													if (lang === "") {
+													    return `\nNext Update: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "es") {
-													    return `\nPróxima actualización: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\nPróxima actualización: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
-													else if (lang === "pt") {
-													    return `\nPróxima atualização: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													else if (lang === "br") {
+													    return `\nPróxima atualização: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "ru") {
-													    return `\nСледующее обновление: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\nСледующее обновление: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "de") {
-													    return `\nNächstes Update: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\nNächstes Update: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "pl") {
-													    return `\nNastępna aktualizacja: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\nNastępna aktualizacja: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "fr") {
-													    return `\nProchaine mise à jour: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\nProchaine mise à jour: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "it") {
-													    return `\nProssimo aggiornamento: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\nProssimo aggiornamento: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else if (lang === "zh") {
-													    return `\n下次更新：<t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\n下次更新：<t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
-													else if (lang === "ja") {
-													    return `\n次回の更新: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													else if (lang === "tw") {
+													    return `\n下一個更新：<t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
-													else if (lang === "ko") {
-													    return `\n다음 업데이트: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													else if (lang === "jp") {
+													    return `\n次回の更新: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
+													}
+													else if (lang === "kr") {
+													    return `\n다음 업데이트: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
 													else {
-													    return `\nNext Update: <t:${Math.round(nextBONUSRDO / 1000)}:F>`;
+													    return `\nNext Update: <t:${Math.round(thisRdoOrNext() / 1000)}:F>`;
 													}
                         }
                         else {
@@ -269,13 +313,13 @@ module.exports = {
                     }
 
                     function testTitleString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Test Auto Posts`;
                         }
                         else if (lang === "es") {
                             return `Probar publicaciones automáticas`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Testar publicações automáticas`;
                         }
                         else if (lang === "ru") {
@@ -293,13 +337,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Prova i post automatici`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `测试自动发布`;
+                        }
+                        else if (lang === "tw") {
                             return `測試自動發布`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `自動メッセージのテスト`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `자동 게시 테스트`;
                         }
                         else {
@@ -308,13 +355,13 @@ module.exports = {
                     }
 
                     function testGTAString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Click **Test GTA** to send a test post to your subscribed GTA Online channels.`;
                         }
                         else if (lang === "es") {
                             return `Haga clic en **Preuba GTA** para enviar una publicación de prueba a sus canales de GTA Online suscritos.`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Clique em **Testar GTA** para enviar uma postagem de teste para seus canais GTA inscritos.`;
                         }
                         else if (lang === "ru") {
@@ -332,13 +379,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Fai clic su **Prova GTA** per inviare un post di prova ai canali di GTA Online a cui sei iscritto.`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `单击 **测试 GTA** 将测试帖子发送到您订阅的 GTA 在线模式频道。`;
+                        }
+                        else if (lang === "tw") {
                             return `單擊 **測試 GTA** 將測試帖子發送到您訂閱的 GTA 在線模式頻道。`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `[テストGTA] をクリックして、サブスクライブしている GTA オンライン チャンネルにテスト投稿を送信します。`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `구독한 GTA 온라인 채널에 테스트 게시물을 보내려면 **테스트 GTA**을(를) 클릭하십시오.`;
                         }
                         else {
@@ -347,13 +397,13 @@ module.exports = {
                     }
 
                     function testRDOString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Click **Test RDO** to send a test post to your subscribed Red Dead Online channels.`;
                         }
                         else if (lang === "es") {
                             return `Haga clic en **Prueba RDO** para enviar una publicación de prueba a sus canales RDO suscritos.`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Clique em **Testar RDO** para enviar uma postagem de teste para seus canais RDO inscritos.`;
                         }
                         else if (lang === "ru") {
@@ -371,13 +421,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Fai clic su **Prova RDO** per inviare un post di prova ai canali di Red Dead Online a cui sei iscritto.`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `单击 **测试 RDO** 将测试帖子发送到您订阅的 Red Dead 在线模式频道。`;
+                        }
+                        else if (lang === "tw") {
                             return `單擊 **測試 RDO** 將測試帖子發送到您訂閱的 Red Dead 在線模式頻道。`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `[テストRDO] をクリックして、サブスクライブしている Red Dead オンライン チャンネルにテスト投稿を送信します。`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `구독한 Red Dead 온라인 채널에 테스트 게시물을 보내려면 **테스트 RDO**을(를) 클릭하세요.`;
                         }
                         else {
@@ -386,13 +439,13 @@ module.exports = {
                     }
 
                     function footerString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Only administrators can test auto posts.`;
                         }
                         else if (lang === "es") {
                             return `Debes ser administrador para probar las publicaciones automatizadas.`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Você deve ser um administrador para testar postagens automatizadas.`;
                         }
                         else if (lang === "ru") {
@@ -410,13 +463,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Devi essere un amministratore per testare i messaggi automatici.`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `只有管理员可以测试自动消息`;
+                        }
+												else if (lang === "tw") {
                             return `只有管理員可以測試自動消息`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `管理者のみが自動メッセージをテストできます`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `관리자만 자동 게시물을 테스트할 수 있습니다.`;
                         }
                         else {
@@ -425,13 +481,13 @@ module.exports = {
                     }
 
                     function testGTAButtonString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Test GTA`;
                         }
                         else if (lang === "es") {
                             return `Prueba GTA`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Testar GTA`;
                         }
                         else if (lang === "ru") {
@@ -449,13 +505,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Prova GTA`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `测试 GTA`;
+                        }
+                        else if (lang === "tw") {
                             return `測試 GTA`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `テストGTA`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `테스트 GTA`;
                         }
                         else {
@@ -464,13 +523,13 @@ module.exports = {
                     }
 
                     function testRDOButtonString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Test RDO`;
                         }
                         else if (lang === "es") {
                             return `Prueba RDO`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Testar RDO`;
                         }
                         else if (lang === "ru") {
@@ -488,13 +547,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Prova RDO`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `测试 RDO`;
+                        }
+                        else if (lang === "tw") {
                             return `測試 RDO`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `テストRDO`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `테스트 RDO`;
                         }
                         else {
@@ -503,13 +565,13 @@ module.exports = {
                     }
 
                     function backButtonString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `Go Back`;
                         }
                         else if (lang === "es") {
                             return `Volver`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Voltar`;
                         }
                         else if (lang === "ru") {
@@ -527,13 +589,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Torna all'ultima`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
                             return `回去`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "tw") {
+                            return `回去`;
+                        }
+                        else if (lang === "jp") {
                             return `戻る`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `돌아가다`;
                         }
                         else {
@@ -542,13 +607,13 @@ module.exports = {
                     }
 
                     function notYourButtonString() {
-                        if (lang === "en") {
+                        if (lang === "") {
                             return `These buttons are not for you.`;
                         }
                         else if (lang === "es") {
                             return `Estos botones no son para ti.`;
                         }
-                        else if (lang === "pt") {
+                        else if (lang === "br") {
                             return `Esses botões não são para você.`;
                         }
                         else if (lang === "ru") {
@@ -566,13 +631,16 @@ module.exports = {
                         else if (lang === "it") {
                             return `Questi pulsanti non fanno per te.`;
                         }
-                        else if (lang === "zh") {
+												else if (lang === "zh") {
+                            return `这些按钮不适合您。`;
+                        }
+                        else if (lang === "tw") {
                             return `這些按鈕不適合您。`;
                         }
-                        else if (lang === "ja") {
+                        else if (lang === "jp") {
                             return `これらのボタンはあなたのためではありません。`;
                         }
-                        else if (lang === "ko") {
+                        else if (lang === "kr") {
                             return `이 버튼은 당신을 위한 것이 아닙니다.`;
                         }
                         else {
@@ -627,13 +695,13 @@ ${RDOConfirmString}
             }); //end fs.readFile GTADataBase	
 
             function expiredDesc() {
-                if (lang === "en") {
+                if (lang === "") {
                     return `This interaction expired`;
                 }
                 if (lang === "es") {
                     return `Esta interacción expiró`;
                 }
-                if (lang === "pt") {
+                if (lang === "br") {
                     return `Esta interação expirou`;
                 }
                 if (lang === "ru") {
@@ -651,13 +719,16 @@ ${RDOConfirmString}
                 if (lang === "it") {
                     return `Questa interazione è scaduta`;
                 }
-                if (lang === "zh") {
+								if (lang === "zh") {
+                    return `此互动已过期`;
+                }
+                if (lang === "tw") {
                     return `此互動已過期`;
                 }
-                if (lang === "ja") {
+                if (lang === "jp") {
                     return `このインタラクションの有効期限が切れました`;
                 }
-                if (lang === "ko") {
+                if (lang === "kr") {
                     return `이 상호 작용이 만료되었습니다`;
                 }
                 else {
@@ -677,7 +748,7 @@ ${RDOConfirmString}
 
             setTimeout(() => {
                 interaction.editReply({ components: [expiredButton] });
-            }, (60000 * 5))
+            }, (60000 * 15))
 
         } //end if interaction starts with initialback
 
