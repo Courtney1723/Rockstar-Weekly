@@ -101,7 +101,8 @@ module.exports = {
                             //console.log(`channelIDArray: ${channelIDArray}`);
 
                             c = 0;
-                            while (c <= channelIDArray.length - 2) { //first & last elements will always be undefined	
+														async function sendPosts() {
+                            if (c <= channelIDArray.length - 2) { //first & last elements will always be undefined	
                                 let lang = "";
 
                                 for (langCheck = 0; langCheck <= langArray.length - 1; langCheck++) { //iterates through all the languages
@@ -416,13 +417,17 @@ module.exports = {
                                 if (channelIDArray[c].includes("undefined")) { return; }
                                 else {
                                     if (gtaFinalString.length < (4000 - constChars)) {
-                                        client.channels.fetch(channelIDArray[c]).then(channel => channel.send(({ embeds: [gtaImageEmbed, gtaEmbed] }))).then(c++).catch(err => console.log(`Min Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));
+                                        client.channels.fetch(channelIDArray[c]).then(channel => channel.send(({ embeds: [gtaImageEmbed, gtaEmbed] }))).catch(err => console.log(`Min Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));
                                     }
                                     else {
-                                        client.channels.fetch(channelIDArray[c]).then(channel => channel.send({ embeds: [gtaImageEmbed, gtaEmbed, gtaEmbed2] })).then(c++).catch(err => console.log(`Max Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));
+                                        client.channels.fetch(channelIDArray[c]).then(channel => channel.send({ embeds: [gtaImageEmbed, gtaEmbed, gtaEmbed2] })).catch(err => console.log(`Max Error: ${err.stack}\nChannel ID: ${channelIDArray[c]}`));
                                     }
+																		c++;
                                 } //end if not undefined channel
                             }
+														
+														}
+														setInterval(sendPosts, 5000);
                         }
                     });
                 }

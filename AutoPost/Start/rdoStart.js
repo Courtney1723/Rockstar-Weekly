@@ -2,6 +2,8 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelect
 const fs = require('node:fs'); //https://nodejs.org/docs/v0.3.1/api/fs.html#fs.readFile
 const LANG = require('../../events/LANG.js');
 const NEXT_BONUS = require('../../events/nextBonus.js');
+const THIS_BONUS = require('../../events/thisBonus.js');
+
 
 module.exports = {
     name: 'interactionCreate',

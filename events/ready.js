@@ -100,9 +100,6 @@ module.exports = {
 							process.kill(1);
 						}, "1000");
 					}
-					else {
-						console.log(`free RAM: ${bTG(os.freemem)}`);
-					}
 				}
 				freeRAM();
 				setInterval(freeRAM, 18e5);//checks every 30 minutes
