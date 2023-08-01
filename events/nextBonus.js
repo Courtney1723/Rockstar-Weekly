@@ -62,7 +62,7 @@ module.exports = {
 				}
 				else {
 					var nextRDOBonus01 = new Date(`${nextRDOBonus1} 21:00:00`);
-					var nextRDOBonusPlus = (nextRDOBonus01.setDate(nextRDOBonus01.getDate()+21)); //adds three weeks to last bonus - FIXME - change next month
+					var nextRDOBonusPlus = (nextRDOBonus01.setDate(nextRDOBonus01.getDate()+35)); //FIXME + 28 days next month?
 					var nextRDOBonus = new Date(nextRDOBonus01);
 					return nextRDOBonus;
 				}					
