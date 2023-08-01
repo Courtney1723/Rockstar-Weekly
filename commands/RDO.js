@@ -240,7 +240,7 @@ module.exports = {
         var thisBonus = Math.round((thisBonus01) / 1000) + 21600; // plus 6 hours
 				if (thisBonus01.getDate() === nextBonus01.getDate()) { //same day
 					var nextBonus02 = nextBonus01.setMonth(8); //fixme next month
-					var nextBonus03 = new Date(nextBonus02).setDate(4); //fixme next month
+					var nextBonus03 = new Date(nextBonus02).setDate(5); //fixme next month
 					var nextBonus = Math.round((nextBonus03) / 1000) - 54060;
 				}
 				else {
@@ -373,10 +373,10 @@ module.exports = {
 							return `\n** [更多細節](${rdoURLFull})**`;
 					}
 					else if (LANG.includes("ja")) {
-							return `\n** [자세한 내용은](${rdoURLFull})**`;
+							return `\n** [さらに詳しく](${rdoURLFull})**`;
 					}
 					else if (LANG.includes("ko")) {
-							return `\n** [詳細](${rdoURLFull})**`;
+							return `\n** [자세한 내용은](${rdoURLFull})**`;
 					}
 					else {
 							return `\n** [More Details](${rdoURLFull})**`;
