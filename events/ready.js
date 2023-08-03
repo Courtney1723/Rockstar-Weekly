@@ -1,5 +1,4 @@
 const { ActivityType } = require('discord.js');
-const phantom = require('phantom'); //https://github.com/amir20/phantomjs-node
 var cron = require('node-cron'); //https://github.com/node-cron/node-cron
 const fetch = require("@replit/node-fetch");
 const os = require("os");
@@ -94,7 +93,7 @@ module.exports = {
 				  return (num / Math.pow(1024,3));
 				}
 				function freeRAM() {
-					if (bTG(os.freemem) <= 1) {
+					if (bTG(os.freemem) <= 2) {
 						console.log(`Ran out of RAM. Restarting...`);
 						setTimeout(() => {
 							process.kill(1);
