@@ -32,7 +32,7 @@ module.exports = {
         var thisBonus01 = await THIS_BONUS.thisBonus("gta");
             // console.log(`next Bonus: <t:${Math.round(nextBonus01 / 1000)}>`);
 
-        var gtaFetch = await fetch(`${process.env.gtaGraphURL1}${LANG}${process.env.gtaGraphURL2}`, {
+        var gtaFetch = await fetch(process.env.gtaGraphURL, {
             "cache": "default",
             "credentials": "omit",
             "headers": {
@@ -52,9 +52,6 @@ module.exports = {
         var getgtaJSON = JSON.stringify(getgtaJSON01);
         var getgtaParse = JSON.parse(getgtaJSON);
             //console.log(getgtaJSON);
-
-        var gtaImage = getgtaParse.data.posts.results[0].preview_images_parsed.newswire_block.d16x9;
-        //console.log(`gtaImage: ${gtaImage}`);
 
 				function langFunction() {		
 					if (LANG.includes("en")) {
@@ -86,8 +83,37 @@ module.exports = {
 					}
 				}
 
-        var gtaURLHash = getgtaParse.data.posts.results[0].id;
-        var gtaURLFull = `https://www.rockstargames.com${langFunction()}${getgtaParse.data.posts.results[0].url}`;
+				function latestBonus() {
+					var gtaCheckDate = new Date(getgtaParse.data.posts.results[0].created).toString().substring(0, 3);
+					var gtaCheckTime = new Date(getgtaParse.data.posts.results[0].created).toString().includes("10:00");
+						//console.log(`gtaCheckDate: ${gtaCheckDate} \ngtaCheckTime: ${gtaCheckTime}`);
+					if ((gtaCheckDate !== "Thu") || (gtaCheckTime === false)) { //if post 0 is not a weekly bonus check post 1
+						var gtaCheckDate2 = new Date(getgtaParse.data.posts.results[1].created).toString().substring(0, 3);
+						var gtaCheckTime2 = new Date(getgtaParse.data.posts.results[1].created).toString().includes("10:00");	
+							//console.log(`gtaCheckDate2: ${gtaCheckDate2} \ngtaCheckTime2: ${gtaCheckTime2}`);
+						if ((gtaCheckDate2 !== "Thu") || (gtaCheckTime === false)) { //if post 1 is not a weekly bonus check post 2
+							var gtaCheckDate3 = new Date(getgtaParse.data.posts.results[2].created).toString().substring(0, 3);
+							var gtaCheckTime3 = new Date(getgtaParse.data.posts.results[2].created).toString().includes("10:00");							
+							if ((gtaCheckDate3 !== "Thu") || (gtaCheckTime === false)) { //if post 2 is not a weekly bonus return post 3
+								return 3
+							}
+							else {
+								return 2;
+							}
+						}
+						else {
+							return 1;
+						}
+					}
+					else {
+						return 0;
+					}
+				}			
+
+        var gtaImage = getgtaParse.data.posts.results[latestBonus()].preview_images_parsed.newswire_block.d16x9;
+        	//console.log(`gtaImage: ${gtaImage}`);			
+        var gtaURLHash = getgtaParse.data.posts.results[latestBonus()].id;
+        var gtaURLFull = `https://www.rockstargames.com${langFunction()}${getgtaParse.data.posts.results[latestBonus()].url}`;
         var fetchGTA = await fetch(`${process.env.gtaGraphURL3}${gtaURLHash}%22%2C%22locale%22%3A%22${LANG}${process.env.gtaGraphURL4}`, {
             "cache": "default",
             "credentials": "omit",
@@ -113,7 +139,7 @@ module.exports = {
         var gtaMainTitle = gtaParse.data.post.title
         var gtaSubTitle = gtaParse.data.post.subtitle;
         //var gtaBlurb = gtaParse.data.post.tina.variables.keys.meta.blurb;
-        var gtaDate = gtaParse.data.post.created_formatted;
+        //var gtaDate = gtaParse.data.post.created_formatted;
             //console.log(`gtaTitle: ${gtaTitle}\ngtaSubTitle: ${gtaSubTitle}\ngtaDate: ${gtaDate}`);
         var thisBonus = Math.round((thisBonus01) / 1000) + 21600; // plus 6 hours
         var nextBonus = Math.round((nextBonus01) / 1000) - 54060; // minus 15.016 hours
