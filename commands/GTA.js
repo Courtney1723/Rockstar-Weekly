@@ -85,16 +85,18 @@ module.exports = {
 
 				function latestBonus() {
 					var gtaCheckDate = new Date(getgtaParse.data.posts.results[0].created).toString().substring(0, 3);
-					var gtaCheckTime = new Date(getgtaParse.data.posts.results[0].created).toString().includes("10:00");
-						//console.log(`gtaCheckDate: ${gtaCheckDate} \ngtaCheckTime: ${gtaCheckTime}`);
-					if ((gtaCheckDate !== "Thu") || (gtaCheckTime === false)) { //if post 0 is not a weekly bonus check post 1
+					var gtaPlusCheck = getgtaParse.data.posts.results[0].title.toString().includes("GTA+");
+						//console.log(`title1: ${getgtaParse.data.posts.results[0].title.toString()}`);
+						//console.log(`gtaCheckDate: ${gtaCheckDate} \gtaPlusCheck: ${gtaPlusCheck}`);
+					if ((gtaCheckDate !== "Thu") || (gtaPlusCheck === true)) { //if post 0 is not a weekly bonus check post 1
 						var gtaCheckDate2 = new Date(getgtaParse.data.posts.results[1].created).toString().substring(0, 3);
-						var gtaCheckTime2 = new Date(getgtaParse.data.posts.results[1].created).toString().includes("10:00");	
-							//console.log(`gtaCheckDate2: ${gtaCheckDate2} \ngtaCheckTime2: ${gtaCheckTime2}`);
-						if ((gtaCheckDate2 !== "Thu") || (gtaCheckTime === false)) { //if post 1 is not a weekly bonus check post 2
+						var gtaPlusCheck2 = getgtaParse.data.posts.results[1].title.toString().includes("GTA+");	
+							//console.log(`title2: ${getgtaParse.data.posts.results[2].title.toString()}`);
+							//console.log(`gtaCheckDate2: ${gtaCheckDate2} \gtaPlusCheck2: ${gtaPlusCheck2}`);
+						if ((gtaCheckDate2 !== "Thu") || (gtaPlusCheck === true)) { //if post 1 is not a weekly bonus check post 2
 							var gtaCheckDate3 = new Date(getgtaParse.data.posts.results[2].created).toString().substring(0, 3);
-							var gtaCheckTime3 = new Date(getgtaParse.data.posts.results[2].created).toString().includes("10:00");							
-							if ((gtaCheckDate3 !== "Thu") || (gtaCheckTime === false)) { //if post 2 is not a weekly bonus return post 3
+							var gtaPlusCheck3 = getgtaParse.data.posts.results[2].title.toString().includes("GTA+");						
+							if ((gtaCheckDate3 !== "Thu") || (gtaPlusCheck === true)) { //if post 2 is not a weekly bonus return post 3
 								return 3
 							}
 							else {
@@ -110,10 +112,10 @@ module.exports = {
 					}
 				}			
 
-        var gtaImage = getgtaParse.data.posts.results[latestBonus()].preview_images_parsed.newswire_block.d16x9;
+        var gtaImage = getgtaParse.data.posts.results[latestBonus()].preview_images_parsed.newswire_block.d16x9; //FIXME NEXT WEEK
         	//console.log(`gtaImage: ${gtaImage}`);			
-        var gtaURLHash = getgtaParse.data.posts.results[latestBonus()].id;
-        var gtaURLFull = `https://www.rockstargames.com${langFunction()}${getgtaParse.data.posts.results[latestBonus()].url}`;
+        var gtaURLHash = getgtaParse.data.posts.results[latestBonus()].id;//FIXME NEXT WEEK
+        var gtaURLFull = `https://www.rockstargames.com${langFunction()}${getgtaParse.data.posts.results[latestBonus()].url}`;//FIXME NEXT WEEK
         var fetchGTA = await fetch(`${process.env.gtaGraphURL3}${gtaURLHash}%22%2C%22locale%22%3A%22${LANG}${process.env.gtaGraphURL4}`, {
             "cache": "default",
             "credentials": "omit",
@@ -156,10 +158,10 @@ module.exports = {
 
         //START Populating gtaPost
 				var misplacedBonus = "";
-				var noBonusArray = ["1.5X", "1.5x", "1,5X", "1,5x", "2X", "2x", "2.5X", "2.5x", "2,5X", "2,5x", "3X", "3x", "4X", "4x", "40%", "40 %", "50%", "50 %", "Double", "Doble", "RDO$", "Вдвое", "GTA$", "Gains"];	
+				var noBonusArray = ["1.5X", "1.5x", "1,5X", "1,5x", "2X", "2x", "2.5X", "2.5x", "2,5X", "2,5x", "3X", "3x", "4X", "4x", "40%", "40 %", "50%", "50 %", "Double", "Doble", "Triple", "RDO$", "Вдвое", "Втрое", "GTA$", "Gains"];	
 				var noBonus = [];
-        for (var k = 2; k <= gtaBonus.length - 2; k++) { //first bonus is the subtitle and blurb, last bonus is the gun van inventory discounts
-							//console.log(`${k}: \n${JSON.stringify(gtaBonus[k])}`);
+        for (var k = 2; k <= gtaBonus.length - 3; k++) { //first bonus is the subtitle and blurb, last bonus is the gun van inventory discounts, 2nd to last is discounts
+							//console.log(`${k}: \n${JSON.stringify(gtaBonus[k])}\n`);
 						if ((gtaBonus[k].badge !== undefined) && (gtaBonus[k].badge !== null)) {
 							var joinTitle = gtaBonus[k].badge.split(" ")[0]; //first word of badge
 							if (noBonusArray.indexOf(joinTitle) >= 0) {
@@ -171,6 +173,18 @@ module.exports = {
 								gtaPlusCount++;
 								gtaPlusInsert = gtaPost.length;
 								gtaPlusBottom = k + 1;
+								gtaPlusBonuses = 3; // 0 is title, 1 is bottom text, 2 is headline
+								if (gtaBonus[k+gtaPlusBonuses].content !== undefined) {
+									while (!gtaBonus[k+gtaPlusBonuses].content.startsWith("<h3>")) { //stops at discounts
+										//console.log(`${k}: gtaPlusBonuses ${gtaPlusBonuses}: ${gtaBonus[k+gtaPlusBonuses].content}`);
+										gtaPlusBonus += `• ${gtaBonus[k+gtaPlusBonuses].content}\n`;
+										noBonus.push(k+gtaPlusBonuses);
+										gtaPlusBonuses++;
+									}
+									// console.log(`noBonus: ${noBonus}`);
+									// noBonus.pop(); //allows the discounts and denies the gta+ bonuses
+									// console.log(`noBonus2: ${noBonus}`);
+								}
 						}
 						if (gtaBonus[k].title !== undefined) {
 							gtaPost += `\n**${gtaBonus[k].title}**\n`; 
@@ -183,27 +197,25 @@ module.exports = {
 								gtaPost += `• ${gtaBonus[k].description}\n`;
 						}
 						if ((gtaBonus[k].content !== undefined) && (noBonus.indexOf(k) < 0)) { //adds description if not a 2x, 3x, etc bonus
+							if (gtaBonus[k].content.length < 610) {
 								gtaPost += `• ${gtaBonus[k].content}\n`;
-						}
-						if (gtaBonus[k].title_and_description !== undefined) { //DISCOUNTS
-								if (gtaBonus[k].title_and_description.title !== undefined) {
-									gtaPost += `\n**${gtaBonus[k].title_and_description.title}**\n`;
-								}
-								if (gtaBonus[k].title_and_description.description !== undefined) {
-									gtaPost += `• ${gtaBonus[k].title_and_description.description}\n`;
-								}
-						}					
+							}							
+						}		
         }
         //END for loop
 
         function gtaPlus() {
-            gtaPlusBonus += `${gtaBonus[gtaPlusBottom].text}\n`; //adds the GTA+ bottom text
+						//console.log(`gtaPlusBonus: ${gtaPlusBonus}`);
+            gtaPlusBonus += `• ${gtaBonus[gtaPlusBottom].text}\n\n`; //adds the GTA+ bottom text
             var gtaPost1 = gtaPost.slice(0, gtaPlusInsert);
             var gtaPost2 = gtaPost.slice(gtaPlusInsert, gtaPost.length);
             gtaPost = gtaPost1 + gtaPlusBonus + gtaPost2;
         }
         gtaPlus();
 
+				if (gtaBonus[gtaBonus.length - 2].content !== undefined) { //DISCOUNTS
+						gtaPost += `${gtaBonus[gtaBonus.length - 2].content}\n`;
+				}			
 				if (gtaBonus[gtaBonus.length - 1].content !== undefined) { //adds the gun van inventory discounts
 						gtaPost += `${gtaBonus[gtaBonus.length - 1].content}\n`;
 				}			
@@ -232,7 +244,7 @@ module.exports = {
 						.replace(/<br><br>/g, "\n• ") //adds a bullet for additional paragraphs
             .replace(/<li>/g, "\n• ") //adds a bullet point to list items
             .replace(/<h3>/g, "\n\n**") //adds a newline for missed titles
-            .replace(/<\/h3>/g, "**\n") //adds a newline for missed titles
+            .replace(/<\/h3>/g, "**\n• ") //adds a newline for missed titles
             .replace(gtaReGex, "") //removes all remaining HTML
             .replace(/\¶\¶/g, "<") //creates timestamps for thisBonus && nextBonus
             .replace(/\∞\∞/g, ">")//creates timestamps for thisBonus && nextBonus
@@ -355,7 +367,7 @@ module.exports = {
             .setDescription(`${ellipsisFunction()} \n${gtaPost2()} ${ellipsisFunction2()}${gtaFooterMax()}`)
         let gtaImageEmbed = new EmbedBuilder()
             .setColor(0x00CD06) //Green
-            .setImage(`${gtaImage}`);               
+            .setImage(`${gtaImage}`);
 
         //console.log(`gtaFinal.l: ${gtaFinal.length}`);
 
