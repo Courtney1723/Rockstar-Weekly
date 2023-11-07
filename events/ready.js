@@ -12,7 +12,7 @@ module.exports = {
         console.log(`Logged in as ${client.user.tag}`);
         client.user.setPresence({ activities: [{ name: 'Bonuses', type: ActivityType.Watching }] });
 
-        async function newBonusPresence() { 
+        async function newBonusPresence() { //fixme - switch to new source
 
 						var thisBONUSGTA = await THIS_BONUS.thisBonus("gta");
 						var thisBONUSRDO = await THIS_BONUS.thisBonus("rdo");
@@ -98,6 +98,9 @@ module.exports = {
 						setTimeout(() => {
 							process.kill(1);
 						}, "1000");
+					}
+					else {
+						console.log(`free RAM: ${bTG(os.freemem)}`);
 					}
 				}
 				freeRAM();
